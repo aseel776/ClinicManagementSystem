@@ -2,10 +2,8 @@ class StepModel{
 
   int? id;
   String? name;
-  //String? notes;
-  List<String>? channels;
 
-  StepModel({this.id, this.name, this.channels});
+  StepModel({this.id, this.name});
 
   StepModel.fromJson(String source){
     //decoding
