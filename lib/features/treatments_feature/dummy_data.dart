@@ -16,6 +16,10 @@ import 'package:flutter/material.dart';
           name: 'قلع',
         ),
       ],
+      channels: <String>[
+        'لسانية',
+        'وحشية',
+      ],
     ),
     TreatmentModel(
       id: 2,
@@ -36,6 +40,10 @@ import 'package:flutter/material.dart';
           id: 3,
           name: 'فك خيوط',
         )
+      ],
+      channels: <String>[
+        'لسانية',
+        'وحشية',
       ],
     ),
     TreatmentModel(
@@ -58,6 +66,7 @@ import 'package:flutter/material.dart';
           name: 'فك خيوط',
         )
       ],
+      channels: <String>[],
     ),
     TreatmentModel(
       id: 4,
@@ -70,6 +79,10 @@ import 'package:flutter/material.dart';
           id: 1,
           name: 'قلع',
         ),
+      ],
+      channels: <String>[
+        'لسانية',
+        'وحشية',
       ],
     ),
     TreatmentModel(
@@ -92,6 +105,9 @@ import 'package:flutter/material.dart';
           name: 'فك خيوط',
         )
       ],
+      channels: <String>[
+        'لسانية',
+      ],
     ),
     TreatmentModel(
       id: 6,
@@ -113,6 +129,10 @@ import 'package:flutter/material.dart';
           name: 'فك خيوط',
         )
       ],
+      channels: <String>[
+        'لسانية',
+        'وحشية',
+      ],
     ),
     TreatmentModel(
       id: 7,
@@ -126,6 +146,7 @@ import 'package:flutter/material.dart';
           name: 'قلع',
         ),
       ],
+      channels: <String>[],
     ),
     TreatmentModel(
       id: 8,
@@ -146,6 +167,9 @@ import 'package:flutter/material.dart';
           id: 3,
           name: 'فك خيوط',
         )
+      ],
+      channels: <String>[
+        'وحشية',
       ],
     ),
     TreatmentModel(
@@ -168,6 +192,7 @@ import 'package:flutter/material.dart';
           name: 'فك خيوط',
         )
       ],
+      channels: <String>[],
     ),
     TreatmentModel(
       id: 10,
@@ -180,6 +205,10 @@ import 'package:flutter/material.dart';
           id: 1,
           name: 'قلع',
         ),
+      ],
+      channels: <String>[
+        'لسانية',
+        'وحشية',
       ],
     ),
     TreatmentModel(
@@ -202,6 +231,9 @@ import 'package:flutter/material.dart';
           name: 'فك خيوط',
         )
       ],
+      channels: <String>[
+        'وحشية',
+      ],
     ),
     TreatmentModel(
       id: 12,
@@ -223,6 +255,10 @@ import 'package:flutter/material.dart';
           name: 'فك خيوط',
         )
       ],
+      channels: <String>[
+        'لسانية',
+        'وحشية',
+      ],
     ),
     TreatmentModel(
       id: 13,
@@ -243,6 +279,10 @@ import 'package:flutter/material.dart';
           id: 3,
           name: 'فك خيوط',
         )
+      ],
+      channels: <String>[
+        'لسانية',
+        'وحشية',
       ],
     ),
   ];

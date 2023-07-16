@@ -18,6 +18,25 @@ class TypeTile extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          Expanded(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                const Icon(
+                  Icons.keyboard_arrow_left,
+                  color: AppColors.black,
+                ),
+                Text(
+                  type.name!,
+                  style: const TextStyle(
+                      fontFamily: 'Cairo',
+                      fontSize: 20,
+                      color: AppColors.black
+                  ),
+                ),
+              ],
+            ),
+          ),
           SizedBox(
             width: tileWidth * .1,
             child: FloatingActionButton(
@@ -32,23 +51,6 @@ class TypeTile extends StatelessWidget {
               color: AppColors.black,
             ),
           ),
-          ),
-          Expanded(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Text(
-                  type.name!,
-                  style: const TextStyle(
-                      fontFamily: 'Cairo',
-                      fontSize: 20,
-                      color: AppColors.black
-                  ),
-                ),
-                const Icon(
-                  Icons.keyboard_arrow_left, color: AppColors.black,),
-              ],
-            ),
           ),
         ],
       )

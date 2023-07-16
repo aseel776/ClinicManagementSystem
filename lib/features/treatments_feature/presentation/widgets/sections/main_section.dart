@@ -24,6 +24,11 @@ class TreatmentsMainSection extends StatelessWidget {
       //row and scaffold to be removed
       body: Row(
         children: [
+          //to be removed
+          Container(
+            width: screenWidth - sectionWidth,
+            color: AppColors.black,
+          ),
           //return starts here
           Container(
             width: sectionWidth,
@@ -39,65 +44,6 @@ class TreatmentsMainSection extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    //filter button
-                    SizedBox(
-                      height: screenHeight * .06,
-                      width: sectionWidth * .1,
-                      child: MaterialButton(
-                        color: AppColors.lightGreen,
-                        // color: AppColors.black.withOpacity(.95),
-                        elevation: 3,
-                        shape: ContinuousRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        onPressed: () {},
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Text(
-                              'تصفية',
-                              style: TextStyle(
-                                fontFamily: 'Cairo',
-                                color: AppColors.black,
-                                // color: Colors.white,
-                                fontSize: 16,
-                              ),
-                            ),
-                            Icon(
-                              Icons.filter_alt,
-                              color: AppColors.black,
-                              // color: Colors.white,
-                              size: sectionWidth * .02,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: sectionWidth * .01),
-                    //add treatment button
-                    SizedBox(
-                      height: screenHeight * .06,
-                      width: sectionWidth * .125,
-                      child: MaterialButton(
-                        color: AppColors.lightGreen,
-                        // color: AppColors.black,
-                        elevation: 3,
-                        shape: ContinuousRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        onPressed: () {},
-                        child: const Text(
-                          'إضافة معالجة',
-                          style: TextStyle(
-                            fontFamily: 'Cairo',
-                            color: AppColors.black,
-                            // color: Colors.white,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: sectionWidth * .01),
                     //search bar
                     Container(
                       width: sectionWidth * 0.7,
@@ -111,8 +57,19 @@ class TreatmentsMainSection extends StatelessWidget {
                         horizontal: sectionWidth * 0.01,
                       ),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
+                          //search icon
+                          SizedBox(
+                            width: sectionWidth * .02,
+                            height: screenHeight * .04,
+                            child: Icon(
+                              Icons.search,
+                              color: AppColors.black.withOpacity(0.5),
+                              size: sectionWidth * .018,
+                            ),
+                          ),
+                          SizedBox(width: sectionWidth * .01),
                           //text field
                           SizedBox(
                             width: sectionWidth * .6,
@@ -140,18 +97,66 @@ class TreatmentsMainSection extends StatelessWidget {
                               ),
                             ),
                           ),
-                          SizedBox(width: sectionWidth * .01),
-                          //search icon
-                          SizedBox(
-                            width: sectionWidth * .02,
-                            height: screenHeight * .04,
-                            child: Icon(
-                              Icons.search,
-                              color: AppColors.black.withOpacity(0.5),
-                              size: sectionWidth * .018,
-                            ),
-                          ),
                         ],
+                      ),
+                    ),
+                    SizedBox(width: sectionWidth * .01),
+                    //add treatment button
+                    SizedBox(
+                      height: screenHeight * .06,
+                      width: sectionWidth * .125,
+                      child: MaterialButton(
+                        color: AppColors.lightGreen,
+                        // color: AppColors.black,
+                        elevation: 3,
+                        shape: ContinuousRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        onPressed: () {},
+                        child: const Text(
+                          'إضافة معالجة',
+                          style: TextStyle(
+                            fontFamily: 'Cairo',
+                            color: AppColors.black,
+                            // color: Colors.white,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: sectionWidth * .01),
+                    //filter button
+                    SizedBox(
+                      height: screenHeight * .06,
+                      width: sectionWidth * .1,
+                      child: MaterialButton(
+                        color: AppColors.lightGreen,
+                        // color: AppColors.black.withOpacity(.95),
+                        elevation: 3,
+                        shape: ContinuousRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        onPressed: () {},
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.filter_alt,
+                              color: AppColors.black,
+                              // color: Colors.white,
+                              size: sectionWidth * .02,
+                            ),
+                            const Text(
+                              'تصفية',
+                              style: TextStyle(
+                                fontFamily: 'Cairo',
+                                color: AppColors.black,
+                                // color: Colors.white,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ],
@@ -160,26 +165,21 @@ class TreatmentsMainSection extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    TreatmentTypesSection(
-                      key: const ObjectKey(0),
-                      sectionWidth: sectionWidth * .375,
-                      sectionHeight: screenHeight * .83,
-                    ),
-                    SizedBox(width: sectionWidth * .01),
                     TreatmentsSection(
                       key: const ObjectKey(1),
                       sectionWidth: sectionWidth * .6,
+                      sectionHeight: screenHeight * .83,
+                    ),
+                    SizedBox(width: sectionWidth * .01),
+                    TreatmentTypesSection(
+                      key: const ObjectKey(0),
+                      sectionWidth: sectionWidth * .375,
                       sectionHeight: screenHeight * .83,
                     ),
                   ],
                 )
               ],
             ),
-          ),
-          //to be removed
-          Container(
-            width: screenWidth - sectionWidth,
-            color: AppColors.black,
           ),
         ],
       ),

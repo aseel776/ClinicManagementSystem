@@ -17,7 +17,10 @@ class MainPage extends StatelessWidget {
     return ProviderScope(
       child: MaterialApp(
         title: "Clinic Management System",
-        home: TreatmentsMainSection(sectionWidth: screenWidth * 0.8),
+        home: Directionality(
+          textDirection: TextDirection.rtl,
+          child: TreatmentsMainSection(sectionWidth: screenWidth * 0.8),
+        ),
         debugShowCheckedModeBanner: false,
       ),
     );

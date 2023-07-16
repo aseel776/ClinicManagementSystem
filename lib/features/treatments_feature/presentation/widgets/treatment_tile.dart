@@ -1,9 +1,9 @@
-import 'package:clinic_management_system/features/treatments_feature/presentation/states/selected_treatment.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import './/core/app_colors.dart';
 import '../states/is_expanded.dart';
+import '../states/selected_treatment.dart';
 import '../states/tile_size/tile_size_provider.dart';
 import '../states/tile_size/tile_size_state.dart';
 import '../../data/models/treatment_model.dart';

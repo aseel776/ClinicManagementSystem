@@ -9,11 +9,9 @@ class TreatmentsSection extends StatelessWidget {
   final double sectionWidth;
   final double sectionHeight;
 
-  const TreatmentsSection({
-    Key? key,
-    required this.sectionWidth,
-    required this.sectionHeight
-  }) : super(key: key);
+  const TreatmentsSection(
+      {Key? key, required this.sectionWidth, required this.sectionHeight})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -53,10 +51,13 @@ class TreatmentsSection extends StatelessWidget {
                       ),
                     ),
                     Expanded(
-                        child: ClipRRect(
-                      borderRadius: const BorderRadius.vertical(bottom: Radius.circular(20)),
-                      child: buildTreatmentsGridView(),
-                    )),
+                      child: ClipRRect(
+                        borderRadius: const BorderRadius.vertical(
+                          bottom: Radius.circular(20),
+                        ),
+                        child: buildTreatmentsGridView(),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -93,6 +94,14 @@ class TreatmentsSection extends StatelessWidget {
               r++, i += 2)
             Row(
               children: [
+                Expanded(
+                  child: TreatmentTile(
+                    sectionWidth: sectionWidth,
+                    sectionHeight: sectionHeight,
+                    treatment: treatments[i],
+                    key: Key(treatments[i].id.toString()),
+                  ),
+                ),
                 if (i + 1 < treatments.length)
                   Expanded(
                     child: TreatmentTile(
@@ -102,19 +111,10 @@ class TreatmentsSection extends StatelessWidget {
                       key: Key(treatments[i + 1].id.toString()),
                     ),
                   ),
-                Expanded(
-                  child: TreatmentTile(
-                    sectionWidth: sectionWidth,
-                    sectionHeight: sectionHeight,
-                    treatment: treatments[i],
-                    key: Key(treatments[i].id.toString()),
-                  ),
-                ),
               ],
             ),
         ],
       ),
     );
   }
-
 }
