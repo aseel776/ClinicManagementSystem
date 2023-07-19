@@ -1,8 +1,7 @@
-import 'package:clinic_management_system/core/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'types_section.dart';
 import 'treatments_section.dart';
-
+import './/core/app_colors.dart';
 import '../../controllers/main_section_controller.dart';
 
 class TreatmentsMainSection extends StatelessWidget {

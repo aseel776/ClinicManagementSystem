@@ -1,9 +1,9 @@
-import 'package:clinic_management_system/core/app_colors.dart';
-import 'package:clinic_management_system/features/treatments_feature/presentation/widgets/treatment_info.dart';
 import 'package:flutter/material.dart';
+import './/core/app_colors.dart';
 import '../treatment_tile.dart';
+import '../treatment_info.dart';
 import '../../../dummy_data.dart';
-import '../../states/is_expanded.dart';
+import '../../states/control_states.dart';
 
 class TreatmentsSection extends StatelessWidget {
   final double sectionWidth;

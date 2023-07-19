@@ -1,14 +1,18 @@
-import 'package:clinic_management_system/core/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import './/core/customs.dart';
+import './/core/app_colors.dart';
 import '../type_tile.dart';
 import '../../../dummy_data.dart';
-
+import '../../states/control_states.dart';
 
 class TreatmentTypesSection extends StatelessWidget {
   final double sectionHeight;
   final double sectionWidth;
+  final focusNode = FocusNode();
 
-  const TreatmentTypesSection({Key? key, required this.sectionHeight, required this.sectionWidth})
+  TreatmentTypesSection(
+      {Key? key, required this.sectionHeight, required this.sectionWidth})
       : super(key: key);
 
   @override
@@ -49,38 +53,45 @@ class TreatmentTypesSection extends StatelessWidget {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          ...types.map((type) => TypeTile(
-                            tileHeight: sectionHeight * .075,
-                            tileWidth: sectionWidth * .75,
-                            type: type,
+                          ...types.map(
+                            (type) => TypeTile(
+                              tileHeight: sectionHeight * .075,
+                              tileWidth: sectionWidth * .75,
+                              type: type,
+                            ),
                           ),
-                          ),
+                          createAddingField(),
                         ],
                       ),
                     ),
                   ),
-                  MaterialButton(
-                    color: AppColors.lightGreen,
-                    // color: AppColors.black,
-                    height: sectionHeight * .085,
-                    minWidth: sectionHeight * .2,
-                    shape: ContinuousRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                      side: const BorderSide(
-                        color: AppColors.lightGreen,
-                        // color: AppColors.black,
-                        strokeAlign: BorderSide.strokeAlignOutside,
+                  Consumer(
+                    builder: (context, ref, child) => MaterialButton(
+                      color: AppColors.lightGreen,
+                      // color: AppColors.black,
+                      height: sectionHeight * .085,
+                      minWidth: sectionHeight * .2,
+                      shape: ContinuousRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        side: const BorderSide(
+                          color: AppColors.lightGreen,
+                          // color: AppColors.black,
+                          strokeAlign: BorderSide.strokeAlignOutside,
+                        ),
                       ),
-                    ),
-                    splashColor: AppColors.lightBlue,
-                    onPressed: () {},
-                    child: const Text(
-                      'إضافة نوع',
-                      style: TextStyle(
-                        fontFamily: 'Cairo',
-                        color: AppColors.black,
-                        // color: Colors.white,
-                        fontSize: 18,
+                      splashColor: AppColors.lightBlue,
+                      onPressed: () {
+                        focusNode.requestFocus();
+                        ref.read(addingType.notifier).state = true;
+                      },
+                      child: const Text(
+                        'إضافة نوع',
+                        style: TextStyle(
+                          fontFamily: 'Cairo',
+                          color: AppColors.black,
+                          // color: Colors.white,
+                          fontSize: 18,
+                        ),
                       ),
                     ),
                   ),
@@ -91,5 +102,54 @@ class TreatmentTypesSection extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  createAddingField() {
+    double tileHeight = sectionHeight * .075;
+    double tileWidth = sectionWidth * .75;
+    return Consumer(builder: (context, ref, child) {
+      final isAdding = ref.watch(addingType);
+      if (isAdding) {
+        return SizedBox(
+          height: tileHeight,
+          width: tileWidth,
+          child: TextFormField(
+            focusNode: focusNode,
+            cursorColor: AppColors.black,
+            cursorHeight: tileHeight * .6,
+            style: const TextStyle(
+              fontFamily: 'Cairo',
+              fontSize: 18,
+              color: AppColors.black,
+            ),
+            decoration: InputDecoration(
+              border: typeFieldDecoration,
+              focusedBorder: typeFieldDecoration,
+              contentPadding: EdgeInsets.only(bottom: -tileHeight * .2),
+            ),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'الحقل مطلوب';
+              } else {
+                return null;
+              }
+            },
+            onFieldSubmitted: (value) {
+              ref.read(addingType.notifier).state = false;
+              if (value.isEmpty) {
+                // _controller.text = type.name!;
+              } else {
+                //call add function
+              }
+            },
+            onTapOutside: (event) {
+              ref.read(addingType.notifier).state = false;
+            },
+          ),
+        );
+      } else {
+        return const SizedBox();
+      }
+    });
   }
 }

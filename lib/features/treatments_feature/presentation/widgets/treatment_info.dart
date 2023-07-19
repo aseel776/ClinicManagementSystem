@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import './/core/app_colors.dart';
-import '../states/is_expanded.dart';
-import '../states/selected_treatment.dart';
+import '../states/control_states.dart';
 import '../../data/models/treatment_model.dart';
 
 class TreatmentInfo extends StatelessWidget {
@@ -36,22 +35,37 @@ class TreatmentInfo extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  SizedBox(
-                    width: containerWidth * .01,
-                  ),
-                  IconButton(
+                  FloatingActionButton(
                     onPressed: () {
                       isExpanded.value = true;
                     },
-                    icon: const Icon(
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(20),
+                      ),
+                    ),
+                    elevation: 0,
+                    hoverElevation: 0,
+                    focusElevation: 0,
+                    highlightElevation: 0,
+                    backgroundColor: treatment.color!,
+                    child: const Icon(
                       Icons.close,
                       size: 24,
                       color: Colors.white,
                     ),
                   ),
-                  IconButton(
+                  FloatingActionButton(
                     onPressed: () {},
-                    icon: const Icon(
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.zero
+                    ),
+                    elevation: 0,
+                    hoverElevation: 0,
+                    focusElevation: 0,
+                    highlightElevation: 0,
+                    backgroundColor: treatment.color!,
+                    child: const Icon(
                       Icons.edit,
                       size: 24,
                       color: Colors.white,
