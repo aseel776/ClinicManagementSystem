@@ -1,6 +1,6 @@
-import 'package:clinic_management_system/features/treatments_feature/data/models/treatment_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../data/models/treatment_model.dart';
 
 //used to show treatment info
 ValueNotifier<TreatmentModel>? selectedTreatment;

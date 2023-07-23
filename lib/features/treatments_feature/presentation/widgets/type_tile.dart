@@ -50,8 +50,8 @@ class TypeTile extends ConsumerWidget {
                         color: AppColors.black,
                       ),
                       decoration: InputDecoration(
-                        border: typeFieldDecoration,
-                        focusedBorder: typeFieldDecoration,
+                        border: typeFieldBorder,
+                        focusedBorder: typeFieldBorder,
                         contentPadding: EdgeInsets.only(bottom: - tileHeight * .2),
                       ),
                       validator: (value) {

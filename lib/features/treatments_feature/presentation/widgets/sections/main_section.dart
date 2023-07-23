@@ -1,3 +1,5 @@
+import 'package:clinic_management_system/features/treatments_feature/presentation/states/control_states.dart';
+import 'package:clinic_management_system/features/treatments_feature/presentation/widgets/upsert_treatment.dart';
 import 'package:flutter/material.dart';
 import 'types_section.dart';
 import 'treatments_section.dart';
@@ -111,7 +113,9 @@ class TreatmentsMainSection extends StatelessWidget {
                         shape: ContinuousRectangleBorder(
                           borderRadius: BorderRadius.circular(15),
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          showUpsertPopUp(context);
+                        },
                         child: const Text(
                           'إضافة معالجة',
                           style: TextStyle(
