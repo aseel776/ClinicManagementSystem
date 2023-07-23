@@ -1,8 +1,8 @@
-import 'package:clinic_management_system/features/treatments_feature/data/models/step_model.dart';
 import 'package:flutter/material.dart';
 import './/core/customs.dart';
 import './/core/app_colors.dart';
 import '../../dummy_data.dart';
+import '../../data/models/step_model.dart';
 import '../../data/models/treatment_model.dart';
 import '../../data/models/treatment_type_model.dart';
 
@@ -36,6 +36,7 @@ void showUpsertPopUp(BuildContext context, {TreatmentModel? treatment}) {
   String colorError = '';
 
   bool addingStep = false;
+  final focusNode = FocusNode();
 
   showDialog(
     context: context,
@@ -362,97 +363,110 @@ void showUpsertPopUp(BuildContext context, {TreatmentModel? treatment}) {
                         ),
                         SizedBox(height: containerHeight * .025),
                         if (treatment != null || addingStep)
-                          Column(
-                            children: [
-                              if (treatment != null)
-                                Container(
-                                  height: containerHeight * .25,
-                                  width: containerWidth * .3,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white38,
-                                    borderRadius: addingStep
-                                        ? const BorderRadius.only(
-                                      topLeft: Radius.circular(5),
-                                      topRight: Radius.circular(5),
-                                    ) : BorderRadius.circular(5)
-                                  ),
-                                  child: ReorderableListView(
-                                    onReorder: (oldIndex, newIndex) {
-                                      setState(() {
-                                        if (newIndex > oldIndex) {
-                                          newIndex -= 1;
-                                        }
-                                        final item =
-                                            treatment.steps!.removeAt(oldIndex);
-                                        treatment.steps!.insert(newIndex, item);
-                                      });
-                                    },
-                                    proxyDecorator: (child, index, animation) {
-                                      return Card(
-                                        color: Colors.white70,
-                                        elevation: 0,
-                                        child: child,
-                                      );
-                                    },
-                                    children: [
-                                      ...treatment.steps!
-                                          .map(
-                                            (step) => ListTile(
-                                              key: ValueKey(step.name),
-                                              title: Text(
-                                                step.name!,
-                                                textDirection:
-                                                    TextDirection.rtl,
-                                                style: const TextStyle(
-                                                  fontFamily: 'Cairo',
-                                                  fontSize: 16,
-                                                  color: AppColors.black,
+                          Container(
+                            height: containerHeight * .3,
+                            width: containerWidth * .3,
+                            decoration: BoxDecoration(
+                              color: Colors.white38,
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: SingleChildScrollView(
+                              child: Column(
+                                children: [
+                                  if (treatment != null)
+                                    ReorderableListView(
+                                      shrinkWrap: true,
+                                      onReorder: (oldIndex, newIndex) {
+                                        setState(() {
+                                          if (newIndex > oldIndex) {
+                                            newIndex -= 1;
+                                          }
+                                          final item = treatment.steps!
+                                              .removeAt(oldIndex);
+                                          treatment.steps!
+                                              .insert(newIndex, item);
+                                        });
+                                      },
+                                      proxyDecorator:
+                                          (child, index, animation) {
+                                        return Card(
+                                          color: Colors.white70,
+                                          elevation: 0,
+                                          child: child,
+                                        );
+                                      },
+                                      children: [
+                                        ...treatment.steps!
+                                            .map(
+                                              (step) => ListTile(
+                                                key: ValueKey(step.name),
+                                                title: Text(
+                                                  step.name!,
+                                                  textDirection:
+                                                      TextDirection.rtl,
+                                                  style: const TextStyle(
+                                                    fontFamily: 'Cairo',
+                                                    fontSize: 16,
+                                                    color: AppColors.black,
+                                                  ),
                                                 ),
                                               ),
+                                            )
+                                            .toList(),
+                                      ],
+                                    ),
+                                  if (addingStep)
+                                    Container(
+                                        height: containerHeight * .075,
+                                        width: containerWidth * .3,
+                                        padding: EdgeInsets.only(
+                                          left: (containerWidth * .3) * .05,
+                                          right: (containerWidth * .3) * .05,
+                                          bottom: (containerHeight * 0.075) * .2,
+                                        ),
+                                        decoration: const BoxDecoration(
+                                          borderRadius: BorderRadius.vertical(
+                                            bottom: Radius.circular(5),
+                                          ),
+                                        ),
+                                        child: TextField(
+                                          focusNode: focusNode,
+                                          cursorHeight: ((containerHeight * .075) * .8) * .75,
+                                          cursorColor: AppColors.black,
+                                          onTapOutside: (event) {
+                                            setState(() {
+                                              addingStep = false;
+                                            });
+                                          },
+                                          onSubmitted: (value) {
+                                            setState(() {
+                                              addingStep = false;
+                                              if (treatment != null) {
+                                                StepModel newStep = StepModel(
+                                                    id: treatment.steps!.length,
+                                                    name: value);
+                                                treatment.steps!.add(newStep);
+                                              }
+                                            });
+                                          },
+                                          decoration: InputDecoration(
+                                            focusedBorder: typeFieldBorder,
+                                            contentPadding: EdgeInsets.only(
+                                              bottom: (containerHeight * .075) * .1,
                                             ),
-                                          )
-                                          .toList(),
-                                    ],
-                                  ),
-                                ),
-                              if(addingStep)
-                                Container(
-                                    height: containerHeight * .075,
-                                    width: containerWidth * .3,
-                                    padding: EdgeInsets.only(
-                                      left: (containerWidth * .3) * .05,
-                                      right: (containerWidth * .3) * .05,
-                                      bottom: (containerHeight * 0.075) * 0.2,
-                                      // top: (containerHeight * 0.05) * 0.1,
+                                          ),
+                                          style: const TextStyle(
+                                            fontFamily: 'Cairo',
+                                            fontSize: 16,
+                                            color: AppColors.black
+                                          ),
+                                        ),
                                     ),
-                                    decoration: BoxDecoration(
-                                      color: Colors.white38,
-                                      borderRadius: addingStep
-                                          ? const BorderRadius.only(
-                                        bottomLeft: Radius.circular(5),
-                                        bottomRight: Radius.circular(5),
-                                      ) : BorderRadius.circular(5),
-                                    ),
-                                  child: TextField(
-                                    onTapOutside: (event) {
-                                      setState((){
-                                        addingStep = false;
-                                      });
-                                    },
-                                    onSubmitted: (value) {
-                                      setState((){
-                                        addingStep = false;
-                                        if(treatment != null){
-                                          StepModel newStep = StepModel(id: treatment.steps!.length, name: value);
-                                          treatment.steps!.add(newStep);
-                                        }
-                                      });
-                                    },
-                                  )
-                                ),
-                              SizedBox(height: containerHeight * .025),
-                            ],
+                                ],
+                              ),
+                            ),
                           ),
+                        SizedBox(height: containerHeight * .025),
                         //add step button
                         MaterialButton(
                           minWidth: containerWidth * .3,
@@ -462,8 +476,10 @@ void showUpsertPopUp(BuildContext context, {TreatmentModel? treatment}) {
                           hoverElevation: 0,
                           hoverColor: Colors.white,
                           shape: ContinuousRectangleBorder(
-                              borderRadius: BorderRadius.circular(10)),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
                           onPressed: () {
+                            focusNode.requestFocus();
                             setState(() {
                               addingStep = true;
                             });
@@ -505,9 +521,9 @@ void showUpsertPopUp(BuildContext context, {TreatmentModel? treatment}) {
                       ),
                       onPressed: () {
                         if (formKey.currentState!.validate()) {
-                          print('valid');
+                          //call save or edit
                         } else {
-                          print('invalid');
+                          //do something
                         }
                       },
                       child: const Text(
