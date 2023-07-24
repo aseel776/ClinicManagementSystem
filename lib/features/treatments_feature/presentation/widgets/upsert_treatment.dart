@@ -38,6 +38,8 @@ void showUpsertPopUp(BuildContext context, {TreatmentModel? treatment}) {
   bool addingStep = false;
   final focusNode = FocusNode();
 
+  bool isDragging = false;
+
   showDialog(
     context: context,
     // barrierDismissible: false,
@@ -361,146 +363,212 @@ void showUpsertPopUp(BuildContext context, {TreatmentModel? treatment}) {
                             ),
                           ),
                         ),
-                        SizedBox(height: containerHeight * .025),
-                        if (treatment != null || addingStep)
-                          Container(
-                            height: containerHeight * .3,
-                            width: containerWidth * .3,
-                            decoration: BoxDecoration(
-                              color: Colors.white38,
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            child: SingleChildScrollView(
-                              child: Column(
-                                children: [
-                                  if (treatment != null)
-                                    ReorderableListView(
-                                      shrinkWrap: true,
-                                      onReorder: (oldIndex, newIndex) {
-                                        setState(() {
-                                          if (newIndex > oldIndex) {
-                                            newIndex -= 1;
-                                          }
-                                          final item = treatment.steps!
-                                              .removeAt(oldIndex);
-                                          treatment.steps!
-                                              .insert(newIndex, item);
-                                        });
-                                      },
-                                      proxyDecorator:
-                                          (child, index, animation) {
-                                        return Card(
-                                          color: Colors.white70,
-                                          elevation: 0,
-                                          child: child,
-                                        );
-                                      },
-                                      children: [
-                                        ...treatment.steps!
-                                            .map(
-                                              (step) => ListTile(
-                                                key: ValueKey(step.name),
-                                                title: Text(
-                                                  step.name!,
-                                                  textDirection:
-                                                      TextDirection.rtl,
-                                                  style: const TextStyle(
-                                                    fontFamily: 'Cairo',
-                                                    fontSize: 16,
-                                                    color: AppColors.black,
-                                                  ),
+                        if ((treatment != null && treatment.steps!.isNotEmpty) || addingStep)
+                          Column(
+                            children: [
+                              SizedBox(height: containerHeight * .025),
+                              Container(
+                                height: (treatment != null && treatment.steps!.isNotEmpty)
+                                ? containerHeight * .3
+                                : containerHeight * .075,
+                                width: containerWidth * .3,
+                                decoration: BoxDecoration(
+                                  color: Colors.white38,
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                                child: SingleChildScrollView(
+                                  child: Column(
+                                    children: [
+                                      if (treatment != null)
+                                        ReorderableListView(
+                                          shrinkWrap: true,
+                                          onReorderStart: (index) {
+                                            setState(() {
+                                              isDragging = true;
+                                            });
+                                          },
+                                          onReorderEnd: (index) {
+                                            setState(() {
+                                              isDragging = false;
+                                            });
+                                          },
+                                          onReorder: (oldIndex, newIndex) {
+                                            setState(() {
+                                              if (newIndex > oldIndex) {
+                                                newIndex -= 1;
+                                              }
+                                              final item = treatment.steps!.removeAt(oldIndex);
+                                              treatment.steps!.insert(newIndex, item);
+                                            });
+                                          },
+                                          proxyDecorator: (child, index, animation) {
+                                            return Card(
+                                              color: Colors.white70,
+                                              elevation: 0,
+                                              child: child,
+                                            );
+                                          },
+                                          children: [
+                                            ...treatment.steps!
+                                                .map(
+                                                  (step) =>
+                                                      Draggable<StepModel>(
+                                                          key: ValueKey(step.name),
+                                                          data: step,
+                                                          feedback: Card(
+                                                            color: Colors.white70,
+                                                            elevation: 0,
+                                                            child: SizedBox(
+                                                              width: containerWidth * .3,
+                                                              child: ListTile(
+                                                                title: Text(
+                                                                  step.name!,
+                                                                  textDirection: TextDirection.rtl,
+                                                                  style: const TextStyle(
+                                                                    fontFamily: 'Cairo',
+                                                                    fontSize: 16,
+                                                                    color: AppColors
+                                                                        .black,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          child: ListTile(
+                                                            title: Text(
+                                                              step.name!,
+                                                              textDirection: TextDirection
+                                                                  .rtl,
+                                                              style: const TextStyle(
+                                                                fontFamily: 'Cairo',
+                                                                fontSize: 16,
+                                                                color: AppColors
+                                                                    .black,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      )
+                                                .toList(),
+                                          ],
+                                        ),
+                                      if (addingStep)
+                                        Container(
+                                            height: containerHeight * .075,
+                                            width: containerWidth * .3,
+                                            padding: EdgeInsets.only(
+                                              left: (containerWidth * .3) * .05,
+                                              right: (containerWidth * .3) * .05,
+                                              bottom: (containerHeight * 0.075) * .2,
+                                            ),
+                                            decoration: const BoxDecoration(
+                                              borderRadius: BorderRadius.vertical(
+                                                bottom: Radius.circular(5),
+                                              ),
+                                            ),
+                                            child: TextField(
+                                              focusNode: focusNode,
+                                              cursorHeight: ((containerHeight * .075) * .8) * .75,
+                                              cursorColor: AppColors.black,
+                                              onTapOutside: (event) {
+                                                setState(() {
+                                                  addingStep = false;
+                                                });
+                                              },
+                                              onSubmitted: (value) {
+                                                setState(() {
+                                                  addingStep = false;
+                                                  if (treatment != null) {
+                                                    StepModel newStep = StepModel(
+                                                        id: treatment.steps!.length,
+                                                        name: value);
+                                                    treatment.steps!.add(newStep);
+                                                  }
+                                                });
+                                              },
+                                              decoration: InputDecoration(
+                                                focusedBorder: typeFieldBorder,
+                                                contentPadding: EdgeInsets.only(
+                                                  bottom: (containerHeight * .075) * .1,
                                                 ),
                                               ),
-                                            )
-                                            .toList(),
-                                      ],
-                                    ),
-                                  if (addingStep)
-                                    Container(
-                                        height: containerHeight * .075,
-                                        width: containerWidth * .3,
-                                        padding: EdgeInsets.only(
-                                          left: (containerWidth * .3) * .05,
-                                          right: (containerWidth * .3) * .05,
-                                          bottom: (containerHeight * 0.075) * .2,
-                                        ),
-                                        decoration: const BoxDecoration(
-                                          borderRadius: BorderRadius.vertical(
-                                            bottom: Radius.circular(5),
-                                          ),
-                                        ),
-                                        child: TextField(
-                                          focusNode: focusNode,
-                                          cursorHeight: ((containerHeight * .075) * .8) * .75,
-                                          cursorColor: AppColors.black,
-                                          onTapOutside: (event) {
-                                            setState(() {
-                                              addingStep = false;
-                                            });
-                                          },
-                                          onSubmitted: (value) {
-                                            setState(() {
-                                              addingStep = false;
-                                              if (treatment != null) {
-                                                StepModel newStep = StepModel(
-                                                    id: treatment.steps!.length,
-                                                    name: value);
-                                                treatment.steps!.add(newStep);
-                                              }
-                                            });
-                                          },
-                                          decoration: InputDecoration(
-                                            focusedBorder: typeFieldBorder,
-                                            contentPadding: EdgeInsets.only(
-                                              bottom: (containerHeight * .075) * .1,
+                                              style: const TextStyle(
+                                                fontFamily: 'Cairo',
+                                                fontSize: 16,
+                                                color: AppColors.black
+                                              ),
                                             ),
-                                          ),
-                                          style: const TextStyle(
-                                            fontFamily: 'Cairo',
-                                            fontSize: 16,
-                                            color: AppColors.black
-                                          ),
                                         ),
-                                    ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        SizedBox(height: containerHeight * .025),
-                        //add step button
-                        MaterialButton(
-                          minWidth: containerWidth * .3,
-                          height: containerHeight * .05,
-                          elevation: 0,
-                          color: Colors.white38,
-                          hoverElevation: 0,
-                          hoverColor: Colors.white,
-                          shape: ContinuousRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          onPressed: () {
-                            focusNode.requestFocus();
-                            setState(() {
-                              addingStep = true;
-                            });
-                          },
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Icon(
-                                Icons.add,
-                                color: AppColors.black,
-                              ),
-                              SizedBox(width: containerWidth * .001),
-                              const Text(
-                                'إضافة',
-                                style: TextStyle(
-                                  fontFamily: 'Cairo',
-                                  fontSize: 16,
-                                  color: AppColors.black,
+                                    ],
+                                  ),
                                 ),
                               ),
                             ],
+                          ),
+                        SizedBox(height: containerHeight * .025),
+                        //add step button
+                        DragTarget<StepModel>(
+                          builder: (context, candidateData, rejectedData) {
+                            return MaterialButton(
+                              minWidth: containerWidth * .3,
+                              height: containerHeight * .05,
+                              elevation: 0,
+                              color: isDragging ? Colors.redAccent : Colors.white38,
+                              hoverElevation: 0,
+                              hoverColor: isDragging ? Colors.red : Colors.white,
+                              shape: ContinuousRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              onPressed: () {
+                                focusNode.requestFocus();
+                                setState(() {
+                                  addingStep = true;
+                                });
+                              },
+                              child: isDragging
+                                  ? const Icon(
+                                Icons.delete,
+                                color: Colors.white,
+                                size: 20,
+                              )
+                                  : Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Icon(
+                                    Icons.add,
+                                    color: AppColors.black,
+                                  ),
+                                  SizedBox(width: containerWidth * .001),
+                                  const Text(
+                                    'إضافة',
+                                    style: TextStyle(
+                                      fontFamily: 'Cairo',
+                                      fontSize: 16,
+                                      color: AppColors.black,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                          onAccept: (data) {
+                            setState(() {
+                              if(treatment != null){
+                                treatment.steps!.remove(data);
+                              }
+                            });
+                          },
+                        ),
+                        SizedBox(height: containerHeight * .025),
+                        SizedBox(
+                          width: containerWidth * .3,
+                          child: const Text(
+                            'القنوات',
+                            style: TextStyle(
+                              fontFamily: 'Cairo',
+                              fontSize: 20,
+                              color: Colors.black,
+                            ),
                           ),
                         ),
                       ],
