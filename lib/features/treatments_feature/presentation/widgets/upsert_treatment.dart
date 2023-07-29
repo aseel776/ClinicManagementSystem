@@ -39,6 +39,8 @@ void showUpsertPopUp(BuildContext context, {TreatmentModel? treatment}) {
   final focusNode = FocusNode();
 
   bool isDragging = false;
+  bool multiChannels = treatment != null ? treatment.channels!.isNotEmpty : false;
+  final addingChannel = TextEditingController();
 
   showDialog(
     context: context,
@@ -75,6 +77,7 @@ void showUpsertPopUp(BuildContext context, {TreatmentModel? treatment}) {
                     Form(
                       key: formKey,
                       child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           //title
                           SizedBox(
@@ -351,7 +354,9 @@ void showUpsertPopUp(BuildContext context, {TreatmentModel? treatment}) {
                     ),
                     SizedBox(width: containerWidth * .2),
                     Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
+                        //steps title
                         SizedBox(
                           width: containerWidth * .3,
                           child: const Text(
@@ -363,13 +368,14 @@ void showUpsertPopUp(BuildContext context, {TreatmentModel? treatment}) {
                             ),
                           ),
                         ),
+                        //steps section
                         if ((treatment != null && treatment.steps!.isNotEmpty) || addingStep)
                           Column(
                             children: [
-                              SizedBox(height: containerHeight * .025),
+                              SizedBox(height: containerHeight * .02),
                               Container(
                                 height: (treatment != null && treatment.steps!.isNotEmpty)
-                                ? containerHeight * .3
+                                ? containerHeight * .25
                                 : containerHeight * .075,
                                 width: containerWidth * .3,
                                 decoration: BoxDecoration(
@@ -382,6 +388,7 @@ void showUpsertPopUp(BuildContext context, {TreatmentModel? treatment}) {
                                       if (treatment != null)
                                         ReorderableListView(
                                           shrinkWrap: true,
+                                          // buildDefaultDragHandles: false,
                                           onReorderStart: (index) {
                                             setState(() {
                                               isDragging = true;
@@ -413,29 +420,40 @@ void showUpsertPopUp(BuildContext context, {TreatmentModel? treatment}) {
                                                 .map(
                                                   (step) =>
                                                       Draggable<StepModel>(
-                                                          key: ValueKey(step.name),
-                                                          data: step,
-                                                          feedback: Card(
-                                                            color: Colors.white70,
-                                                            elevation: 0,
-                                                            child: SizedBox(
-                                                              width: containerWidth * .3,
-                                                              child: ListTile(
-                                                                title: Text(
-                                                                  step.name!,
-                                                                  textDirection: TextDirection.rtl,
-                                                                  style: const TextStyle(
-                                                                    fontFamily: 'Cairo',
-                                                                    fontSize: 16,
-                                                                    color: AppColors
-                                                                        .black,
-                                                                  ),
+                                                        key: ValueKey(step.name),
+                                                        onDragStarted: () {
+                                                          print('start');
+                                                          setState(() {
+                                                            isDragging = true;
+                                                          });
+                                                        },
+                                                        onDragEnd: (details) {
+                                                          print('end');
+                                                          setState(() {
+                                                            isDragging = false;
+                                                          });
+                                                        },
+                                                        data: step,
+                                                        feedback: Card(
+                                                          color: Colors.white70,
+                                                          elevation: 0,
+                                                          child: SizedBox(
+                                                            width: containerWidth * .3,
+                                                            child: ListTile(
+                                                              title: Text(
+                                                                step.name!,
+                                                                textDirection: TextDirection.rtl,
+                                                                style: const TextStyle(
+                                                                  fontFamily: 'Cairo',
+                                                                  fontSize: 16,
+                                                                  color: AppColors.black,
                                                                 ),
                                                               ),
                                                             ),
                                                           ),
-                                                          child: ListTile(
-                                                            title: Text(
+                                                        ),
+                                                        child: ListTile(
+                                                          title: Text(
                                                               step.name!,
                                                               textDirection: TextDirection
                                                                   .rtl,
@@ -446,9 +464,9 @@ void showUpsertPopUp(BuildContext context, {TreatmentModel? treatment}) {
                                                                     .black,
                                                               ),
                                                             ),
-                                                          ),
                                                         ),
-                                                      )
+                                                      ),
+                                            )
                                                 .toList(),
                                           ],
                                         ),
@@ -505,7 +523,7 @@ void showUpsertPopUp(BuildContext context, {TreatmentModel? treatment}) {
                               ),
                             ],
                           ),
-                        SizedBox(height: containerHeight * .025),
+                        SizedBox(height: containerHeight * .02),
                         //add step button
                         DragTarget<StepModel>(
                           builder: (context, candidateData, rejectedData) {
@@ -526,11 +544,14 @@ void showUpsertPopUp(BuildContext context, {TreatmentModel? treatment}) {
                                 });
                               },
                               child: isDragging
-                                  ? const Icon(
-                                Icons.delete,
-                                color: Colors.white,
-                                size: 20,
-                              )
+                                  ? SizedBox(
+                                height: containerHeight * .05,
+                                child: const Icon(
+                                  Icons.delete,
+                                  color: Colors.white,
+                                  size: 20,
+                                ),
+                                  )
                                   : Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -559,18 +580,194 @@ void showUpsertPopUp(BuildContext context, {TreatmentModel? treatment}) {
                             });
                           },
                         ),
-                        SizedBox(height: containerHeight * .025),
+                        SizedBox(height: containerHeight * .03),
+                        //channels title
                         SizedBox(
                           width: containerWidth * .3,
-                          child: const Text(
-                            'القنوات',
-                            style: TextStyle(
-                              fontFamily: 'Cairo',
-                              fontSize: 20,
-                              color: Colors.black,
-                            ),
+                          child: Row(
+                            children: [
+                              const Expanded(
+                                child: Text(
+                                  'القنوات',
+                                  style: TextStyle(
+                                    fontFamily: 'Cairo',
+                                    fontSize: 20,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                width: containerWidth * .1,
+                                alignment: Alignment.centerLeft,
+                                child: Switch(
+                                  value: multiChannels,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      multiChannels = value;
+                                    });
+                                  },
+                                  activeColor: Colors.white70,
+                                  inactiveThumbColor: Colors.grey[600],
+                                  activeTrackColor: Colors.white38,
+                                  inactiveTrackColor: Colors.grey,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
+                        if(multiChannels)
+                          Column(
+                            children: [
+                              SizedBox(height: containerHeight * .02),
+                              SizedBox(
+                                width: containerWidth * .3,
+                                height: containerHeight * .13,
+                                child: SingleChildScrollView(
+                                  child: Wrap(
+                                    spacing: 4,
+                                    runSpacing: 8,
+                                    children: [
+                                      ActionChip(
+                                        onPressed: (){
+                                          showDialog(
+                                            context: context, 
+                                            builder: (context) {
+                                              return Directionality(
+                                                textDirection: TextDirection.rtl,
+                                                child: AlertDialog(
+                                                  backgroundColor: Colors.white,
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius.circular(5),
+                                                  ),
+                                                  title: Container(
+                                                    height: containerHeight * .075,
+                                                    width: containerWidth * .3,
+                                                    padding: EdgeInsets.only(
+                                                      bottom: (containerHeight * 0.075) * .2,
+                                                    ),
+                                                    child: TextField(
+                                                      controller: addingChannel,
+                                                      onEditingComplete: () {
+                                                        setState(() {
+                                                          if (treatment != null && addingChannel.text.isNotEmpty) {
+                                                            treatment.channels!.add(addingChannel.text);
+                                                            addingChannel.clear();
+                                                          }
+                                                        });
+                                                        Navigator.of(context).pop();
+                                                      },
+                                                      cursorHeight: ((containerHeight * .075) * .8) * .75,
+                                                      cursorColor: AppColors.black,
+                                                      decoration: InputDecoration(
+                                                        focusedBorder: typeFieldBorder,
+                                                        contentPadding: EdgeInsets.only(
+                                                          bottom: (containerHeight * .075) * .1,
+                                                        ),
+                                                      ),
+                                                      style: const TextStyle(
+                                                          fontFamily: 'Cairo',
+                                                          fontSize: 16,
+                                                          color: AppColors.black
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  titlePadding: EdgeInsets.only(
+                                                    left: (containerWidth * .3) * .05,
+                                                    right: (containerWidth * .3) * .05,
+                                                    top: (containerHeight * .075) * .3,
+                                                    bottom: (containerHeight * .075) * .05,
+                                                  ),
+                                                  actions: [
+                                                    MaterialButton(
+                                                      onPressed: (){
+                                                        setState(() {
+                                                          if(treatment != null && addingChannel.text.isNotEmpty){
+                                                            treatment.channels!.add(addingChannel.text);
+                                                            addingChannel.clear();
+                                                          }
+                                                        });
+                                                        Navigator.of(context).pop();
+                                                      },
+                                                      minWidth: containerWidth * .075,
+                                                      height: containerHeight  * .075,
+                                                      elevation: 0,
+                                                      color: Colors.white,
+                                                      hoverElevation: 0,
+                                                      hoverColor: Colors.grey[300],
+                                                      highlightColor: Colors.grey[400],
+                                                      highlightElevation: 0,
+                                                      child: const Text(
+                                                        'حفظ',
+                                                        style: TextStyle(
+                                                          fontFamily: 'Cairo',
+                                                          fontSize: 14,
+                                                          color: AppColors.black,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    MaterialButton(
+                                                      onPressed: () {
+                                                        Navigator.of(context).pop();
+                                                      },
+                                                      minWidth: containerWidth * .075,
+                                                      height: containerHeight * .075,
+                                                      elevation: 0,
+                                                      color: Colors.white,
+                                                      hoverElevation: 0,
+                                                      hoverColor: Colors.grey[300],
+                                                      highlightColor: Colors.grey[400],
+                                                      highlightElevation: 0,
+                                                      child: const Text(
+                                                        'إلغاء',
+                                                        style: TextStyle(
+                                                          fontFamily: 'Cairo',
+                                                          fontSize: 14,
+                                                          color: AppColors
+                                                              .black,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              );
+                                            },
+                                          );
+                                        },
+                                        label: const Text(
+                                          'إضافة',
+                                          style: TextStyle(
+                                            fontFamily: 'Cairo',
+                                            fontSize: 14,
+                                            color: AppColors.black,
+                                          )
+                                        ),
+                                      ),
+                                      ...treatment!.channels!.map((channel) =>
+                                          InputChip(
+                                            onDeleted: () {
+                                              setState(() => treatment.channels!.remove(channel));
+                                            },
+                                            label: Text(
+                                                channel,
+                                                style: const TextStyle(
+                                                  fontFamily: 'Cairo',
+                                                  fontSize: 14,
+                                                  color: AppColors.black,
+                                                ),
+                                            ),
+                                            deleteButtonTooltipMessage: '',
+                                          ),
+                                      ).toList(),
+                                    ],
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        if(!multiChannels)
+                          SizedBox(
+                            height: containerHeight * .15,
+                          )
                       ],
                     ),
                   ],

@@ -77,6 +77,24 @@ class TreatmentInfo extends StatelessWidget {
                           color: Colors.white,
                         ),
                       ),
+                      FloatingActionButton(
+                        onPressed: () {
+
+                        },
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.zero,
+                        ),
+                        elevation: 0,
+                        hoverElevation: 0,
+                        focusElevation: 0,
+                        highlightElevation: 0,
+                        backgroundColor: treatment.color!,
+                        child: const Icon(
+                          Icons.delete,
+                          size: 24,
+                          color: Colors.white,
+                        ),
+                      ),
                     ],
                   ),
                 ),
