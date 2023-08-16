@@ -1,8 +1,10 @@
+import 'dart:convert';
+
 class ActiveMaterialModel{
   int? id;
   String? name;
   //change type into ActiveMaterialModel
-  List<String>? antiMaterials;
+  List<ActiveMaterialModel>? antiMaterials;
   //change type into DiseaseModel
   List<String>? antiDiseases;
   //change type into BadHabitModel
@@ -11,8 +13,13 @@ class ActiveMaterialModel{
 
   ActiveMaterialModel({this.id, this.name, this.antiMaterials, this.antiDiseases, this.antiHabits});
 
-  ActiveMaterialModel.fromJson(String source){
-    //decoding
+  ActiveMaterialModel.fromJson(Map<String, dynamic> source){
+    id = source['id'];
+    name = source['name'];
+    if(source['conflicts'] != null){
+      List<dynamic> conflicts = source['conflicts'];
+      antiMaterials = conflicts.map((c) => ActiveMaterialModel.fromJson(c)).toList();
+    }
   }
 
   String toJson() {

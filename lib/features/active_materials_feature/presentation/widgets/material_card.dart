@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../widgets/update_material.dart';
+import '../states/active_materials/active_materials_provider.dart';
 import './/core/app_colors.dart';
 import '../../data/models/active_material_model.dart';
 
@@ -31,23 +34,27 @@ class MaterialCard extends StatelessWidget {
           end: Alignment.centerRight,
         ),
       ),
-      child: InkWell(
-        onTap: () {
-          //call show method
-          print(material.name);
-        },
-        child: Container(
-          width: cardWidth,
-          height: cardHeight,
-          alignment: Alignment.center,
-          child: Text(
-            material.name!,
-            style: const TextStyle(
-              fontFamily: 'Cairo',
-              fontSize: 22,
+      child: Consumer(
+        builder: (context, ref, child) =>
+            InkWell(
+              onTap: () {
+                // ref.read(activeMaterialsProvider.notifier).get();
+                showUpdatePopUp(context, material);
+                print(material.name);
+              },
+              child: Container(
+                width: cardWidth,
+                height: cardHeight,
+                alignment: Alignment.center,
+                child: Text(
+                  material.name!,
+                  style: const TextStyle(
+                    fontFamily: 'Cairo',
+                    fontSize: 22,
+                  ),
+                ),
+              ),
             ),
-          ),
-        ),
       ),
     );
   }

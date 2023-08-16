@@ -1,6 +1,6 @@
-import 'package:clinic_management_system/features/active_materials_feature/presentation/widgets/main_section.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../features/active_materials_feature/presentation/widgets/main_section.dart';
 
 void main() async{
   runApp(const MainPage());

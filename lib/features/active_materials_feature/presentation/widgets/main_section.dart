@@ -1,20 +1,45 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import './insert_material.dart';
 import './/core/app_colors.dart';
 import './material_card.dart';
-import '../dummy_data.dart';
 import '../states/control_states.dart';
+import '../states/active_materials/active_materials_state.dart';
+import '../states/active_materials/active_materials_provider.dart';
 
-class ActiveMaterialsMainSection extends StatelessWidget {
+class ActiveMaterialsMainSection extends ConsumerStatefulWidget {
   final double sectionWidth;
 
-  ActiveMaterialsMainSection({Key? key, required this.sectionWidth})
+  const ActiveMaterialsMainSection({Key? key, required this.sectionWidth})
       : super(key: key);
+
+  @override
+  ConsumerState<ActiveMaterialsMainSection> createState() =>
+      _ActiveMaterialsMainSectionState();
+}
+
+class _ActiveMaterialsMainSectionState extends ConsumerState<ActiveMaterialsMainSection> {
 
   final PageController _pageController = PageController(initialPage: 0);
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      await ref.read(activeMaterialsProvider.notifier).getAllMaterials(0);
+      final state = ref.read(activeMaterialsProvider);
+      if(state is LoadedActiveMaterialsState){
+        // -1 because page view starts from zero
+        ref.read(currentPageProvider.notifier).state = state.page.currentPage! - 1;
+        ref.read(totalPagesProvider.notifier).state = state.page.totalPages!;
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+
+    final state = ref.watch(activeMaterialsProvider);
     double screenWidth = MediaQuery.sizeOf(context).width;
     double screenHeight = MediaQuery.sizeOf(context).height;
 
@@ -24,31 +49,31 @@ class ActiveMaterialsMainSection extends StatelessWidget {
         children: [
           //to be removed
           Container(
-            width: screenWidth - sectionWidth,
+            width: screenWidth - widget.sectionWidth,
             color: AppColors.black,
           ),
           //return starts here
           Container(
-            width: sectionWidth,
+            width: widget.sectionWidth,
             color: AppColors.lightGrey,
             // color: Colors.white,
             padding: EdgeInsets.only(
-              left: sectionWidth * .025,
-              right: sectionWidth * .025,
+              left: widget.sectionWidth * .025,
+              right: widget.sectionWidth * .025,
               top: screenHeight * .04,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  width: sectionWidth * .4,
+                  width: widget.sectionWidth * .4,
                   height: screenHeight * .125,
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(15),
                   ),
-                  padding:
-                      EdgeInsets.symmetric(horizontal: sectionWidth * .4 * .05),
+                  padding: EdgeInsets.symmetric(
+                      horizontal: widget.sectionWidth * .4 * .05),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -73,7 +98,7 @@ class ActiveMaterialsMainSection extends StatelessWidget {
                 Row(
                   children: [
                     Container(
-                      width: sectionWidth * .6,
+                      width: widget.sectionWidth * .6,
                       height: screenHeight * .07,
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
@@ -81,22 +106,22 @@ class ActiveMaterialsMainSection extends StatelessWidget {
                         borderRadius: BorderRadius.circular(15),
                       ),
                       padding: EdgeInsets.symmetric(
-                        horizontal: sectionWidth * 0.01,
+                        horizontal: widget.sectionWidth * 0.01,
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           //search icon
                           SizedBox(
-                            width: sectionWidth * .02,
+                            width: widget.sectionWidth * .02,
                             height: screenHeight * .04,
                             child: Icon(
                               Icons.search,
                               color: AppColors.black.withOpacity(0.5),
-                              size: sectionWidth * .018,
+                              size: widget.sectionWidth * .018,
                             ),
                           ),
-                          SizedBox(width: sectionWidth * .01),
+                          SizedBox(width: widget.sectionWidth * .01),
                           //text field
                           Expanded(
                             child: TextField(
@@ -123,15 +148,17 @@ class ActiveMaterialsMainSection extends StatelessWidget {
                         ],
                       ),
                     ),
-                    SizedBox(width: sectionWidth * .025),
+                    SizedBox(width: widget.sectionWidth * .025),
                     MaterialButton(
                       height: screenHeight * .08,
-                      minWidth: sectionWidth * .2,
+                      minWidth: widget.sectionWidth * .2,
                       color: AppColors.black,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        showInsertPopUp(context);
+                      },
                       child: const Text(
                         'إضافة مادة كيميائية',
                         style: TextStyle(
@@ -144,273 +171,88 @@ class ActiveMaterialsMainSection extends StatelessWidget {
                 ),
                 SizedBox(height: screenHeight * .025),
                 Expanded(
-                  child: Consumer(
-                    builder: (context, ref, child) {
-                      bool previousPageExists = ref.watch(previousPageFlag);
-                      bool nextPageExists = ref.watch(nextPageFlag);
-                      return Stack(
-                        children: [
-                          PageView(
-                            controller: _pageController,
+                  child: state is LoadedActiveMaterialsState
+                      ? Stack(
+                    children: [
+                      PageView.builder(
+                        controller: _pageController,
+                        onPageChanged: (value) {
+                          ref.read(currentPageProvider.notifier).state = value;
+                        },
+                        itemBuilder: (_, __) {
+                          return Wrap(
+                            runSpacing: screenHeight * .025,
+                            spacing: widget.sectionWidth * .01875,
                             children: [
-                              Wrap(
-                                runSpacing: screenHeight * .025,
-                                spacing: sectionWidth * .01875,
-                                children: [
+                              ...state.page.materials!.map((m) =>
                                   MaterialCard(
-                                    material: materials[1],
+                                    material: m,
                                     cardHeight: screenHeight * .2,
-                                    cardWidth: sectionWidth * .175,
-                                  ),
-                                  MaterialCard(
-                                    material: materials[1],
-                                    cardHeight: screenHeight * .2,
-                                    cardWidth: sectionWidth * .175,
-                                  ),
-                                  MaterialCard(
-                                    material: materials[1],
-                                    cardHeight: screenHeight * .2,
-                                    cardWidth: sectionWidth * .175,
-                                  ),
-                                  MaterialCard(
-                                    material: materials[1],
-                                    cardHeight: screenHeight * .2,
-                                    cardWidth: sectionWidth * .175,
-                                  ),
-                                  MaterialCard(
-                                    material: materials[1],
-                                    cardHeight: screenHeight * .2,
-                                    cardWidth: sectionWidth * .175,
-                                  ),
-                                  MaterialCard(
-                                    material: materials[1],
-                                    cardHeight: screenHeight * .2,
-                                    cardWidth: sectionWidth * .175,
-                                  ),
-                                  MaterialCard(
-                                    material: materials[1],
-                                    cardHeight: screenHeight * .2,
-                                    cardWidth: sectionWidth * .175,
-                                  ),
-                                  MaterialCard(
-                                    material: materials[1],
-                                    cardHeight: screenHeight * .2,
-                                    cardWidth: sectionWidth * .175,
-                                  ),
-                                  MaterialCard(
-                                    material: materials[1],
-                                    cardHeight: screenHeight * .2,
-                                    cardWidth: sectionWidth * .175,
-                                  ),
-                                  MaterialCard(
-                                    material: materials[1],
-                                    cardHeight: screenHeight * .2,
-                                    cardWidth: sectionWidth * .175,
-                                  ),
-                                  MaterialCard(
-                                    material: materials[1],
-                                    cardHeight: screenHeight * .2,
-                                    cardWidth: sectionWidth * .175,
-                                  ),
-                                  MaterialCard(
-                                    material: materials[1],
-                                    cardHeight: screenHeight * .2,
-                                    cardWidth: sectionWidth * .175,
-                                  ),
-                                ],
-                              ),
-                              Wrap(
-                                runSpacing: screenHeight * .025,
-                                spacing: sectionWidth * .01875,
-                                children: [
-                                  MaterialCard(
-                                    material: materials[1],
-                                    cardHeight: screenHeight * .2,
-                                    cardWidth: sectionWidth * .175,
-                                  ),
-                                  MaterialCard(
-                                    material: materials[1],
-                                    cardHeight: screenHeight * .2,
-                                    cardWidth: sectionWidth * .175,
-                                  ),
-                                  MaterialCard(
-                                    material: materials[1],
-                                    cardHeight: screenHeight * .2,
-                                    cardWidth: sectionWidth * .175,
-                                  ),
-                                  MaterialCard(
-                                    material: materials[1],
-                                    cardHeight: screenHeight * .2,
-                                    cardWidth: sectionWidth * .175,
-                                  ),
-                                  MaterialCard(
-                                    material: materials[1],
-                                    cardHeight: screenHeight * .2,
-                                    cardWidth: sectionWidth * .175,
-                                  ),
-                                  MaterialCard(
-                                    material: materials[1],
-                                    cardHeight: screenHeight * .2,
-                                    cardWidth: sectionWidth * .175,
-                                  ),
-                                  MaterialCard(
-                                    material: materials[1],
-                                    cardHeight: screenHeight * .2,
-                                    cardWidth: sectionWidth * .175,
-                                  ),
-                                  MaterialCard(
-                                    material: materials[1],
-                                    cardHeight: screenHeight * .2,
-                                    cardWidth: sectionWidth * .175,
-                                  ),
-                                  MaterialCard(
-                                    material: materials[1],
-                                    cardHeight: screenHeight * .2,
-                                    cardWidth: sectionWidth * .175,
-                                  ),
-                                  MaterialCard(
-                                    material: materials[1],
-                                    cardHeight: screenHeight * .2,
-                                    cardWidth: sectionWidth * .175,
-                                  ),
-                                  MaterialCard(
-                                    material: materials[1],
-                                    cardHeight: screenHeight * .2,
-                                    cardWidth: sectionWidth * .175,
-                                  ),
-                                  MaterialCard(
-                                    material: materials[1],
-                                    cardHeight: screenHeight * .2,
-                                    cardWidth: sectionWidth * .175,
-                                  ),
-                                ],
-                              ),
-                              Wrap(
-                                runSpacing: screenHeight * .025,
-                                spacing: sectionWidth * .01875,
-                                children: [
-                                  MaterialCard(
-                                    material: materials[1],
-                                    cardHeight: screenHeight * .2,
-                                    cardWidth: sectionWidth * .175,
-                                  ),
-                                  MaterialCard(
-                                    material: materials[1],
-                                    cardHeight: screenHeight * .2,
-                                    cardWidth: sectionWidth * .175,
-                                  ),
-                                  MaterialCard(
-                                    material: materials[1],
-                                    cardHeight: screenHeight * .2,
-                                    cardWidth: sectionWidth * .175,
-                                  ),
-                                  MaterialCard(
-                                    material: materials[1],
-                                    cardHeight: screenHeight * .2,
-                                    cardWidth: sectionWidth * .175,
-                                  ),
-                                  MaterialCard(
-                                    material: materials[1],
-                                    cardHeight: screenHeight * .2,
-                                    cardWidth: sectionWidth * .175,
-                                  ),
-                                  MaterialCard(
-                                    material: materials[1],
-                                    cardHeight: screenHeight * .2,
-                                    cardWidth: sectionWidth * .175,
-                                  ),
-                                  MaterialCard(
-                                    material: materials[1],
-                                    cardHeight: screenHeight * .2,
-                                    cardWidth: sectionWidth * .175,
-                                  ),
-                                  MaterialCard(
-                                    material: materials[1],
-                                    cardHeight: screenHeight * .2,
-                                    cardWidth: sectionWidth * .175,
-                                  ),
-                                  MaterialCard(
-                                    material: materials[1],
-                                    cardHeight: screenHeight * .2,
-                                    cardWidth: sectionWidth * .175,
-                                  ),
-                                  MaterialCard(
-                                    material: materials[1],
-                                    cardHeight: screenHeight * .2,
-                                    cardWidth: sectionWidth * .175,
-                                  ),
-                                  MaterialCard(
-                                    material: materials[1],
-                                    cardHeight: screenHeight * .2,
-                                    cardWidth: sectionWidth * .175,
-                                  ),
-                                  MaterialCard(
-                                    material: materials[1],
-                                    cardHeight: screenHeight * .2,
-                                    cardWidth: sectionWidth * .175,
-                                  ),
-                                ],
-                              ),
+                                    cardWidth: widget.sectionWidth * .175,
+                                  )).toList(),
                             ],
-                          ),
-                          if (nextPageExists)
-                            FutureBuilder(
-                              future: Future.delayed(
-                                const Duration(milliseconds: 10),
-                              ).then((value) => true),
-                              builder: (context, snapshot) {
-                                if (!snapshot.hasData) {
-                                  return const SizedBox();
-                                }
-                                return Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: SizedBox(
-                                    width: sectionWidth * .035,
-                                    child: FloatingActionButton(
-                                      backgroundColor: AppColors.black,
-                                      onPressed: () {
-                                        handleNextPage(ref);
-                                      },
-                                      child: const Icon(
-                                        Icons.chevron_right,
-                                        color: Colors.white,
-                                      ),
-                                    ),
+                          );
+                        },
+                      ),
+                      if (ref.watch(nextPageFlag))
+                        FutureBuilder(
+                          future: Future.delayed(
+                            const Duration(milliseconds: 10),
+                          ).then((value) => true),
+                          builder: (context, snapshot) {
+                            if (!snapshot.hasData) {
+                              return const SizedBox();
+                            }
+                            return Align(
+                              alignment: Alignment.centerLeft,
+                              child: SizedBox(
+                                width: widget.sectionWidth * .035,
+                                child: FloatingActionButton(
+                                  backgroundColor: AppColors.black,
+                                  onPressed: () {
+                                    handleNextPage(ref);
+                                  },
+                                  child: const Icon(
+                                    Icons.chevron_right,
+                                    color: Colors.white,
                                   ),
-                                );
-                              },
-                            ),
-                          if (previousPageExists)
-                            FutureBuilder(
-                              future: Future.delayed(
-                                const Duration(milliseconds: 10),
-                              ).then((value) => true),
-                              builder: (context, snapshot) {
-                                if (!snapshot.hasData) {
-                                  return const SizedBox();
-                                }
-                                return Align(
-                                  alignment: Alignment.centerRight,
-                                  child: SizedBox(
-                                    width: sectionWidth * .035,
-                                    child: FloatingActionButton(
-                                      backgroundColor: AppColors.black,
-                                      onPressed: () {
-                                        handlePreviousPage(ref);
-                                      },
-                                      child: const Icon(
-                                        Icons.chevron_left,
-                                        color: Colors.white,
-                                      ),
-                                    ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      if (ref.watch(previousPageFlag))
+                        FutureBuilder(
+                          future: Future.delayed(
+                            const Duration(milliseconds: 10),
+                          ).then((value) => true),
+                          builder: (context, snapshot) {
+                            if (!snapshot.hasData) {
+                              return const SizedBox();
+                            }
+                            return Align(
+                              alignment: Alignment.centerRight,
+                              child: SizedBox(
+                                width: widget.sectionWidth * .035,
+                                child: FloatingActionButton(
+                                  backgroundColor: AppColors.black,
+                                  onPressed: () {
+                                    handlePreviousPage(ref);
+                                  },
+                                  child: const Icon(
+                                    Icons.chevron_left,
+                                    color: Colors.white,
                                   ),
-                                );
-                              },
-                            ),
-                        ],
-                      );
-                    },
-                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                    ],
+                  )
+                      : state is ErrorActiveMaterialsState
+                      ? Container(color: Colors.red)
+                      : Container(color: Colors.yellow),
                 ),
               ],
             ),
@@ -421,40 +263,45 @@ class ActiveMaterialsMainSection extends StatelessWidget {
   }
 
   handleNextPage(WidgetRef ref) {
-    print('next');
-    if (_pageController.page! < 2) {
-      print('current: ${_pageController.page}');
-      _pageController
-          .nextPage(
-        duration: const Duration(milliseconds: 500),
-        curve: Curves.ease,
-      )
-          .whenComplete(() {
-        if (_pageController.page == 2) {
-          ref.read(nextPageFlag.notifier).state = false;
-        }
-        print('new: ${_pageController.page}');
-        ref.read(previousPageFlag.notifier).state = true;
-      });
-    }
+    Future.delayed(const Duration(milliseconds: 10)).whenComplete(() async{
+      //change it back to start from one
+      int page = (_pageController.page! + 1).toInt();
+      if (page < ref.read(totalPagesProvider)) {
+        print('current: ${_pageController.page}');
+        await ref.read(activeMaterialsProvider.notifier).getAllMaterials(
+            page + 1);
+        _pageController.nextPage(
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.ease,
+        ).whenComplete(() {
+          if (page + 1 == ref.read(totalPagesProvider)) {
+            ref.read(nextPageFlag.notifier).state = false;
+          }
+          print('new: ${_pageController.page}');
+          ref.read(previousPageFlag.notifier).state = true;
+        });
+      }
+    });
   }
 
   handlePreviousPage(WidgetRef ref) {
-    print('previous');
-    if (_pageController.page! > 0) {
-      print('current: ${_pageController.page}');
-      _pageController
-          .previousPage(
-        duration: const Duration(milliseconds: 500),
-        curve: Curves.ease,
-      )
-          .whenComplete(() {
-        if (_pageController.page == 0) {
-          ref.read(previousPageFlag.notifier).state = false;
-        }
-        print('new: ${_pageController.page}');
-        ref.read(nextPageFlag.notifier).state = true;
-      });
-    }
+    Future.delayed(const Duration(milliseconds: 10)).whenComplete(() async{
+      //change it back to start from one
+      int page = (_pageController.page! + 1).toInt();
+      if (page > 1) {
+        print('current: ${_pageController.page}');
+        ref.read(activeMaterialsProvider.notifier).getAllMaterials(page - 1);
+        _pageController.previousPage(
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.ease,
+        ).whenComplete(() {
+          if (page - 1 == 1) {
+            ref.read(previousPageFlag.notifier).state = false;
+          }
+          print('new: ${_pageController.page}');
+          ref.read(nextPageFlag.notifier).state = true;
+        });
+      }
+    });
   }
 }
