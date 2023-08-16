@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import './insert_material.dart';
@@ -18,14 +19,20 @@ class ActiveMaterialsMainSection extends ConsumerStatefulWidget {
       _ActiveMaterialsMainSectionState();
 }
 
-class _ActiveMaterialsMainSectionState extends ConsumerState<ActiveMaterialsMainSection> {
+class _ActiveMaterialsMainSectionState extends ConsumerState<ActiveMaterialsMainSection>{
 
-  final PageController _pageController = PageController(initialPage: 0);
+  late final PageController _pageController;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+    _pageController = PageController(initialPage: 0);
+    _pageController.addListener(() {
+      setState(() {
+        ref.read(currentPageProvider.notifier).state = _pageController.page!.round() + 1;
+      });
+    });
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       await ref.read(activeMaterialsProvider.notifier).getAllMaterials(0);
       final state = ref.read(activeMaterialsProvider);
       if(state is LoadedActiveMaterialsState){
@@ -34,6 +41,16 @@ class _ActiveMaterialsMainSectionState extends ConsumerState<ActiveMaterialsMain
         ref.read(totalPagesProvider.notifier).state = state.page.totalPages!;
       }
     });
+    WidgetsBinding.instance.endOfFrame.then((_) {
+      // ref.read(previousPageFlag.notifier).state = false;
+      ref.read(nextPageFlag.notifier).state = true;
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _pageController.dispose();
   }
 
   @override
@@ -176,9 +193,6 @@ class _ActiveMaterialsMainSectionState extends ConsumerState<ActiveMaterialsMain
                     children: [
                       PageView.builder(
                         controller: _pageController,
-                        onPageChanged: (value) {
-                          ref.read(currentPageProvider.notifier).state = value;
-                        },
                         itemBuilder: (_, __) {
                           return Wrap(
                             runSpacing: screenHeight * .025,
@@ -194,60 +208,44 @@ class _ActiveMaterialsMainSectionState extends ConsumerState<ActiveMaterialsMain
                           );
                         },
                       ),
-                      if (ref.watch(nextPageFlag))
-                        FutureBuilder(
-                          future: Future.delayed(
-                            const Duration(milliseconds: 10),
-                          ).then((value) => true),
-                          builder: (context, snapshot) {
-                            if (!snapshot.hasData) {
-                              return const SizedBox();
-                            }
-                            return Align(
-                              alignment: Alignment.centerLeft,
-                              child: SizedBox(
-                                width: widget.sectionWidth * .035,
-                                child: FloatingActionButton(
-                                  backgroundColor: AppColors.black,
-                                  onPressed: () {
-                                    handleNextPage(ref);
-                                  },
-                                  child: const Icon(
-                                    Icons.chevron_right,
-                                    color: Colors.white,
-                                  ),
-                                ),
+                      Visibility(
+                        visible: ref.watch(nextPageFlag),
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: SizedBox(
+                            width: widget.sectionWidth * .035,
+                            child: FloatingActionButton(
+                              backgroundColor: AppColors.black,
+                              onPressed: () {
+                                handleNextPage(ref);
+                              },
+                              child: const Icon(
+                                Icons.chevron_right,
+                                color: Colors.white,
                               ),
-                            );
-                          },
+                            ),
+                          ),
                         ),
-                      if (ref.watch(previousPageFlag))
-                        FutureBuilder(
-                          future: Future.delayed(
-                            const Duration(milliseconds: 10),
-                          ).then((value) => true),
-                          builder: (context, snapshot) {
-                            if (!snapshot.hasData) {
-                              return const SizedBox();
-                            }
-                            return Align(
-                              alignment: Alignment.centerRight,
-                              child: SizedBox(
-                                width: widget.sectionWidth * .035,
-                                child: FloatingActionButton(
-                                  backgroundColor: AppColors.black,
-                                  onPressed: () {
-                                    handlePreviousPage(ref);
-                                  },
-                                  child: const Icon(
-                                    Icons.chevron_left,
-                                    color: Colors.white,
-                                  ),
-                                ),
+                      ),
+                      Visibility(
+                        visible: ref.watch(previousPageFlag),
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: SizedBox(
+                            width: widget.sectionWidth * .035,
+                            child: FloatingActionButton(
+                              backgroundColor: AppColors.black,
+                              onPressed: () {
+                                handlePreviousPage(ref);
+                              },
+                              child: const Icon(
+                                Icons.chevron_left,
+                                color: Colors.white,
                               ),
-                            );
-                          },
+                            ),
+                          ),
                         ),
+                      ),
                     ],
                   )
                       : state is ErrorActiveMaterialsState
@@ -263,45 +261,48 @@ class _ActiveMaterialsMainSectionState extends ConsumerState<ActiveMaterialsMain
   }
 
   handleNextPage(WidgetRef ref) {
-    Future.delayed(const Duration(milliseconds: 10)).whenComplete(() async{
-      //change it back to start from one
-      int page = (_pageController.page! + 1).toInt();
-      if (page < ref.read(totalPagesProvider)) {
-        print('current: ${_pageController.page}');
-        await ref.read(activeMaterialsProvider.notifier).getAllMaterials(
-            page + 1);
-        _pageController.nextPage(
-          duration: const Duration(milliseconds: 500),
-          curve: Curves.ease,
-        ).whenComplete(() {
-          if (page + 1 == ref.read(totalPagesProvider)) {
+    print('next');
+    if (ref.read(currentPageProvider) < ref.read(totalPagesProvider)) {
+      int pageBefore = ref.read(currentPageProvider);
+      print('page before is $pageBefore');
+      ref.read(activeMaterialsProvider.notifier).getAllMaterials(pageBefore + 1);
+      _pageController.nextPage(
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.ease,
+      ).whenComplete(() {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          int pageAfter = ref.read(currentPageProvider);
+          print('page after is $pageAfter');
+          print('page controller is ${_pageController.page}');
+          if (pageAfter == ref.read(totalPagesProvider)) {
             ref.read(nextPageFlag.notifier).state = false;
           }
-          print('new: ${_pageController.page}');
           ref.read(previousPageFlag.notifier).state = true;
         });
-      }
-    });
+      });
+    }
   }
 
   handlePreviousPage(WidgetRef ref) {
-    Future.delayed(const Duration(milliseconds: 10)).whenComplete(() async{
-      //change it back to start from one
-      int page = (_pageController.page! + 1).toInt();
-      if (page > 1) {
-        print('current: ${_pageController.page}');
-        ref.read(activeMaterialsProvider.notifier).getAllMaterials(page - 1);
-        _pageController.previousPage(
-          duration: const Duration(milliseconds: 500),
-          curve: Curves.ease,
-        ).whenComplete(() {
-          if (page - 1 == 1) {
+    print('previous');
+    if (ref.read(currentPageProvider) > 1) {
+      int pageBefore = ref.read(currentPageProvider);
+      print('page before is $pageBefore');
+      ref.read(activeMaterialsProvider.notifier).getAllMaterials(pageBefore - 1);
+      _pageController.previousPage(
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.ease,
+      ).whenComplete(() async {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          int pageAfter = ref.read(currentPageProvider);
+          print('page after is $pageAfter');
+          print('page controller is ${_pageController.page}');
+          if (pageAfter == 1) {
             ref.read(previousPageFlag.notifier).state = false;
           }
-          print('new: ${_pageController.page}');
           ref.read(nextPageFlag.notifier).state = true;
         });
-      }
-    });
+      });
+    }
   }
 }
