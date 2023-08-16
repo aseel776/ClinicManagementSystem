@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import './insert_material.dart';
@@ -29,21 +28,15 @@ class _ActiveMaterialsMainSectionState extends ConsumerState<ActiveMaterialsMain
     _pageController = PageController(initialPage: 0);
     _pageController.addListener(() {
       setState(() {
-        ref.read(currentPageProvider.notifier).state = _pageController.page!.round() + 1;
+        ref.read(currentPageProvider.notifier).state = _pageController.page!.toInt() + 1;
       });
     });
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await ref.read(activeMaterialsProvider.notifier).getAllMaterials(0);
+      await ref.read(activeMaterialsProvider.notifier).getAllMaterials(1);
       final state = ref.read(activeMaterialsProvider);
       if(state is LoadedActiveMaterialsState){
-        // -1 because page view starts from zero
-        ref.read(currentPageProvider.notifier).state = state.page.currentPage! - 1;
         ref.read(totalPagesProvider.notifier).state = state.page.totalPages!;
       }
-    });
-    WidgetsBinding.instance.endOfFrame.then((_) {
-      // ref.read(previousPageFlag.notifier).state = false;
-      ref.read(nextPageFlag.notifier).state = true;
     });
   }
 
@@ -217,7 +210,9 @@ class _ActiveMaterialsMainSectionState extends ConsumerState<ActiveMaterialsMain
                             child: FloatingActionButton(
                               backgroundColor: AppColors.black,
                               onPressed: () {
-                                handleNextPage(ref);
+                                WidgetsBinding.instance.addPostFrameCallback((_) async{
+                                  await handleNextPage(ref);
+                                });
                               },
                               child: const Icon(
                                 Icons.chevron_right,
@@ -236,7 +231,9 @@ class _ActiveMaterialsMainSectionState extends ConsumerState<ActiveMaterialsMain
                             child: FloatingActionButton(
                               backgroundColor: AppColors.black,
                               onPressed: () {
-                                handlePreviousPage(ref);
+                                WidgetsBinding.instance.addPostFrameCallback((_) async {
+                                  await handlePreviousPage(ref);
+                                });
                               },
                               child: const Icon(
                                 Icons.chevron_left,
@@ -261,10 +258,8 @@ class _ActiveMaterialsMainSectionState extends ConsumerState<ActiveMaterialsMain
   }
 
   handleNextPage(WidgetRef ref) {
-    print('next');
     if (ref.read(currentPageProvider) < ref.read(totalPagesProvider)) {
       int pageBefore = ref.read(currentPageProvider);
-      print('page before is $pageBefore');
       ref.read(activeMaterialsProvider.notifier).getAllMaterials(pageBefore + 1);
       _pageController.nextPage(
         duration: const Duration(milliseconds: 500),
@@ -272,8 +267,6 @@ class _ActiveMaterialsMainSectionState extends ConsumerState<ActiveMaterialsMain
       ).whenComplete(() {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           int pageAfter = ref.read(currentPageProvider);
-          print('page after is $pageAfter');
-          print('page controller is ${_pageController.page}');
           if (pageAfter == ref.read(totalPagesProvider)) {
             ref.read(nextPageFlag.notifier).state = false;
           }
@@ -284,10 +277,8 @@ class _ActiveMaterialsMainSectionState extends ConsumerState<ActiveMaterialsMain
   }
 
   handlePreviousPage(WidgetRef ref) {
-    print('previous');
     if (ref.read(currentPageProvider) > 1) {
       int pageBefore = ref.read(currentPageProvider);
-      print('page before is $pageBefore');
       ref.read(activeMaterialsProvider.notifier).getAllMaterials(pageBefore - 1);
       _pageController.previousPage(
         duration: const Duration(milliseconds: 500),
@@ -295,8 +286,6 @@ class _ActiveMaterialsMainSectionState extends ConsumerState<ActiveMaterialsMain
       ).whenComplete(() async {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           int pageAfter = ref.read(currentPageProvider);
-          print('page after is $pageAfter');
-          print('page controller is ${_pageController.page}');
           if (pageAfter == 1) {
             ref.read(previousPageFlag.notifier).state = false;
           }
