@@ -131,40 +131,37 @@ Future<ActiveMaterialModel?> showInsertPopUp(BuildContext context) async{
                     ),
                   ),
                   SizedBox(height: containerHeight * .035),
-                  Consumer(
-                    builder: (context, ref, child) {
-                      return MaterialButton(
-                        minWidth: containerWidth * .4,
-                        height: containerHeight * .16,
-                        color: AppColors.black,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        onPressed: () {
-                          ref
-                              .read(activeMaterialsProvider.notifier)
-                              .getAllMaterials(1, items: 1000)
-                              .then(
+                  MaterialButton(
+                    minWidth: containerWidth * .4,
+                    height: containerHeight * .16,
+                    color: AppColors.black,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    onPressed: () {
+                      final containerProvider = ProviderContainer();
+                      containerProvider
+                          .read(activeMaterialsProvider.notifier)
+                          .getAllMaterials(1, items: 1000)
+                          .then(
                             (state) async {
-                              newMaterial.antiMaterials ??= [];
-                              newMaterial.antiMaterials = await antiMaterialsSelect(
-                                context,
-                                newMaterial.antiMaterials!,
-                                state,
-                              );
-                            },
+                          newMaterial.antiMaterials ??= [];
+                          newMaterial.antiMaterials = await antiMaterialsSelect(
+                            context,
+                            newMaterial.antiMaterials!,
+                            state,
                           );
                         },
-                        child: const Text(
-                          'التعارضات الدوائية',
-                          style: TextStyle(
-                            fontFamily: 'Cairo',
-                            fontSize: 16,
-                            color: Colors.white,
-                          ),
-                        ),
                       );
                     },
+                    child: const Text(
+                      'التعارضات الدوائية',
+                      style: TextStyle(
+                        fontFamily: 'Cairo',
+                        fontSize: 16,
+                        color: Colors.white,
+                      ),
+                    ),
                   ),
                   SizedBox(height: containerHeight * .15),
                   Row(

@@ -2,7 +2,6 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../control_states.dart';
 import './active_materials_state.dart';
 import './/core/error/failures.dart';
 import './/core/strings/failures.dart';
@@ -18,7 +17,7 @@ final activeMaterialsProvider = StateNotifierProvider<ActiveMaterialsNotifier, A
 
 class ActiveMaterialsNotifier extends StateNotifier<ActiveMaterialsState> {
   GraphQLClient client;
-  final _providerContainer = ProviderContainer();
+  int pageNumber = 1;
 
   ActiveMaterialsNotifier(this.client) : super(InitActiveMaterialsState());
 
@@ -35,8 +34,6 @@ class ActiveMaterialsNotifier extends StateNotifier<ActiveMaterialsState> {
   }
 
   Future<ActiveMaterialsState> createMaterial(ActiveMaterialModel body) async {
-    // var materials = state.props as List<ActiveMaterialModel>;
-    // materials = [...materials, body];
     state = LoadingActiveMaterialsState();
     final response = await repo.createActiveMaterial(body);
     ActiveMaterialsState newState = await _mapFailureOrSuccessToState(response);
@@ -64,17 +61,16 @@ class ActiveMaterialsNotifier extends StateNotifier<ActiveMaterialsState> {
     return either.fold(
       (failure) => ErrorActiveMaterialsState(message: _mapFailureToMessage(failure)),
       (page) {
-        _providerContainer.read(totalPagesProvider.notifier).state = page.totalPages!;
+        pageNumber = page.currentPage!;
         return LoadedActiveMaterialsState(page: page);
       },
     );
   }
 
   Future<ActiveMaterialsState> _mapFailureOrSuccessToState (Either<Failure, String> either) async{
-    final currentPage = _providerContainer.read(currentPageProvider);
     return either.fold(
       (failure) => ErrorActiveMaterialsState(message: _mapFailureToMessage(failure)),
-      (success) async => await getAllMaterials(currentPage),
+      (success) async => await getAllMaterials(pageNumber),
     );
   }
 

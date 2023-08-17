@@ -20,12 +20,11 @@ class ActiveMaterialsMainSection extends ConsumerStatefulWidget {
 
 class _ActiveMaterialsMainSectionState extends ConsumerState<ActiveMaterialsMainSection>{
 
-  late final PageController _pageController;
+  late final PageController _pageController = PageController(initialPage: 0);
 
   @override
   void initState() {
     super.initState();
-    _pageController = PageController(initialPage: 0);
     _pageController.addListener(() {
       setState(() {
         ref.read(currentPageProvider.notifier).state = _pageController.page!.toInt() + 1;
@@ -168,9 +167,9 @@ class _ActiveMaterialsMainSectionState extends ConsumerState<ActiveMaterialsMain
                       ),
                       onPressed: () {
                         WidgetsBinding.instance.addPostFrameCallback((_) async{
-                          await showInsertPopUp(context).then((newMaterial){
+                          await showInsertPopUp(context).then((newMaterial) async{
                             if(newMaterial != null){
-                              ref.read(activeMaterialsProvider.notifier).createMaterial(newMaterial);
+                              await ref.read(activeMaterialsProvider.notifier).createMaterial(newMaterial);
                             }
                           });
                         });
