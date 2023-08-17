@@ -78,8 +78,7 @@ class ActiveMaterialsRepoImp extends ActiveMaterialsRepo {
     );
 
     if (!response.hasException && response.data != null) {
-      print('sucess from delete');
-      print('success from delete material');
+      print('success from delete');
       return right("Deleted Successfully.");
     } else {
       return left(ServerFailure());
@@ -87,12 +86,12 @@ class ActiveMaterialsRepoImp extends ActiveMaterialsRepo {
   }
 
   @override
-  Future<Either<Failure, MaterialsPaginationModel>> getActiveMaterials(int page) async {
+  Future<Either<Failure, MaterialsPaginationModel>> getActiveMaterials(int page, {int? items}) async {
     final response = await gqlClient.query(
       QueryOptions(
         document: gql(ActiveMaterialsQuery.getActiveMaterials),
         variables: {
-          'item_per_page': 15,
+          'item_per_page': items?? 15,
           'page': page,
         },
       ),

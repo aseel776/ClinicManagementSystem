@@ -1,9 +1,9 @@
 class ActiveMaterialMutation{
 
   static const createActiveMaterials = '''
-  mutation CreateChemicalMaterial (\$input: CreateChemicalMaterialInput!){
+  mutation CreateChemicalMaterial (\$createChemicalMaterialInput: CreateChemicalMaterialInput!){
     createChemicalMaterial(
-        createChemicalMaterialInput: \$input
+        createChemicalMaterialInput: \$createChemicalMaterialInput
     ) {
         id
         name
@@ -16,10 +16,10 @@ class ActiveMaterialMutation{
   ''';
 
   static const updateActiveMaterials = '''
-  mutation UpdateChemicalMaterial (\$id: Int!, \$input: UpdateChemicalMaterialInput!) {
+  mutation UpdateChemicalMaterial (\$id: Int!, \$updateChemicalMaterialInput: UpdateChemicalMaterialInput!) {
     updateChemicalMaterial(
         id: \$id
-        updateChemicalMaterialInput: \$input
+        updateChemicalMaterialInput: \$updateChemicalMaterialInput
     ) {
         id
         name

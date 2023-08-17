@@ -167,7 +167,13 @@ class _ActiveMaterialsMainSectionState extends ConsumerState<ActiveMaterialsMain
                         borderRadius: BorderRadius.circular(10),
                       ),
                       onPressed: () {
-                        showInsertPopUp(context);
+                        WidgetsBinding.instance.addPostFrameCallback((_) async{
+                          await showInsertPopUp(context).then((newMaterial){
+                            if(newMaterial != null){
+                              ref.read(activeMaterialsProvider.notifier).createMaterial(newMaterial);
+                            }
+                          });
+                        });
                       },
                       child: const Text(
                         'إضافة مادة كيميائية',

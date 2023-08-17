@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
-import '../dummy_data.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import './/core/customs.dart';
 import './/core/app_colors.dart';
 import '../../data/models/active_material_model.dart';
+import '../states/active_materials/active_materials_state.dart';
+import '../states/active_materials/active_materials_provider.dart';
 
-void showInsertPopUp(BuildContext context) {
+Future<ActiveMaterialModel?> showInsertPopUp(BuildContext context) async{
 
   double screenWidth = MediaQuery.of(context).size.width;
   double containerWidth = screenWidth * .35;
   double screenHeight = MediaQuery.of(context).size.height;
-  double containerHeight = screenHeight * .6;
+  double containerHeight = screenHeight * .45;
 
   final formKey = GlobalKey<FormState>();
   final titleController = TextEditingController();
@@ -17,8 +19,9 @@ void showInsertPopUp(BuildContext context) {
   String titleError = '';
 
   final newMaterial = ActiveMaterialModel();
+  bool returnMaterial = false;
 
-  showDialog(
+  await showDialog(
     context: context,
     builder: (_) => Dialog(
       shape: RoundedRectangleBorder(
@@ -39,7 +42,7 @@ void showInsertPopUp(BuildContext context) {
               child: Column(
                 children: [
                   SizedBox(
-                    height: containerHeight * .08,
+                    height: containerHeight * .15,
                     child: const Text(
                       'مادة جديدة',
                       style: TextStyle(
@@ -52,7 +55,7 @@ void showInsertPopUp(BuildContext context) {
                   SizedBox(height: containerHeight * .05),
                   SizedBox(
                     width: containerWidth * .8,
-                    height: containerHeight * .075,
+                    height: containerHeight * .1,
                     child: Row(
                       children: [
                         Container(
@@ -71,13 +74,16 @@ void showInsertPopUp(BuildContext context) {
                             key: formKey,
                             child: TextFormField(
                               controller: titleController,
+                              onChanged: (value) {
+                                newMaterial.name = titleController.text;
+                              },
                               decoration: decorateInsertMaterialField(
                                 horizontalPadding: (containerWidth * .8) * .05,
-                                verticalPadding: (containerHeight * .075) * .01,
+                                verticalPadding: (containerHeight * .1) * .01,
                               ),
                               cursorColor: Colors.black.withOpacity(.6),
                               cursorWidth: 1.5,
-                              cursorHeight: (containerHeight * .075) * .9,
+                              cursorHeight: (containerHeight * .1) * .9,
                               style: const TextStyle(
                                 fontFamily: 'Cairo',
                               ),
@@ -87,7 +93,7 @@ void showInsertPopUp(BuildContext context) {
                                     validTitle = false;
                                     titleError = 'هذا الحقل مطلوب!';
                                   });
-                                } else{
+                                } else {
                                   setState(() {
                                     validTitle = true;
                                     titleError = '';
@@ -104,7 +110,7 @@ void showInsertPopUp(BuildContext context) {
                   SizedBox(height: containerHeight * .01),
                   SizedBox(
                     width: containerWidth * .8,
-                    height: containerHeight * .05,
+                    height: containerHeight * .08,
                     child: Row(
                       children: [
                         SizedBox(width: containerWidth * .2),
@@ -125,79 +131,56 @@ void showInsertPopUp(BuildContext context) {
                     ),
                   ),
                   SizedBox(height: containerHeight * .035),
-                  MaterialButton(
-                    minWidth: containerWidth * .4,
-                    height: containerHeight * .125,
-                    color: AppColors.black,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    onPressed: () {
-                      antiMaterialsSelect(context, newMaterial);
+                  Consumer(
+                    builder: (context, ref, child) {
+                      return MaterialButton(
+                        minWidth: containerWidth * .4,
+                        height: containerHeight * .16,
+                        color: AppColors.black,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        onPressed: () {
+                          ref
+                              .read(activeMaterialsProvider.notifier)
+                              .getAllMaterials(1, items: 1000)
+                              .then(
+                            (state) async {
+                              newMaterial.antiMaterials ??= [];
+                              newMaterial.antiMaterials = await antiMaterialsSelect(
+                                context,
+                                newMaterial.antiMaterials!,
+                                state,
+                              );
+                            },
+                          );
+                        },
+                        child: const Text(
+                          'التعارضات الدوائية',
+                          style: TextStyle(
+                            fontFamily: 'Cairo',
+                            fontSize: 16,
+                            color: Colors.white,
+                          ),
+                        ),
+                      );
                     },
-                    child: const Text(
-                      'التعارضات الدوائية',
-                      style: TextStyle(
-                        fontFamily: 'Cairo',
-                        fontSize: 16,
-                        color: Colors.white,
-                      ),
-                    ),
                   ),
-                  SizedBox(height: containerHeight * .04),
-                  MaterialButton(
-                    minWidth: containerWidth * .4,
-                    height: containerHeight * .125,
-                    color: AppColors.black,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    onPressed: () {
-                      // antiDiseasesSelect(context, newMaterial);
-                    },
-                    child: const Text(
-                      'التعارضات المرضية',
-                      style: TextStyle(
-                        fontFamily: 'Cairo',
-                        fontSize: 16,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: containerHeight * .04),
-                  MaterialButton(
-                    minWidth: containerWidth * .4,
-                    height: containerHeight * .125,
-                    color: AppColors.black,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    onPressed: () {
-                      // antiHabitsSelect(context, newMaterial);
-                    },
-                    child: const Text(
-                      'تعارضات أخرى',
-                      style: TextStyle(
-                        fontFamily: 'Cairo',
-                        fontSize: 16,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: containerHeight * .075),
+                  SizedBox(height: containerHeight * .15),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       MaterialButton(
                         minWidth: containerWidth * .25,
-                        height: containerHeight * .1,
+                        height: containerHeight * .15,
                         color: Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
                         onPressed: () {
                           if (formKey.currentState!.validate() && validTitle) {
-                            print('sssssssssss');
+                            returnMaterial = true;
+                            Navigator.of(context).pop();
                           }
                         },
                         child: const Text(
@@ -210,12 +193,12 @@ void showInsertPopUp(BuildContext context) {
                         ),
                       ),
                       SizedBox(
-                        height: containerHeight * .1,
+                        height: containerHeight * .15,
                         width: containerWidth * .1,
                       ),
                       MaterialButton(
                         minWidth: containerWidth * .25,
-                        height: containerHeight * .1,
+                        height: containerHeight * .15,
                         color: Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
@@ -242,19 +225,29 @@ void showInsertPopUp(BuildContext context) {
       ),
     ),
   );
+  if(returnMaterial){
+    return newMaterial;
+  } else{
+    return null;
+  }
 }
 
-void antiMaterialsSelect(BuildContext context, ActiveMaterialModel material) {
-
-  material.antiMaterials ??= [];
-  List<String?> originalOne = material.antiMaterials!.map((e) => e.name).toList();
+Future<List<ActiveMaterialModel>> antiMaterialsSelect(BuildContext context,
+    List<ActiveMaterialModel> antiMaterials, ActiveMaterialsState state) async {
+  List<ActiveMaterialModel> originalOne = antiMaterials.map((e) => e).toList();
+  late List<ActiveMaterialModel> materials;
+  if (state is LoadedActiveMaterialsState) {
+    materials = state.page.materials!.toList();
+  } else {
+    materials = [];
+  }
 
   double screenWidth = MediaQuery.of(context).size.width;
   double containerWidth = screenWidth * .25;
   double screenHeight = MediaQuery.of(context).size.height;
   double containerHeight = screenHeight * .5;
 
-  showDialog(
+  await showDialog(
     context: context,
     barrierDismissible: false,
     builder: (_) => Dialog(
@@ -301,41 +294,41 @@ void antiMaterialsSelect(BuildContext context, ActiveMaterialModel material) {
                   SizedBox(height: containerHeight * .02),
                   SizedBox(
                     height: containerHeight * .655,
-                    child: ListView.builder(
-                      itemCount: materials.length,
-                      itemBuilder: (context, index) {
-                        return CheckboxListTile(
-                          // value: material.antiMaterials!.contains(materials[index].name),
-                          value: true,
-                          onChanged: (value) {
-                            // setState(
-                            //   () {
-                            //     if (value!) {
-                            //       material.antiMaterials!.add(
-                            //           materials[index].name!);
-                            //     } else {
-                            //       material.antiMaterials!.remove(
-                            //           materials[index].name!);
-                            //     }
-                            //   },
-                            // );
-                          },
-                          title: Text(
-                            materials[index].name!,
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontFamily: 'Cairo',
-                              color: AppColors.black,
-                            ),
-                          ),
-                          controlAffinity: ListTileControlAffinity.leading,
-                          activeColor: AppColors.black,
-                          checkboxShape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                        );
-                      },
-                    ),
+                    child: materials.isNotEmpty
+                        ? ListView.builder(
+                            itemCount: materials.length,
+                            itemBuilder: (context, index) {
+                              return CheckboxListTile(
+                                value: antiMaterials.contains(materials[index]),
+                                onChanged: (value) {
+                                  setState(
+                                    () {
+                                      if (value!) {
+                                        antiMaterials.add(materials[index]);
+                                      } else {
+                                        antiMaterials.remove(materials[index]);
+                                      }
+                                    },
+                                  );
+                                },
+                                title: Text(
+                                  materials[index].name!,
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    fontFamily: 'Cairo',
+                                    color: AppColors.black,
+                                  ),
+                                ),
+                                controlAffinity:
+                                    ListTileControlAffinity.leading,
+                                activeColor: AppColors.black,
+                                checkboxShape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                              );
+                            },
+                          )
+                        : const SizedBox(),
                   ),
                   SizedBox(height: containerHeight * .04),
                   SizedBox(
@@ -373,8 +366,8 @@ void antiMaterialsSelect(BuildContext context, ActiveMaterialModel material) {
                             borderRadius: BorderRadius.circular(3),
                           ),
                           onPressed: () {
-                            // material.antiMaterials = originalOne;
-                            Navigator.of(context).pop();
+                            antiMaterials = originalOne.toList();
+                            Navigator.of(context).pop(originalOne);
                           },
                           child: const Text(
                             'إلغاء',
@@ -396,310 +389,5 @@ void antiMaterialsSelect(BuildContext context, ActiveMaterialModel material) {
       ),
     ),
   );
+  return antiMaterials;
 }
-//
-// void antiDiseasesSelect(BuildContext context, ActiveMaterialModel material) {
-//   material.antiDiseases ??= [];
-//   List<String>? originalOne = material.antiDiseases!.toList();
-//
-//   double screenWidth = MediaQuery.of(context).size.width;
-//   double containerWidth = screenWidth * .25;
-//   double screenHeight = MediaQuery.of(context).size.height;
-//   double containerHeight = screenHeight * .5;
-//
-//   showDialog(
-//     context: context,
-//     barrierDismissible: false,
-//     builder: (_) =>
-//         Dialog(
-//           shape: RoundedRectangleBorder(
-//             borderRadius: BorderRadius.circular(5),
-//           ),
-//           child: Directionality(
-//             textDirection: TextDirection.rtl,
-//             child: StatefulBuilder(
-//               builder: (context, setState) {
-//                 return Container(
-//                   width: containerWidth,
-//                   height: containerHeight,
-//                   decoration: BoxDecoration(
-//                     borderRadius: BorderRadius.circular(5),
-//                     color: Colors.white,
-//                   ),
-//                   padding: EdgeInsets.only(
-//                     top: containerHeight * .035,
-//                     bottom: containerHeight * .025,
-//                     left: containerWidth * .05,
-//                     right: containerWidth * .05,
-//                   ),
-//                   child: Column(
-//                     crossAxisAlignment: CrossAxisAlignment.start,
-//                     children: [
-//                       SizedBox(
-//                         height: containerHeight * .1,
-//                         child: const Text(
-//                           'التعارضات المرضية',
-//                           style: TextStyle(
-//                             fontFamily: 'Cairo',
-//                             fontSize: 20,
-//                             color: AppColors.black,
-//                           ),
-//                         ),
-//                       ),
-//                       SizedBox(
-//                         height: containerHeight * .025,
-//                         child: Divider(
-//                           color: Colors.grey[400],
-//                         ),
-//                       ),
-//                       SizedBox(height: containerHeight * .02),
-//                       SizedBox(
-//                         height: containerHeight * .655,
-//                         child: ListView.builder(
-//                           itemCount: materials.length,
-//                           itemBuilder: (context, index) {
-//                             return CheckboxListTile(
-//                               value: material.antiDiseases!.contains(materials[index].name),
-//                               onChanged: (value) {
-//                                 setState(
-//                                       () {
-//                                     if (value!) {
-//                                       material.antiDiseases!.add(
-//                                           materials[index].name!);
-//                                     } else {
-//                                       material.antiDiseases!.remove(
-//                                           materials[index].name!);
-//                                     }
-//                                   },
-//                                 );
-//                               },
-//                               title: Text(
-//                                 materials[index].name!,
-//                                 style: const TextStyle(
-//                                   fontSize: 18,
-//                                   fontFamily: 'Cairo',
-//                                   color: AppColors.black,
-//                                 ),
-//                               ),
-//                               controlAffinity: ListTileControlAffinity.leading,
-//                               activeColor: AppColors.black,
-//                               checkboxShape: RoundedRectangleBorder(
-//                                 borderRadius: BorderRadius.circular(5),
-//                               ),
-//                             );
-//                           },
-//                         ),
-//                       ),
-//                       SizedBox(height: containerHeight * .04),
-//                       SizedBox(
-//                         height: containerHeight * .1,
-//                         child: Row(
-//                           mainAxisAlignment: MainAxisAlignment.center,
-//                           children: [
-//                             MaterialButton(
-//                               minWidth: containerWidth * .3,
-//                               color: Colors.white,
-//                               elevation: 0,
-//                               hoverElevation: 0,
-//                               shape: RoundedRectangleBorder(
-//                                 borderRadius: BorderRadius.circular(3),
-//                               ),
-//                               onPressed: () {
-//                                 Navigator.of(context).pop();
-//                               },
-//                               child: const Text(
-//                                 'تأكيد',
-//                                 style: TextStyle(
-//                                   fontFamily: 'Cairo',
-//                                   fontSize: 16,
-//                                   color: Colors.black,
-//                                 ),
-//                               ),
-//                             ),
-//                             SizedBox(width: containerWidth * .05),
-//                             MaterialButton(
-//                               minWidth: containerWidth * .3,
-//                               color: Colors.white,
-//                               elevation: 0,
-//                               hoverElevation: 0,
-//                               shape: RoundedRectangleBorder(
-//                                 borderRadius: BorderRadius.circular(3),
-//                               ),
-//                               onPressed: () {
-//                                 material.antiDiseases = originalOne;
-//                                 Navigator.of(context).pop();
-//                               },
-//                               child: const Text(
-//                                 'إلغاء',
-//                                 style: TextStyle(
-//                                   fontFamily: 'Cairo',
-//                                   fontSize: 16,
-//                                   color: Colors.black,
-//                                 ),
-//                               ),
-//                             ),
-//                           ],
-//                         ),
-//                       ),
-//                     ],
-//                   ),
-//                 );
-//               },
-//             ),
-//           ),
-//         ),
-//   );
-// }
-//
-// void antiHabitsSelect(BuildContext context, ActiveMaterialModel material) {
-//   material.antiHabits ??= [];
-//   List<String>? originalOne = material.antiHabits!.toList();
-//
-//   double screenWidth = MediaQuery.of(context).size.width;
-//   double containerWidth = screenWidth * .25;
-//   double screenHeight = MediaQuery.of(context).size.height;
-//   double containerHeight = screenHeight * .5;
-//
-//   showDialog(
-//     context: context,
-//     barrierDismissible: false,
-//     builder: (_) =>
-//         Dialog(
-//           shape: RoundedRectangleBorder(
-//             borderRadius: BorderRadius.circular(5),
-//           ),
-//           child: Directionality(
-//             textDirection: TextDirection.rtl,
-//             child: StatefulBuilder(
-//               builder: (context, setState) {
-//                 return Container(
-//                   width: containerWidth,
-//                   height: containerHeight,
-//                   decoration: BoxDecoration(
-//                     borderRadius: BorderRadius.circular(5),
-//                     color: Colors.white,
-//                   ),
-//                   padding: EdgeInsets.only(
-//                     top: containerHeight * .035,
-//                     bottom: containerHeight * .025,
-//                     left: containerWidth * .05,
-//                     right: containerWidth * .05,
-//                   ),
-//                   child: Column(
-//                     crossAxisAlignment: CrossAxisAlignment.start,
-//                     children: [
-//                       SizedBox(
-//                         height: containerHeight * .1,
-//                         child: const Text(
-//                           'تعارضات أخرى',
-//                           style: TextStyle(
-//                             fontFamily: 'Cairo',
-//                             fontSize: 20,
-//                             color: AppColors.black,
-//                           ),
-//                         ),
-//                       ),
-//                       SizedBox(
-//                         height: containerHeight * .025,
-//                         child: Divider(
-//                           color: Colors.grey[400],
-//                         ),
-//                       ),
-//                       SizedBox(height: containerHeight * .02),
-//                       SizedBox(
-//                         height: containerHeight * .655,
-//                         child: ListView.builder(
-//                           itemCount: materials.length,
-//                           itemBuilder: (context, index) {
-//                             return CheckboxListTile(
-//                               value: material.antiHabits!.contains(materials[index].name),
-//                               onChanged: (value) {
-//                                 setState(
-//                                       () {
-//                                     if (value!) {
-//                                       material.antiHabits!.add(
-//                                           materials[index].name!);
-//                                     } else {
-//                                       material.antiHabits!.remove(
-//                                           materials[index].name!);
-//                                     }
-//                                   },
-//                                 );
-//                               },
-//                               title: Text(
-//                                 materials[index].name!,
-//                                 style: const TextStyle(
-//                                   fontSize: 18,
-//                                   fontFamily: 'Cairo',
-//                                   color: AppColors.black,
-//                                 ),
-//                               ),
-//                               controlAffinity: ListTileControlAffinity.leading,
-//                               activeColor: AppColors.black,
-//                               checkboxShape: RoundedRectangleBorder(
-//                                 borderRadius: BorderRadius.circular(5),
-//                               ),
-//                             );
-//                           },
-//                         ),
-//                       ),
-//                       SizedBox(height: containerHeight * .04),
-//                       SizedBox(
-//                         height: containerHeight * .1,
-//                         child: Row(
-//                           mainAxisAlignment: MainAxisAlignment.center,
-//                           children: [
-//                             MaterialButton(
-//                               minWidth: containerWidth * .3,
-//                               color: Colors.white,
-//                               elevation: 0,
-//                               hoverElevation: 0,
-//                               shape: RoundedRectangleBorder(
-//                                 borderRadius: BorderRadius.circular(3),
-//                               ),
-//                               onPressed: () {
-//                                 Navigator.of(context).pop();
-//                               },
-//                               child: const Text(
-//                                 'تأكيد',
-//                                 style: TextStyle(
-//                                   fontFamily: 'Cairo',
-//                                   fontSize: 16,
-//                                   color: Colors.black,
-//                                 ),
-//                               ),
-//                             ),
-//                             SizedBox(width: containerWidth * .05),
-//                             MaterialButton(
-//                               minWidth: containerWidth * .3,
-//                               color: Colors.white,
-//                               elevation: 0,
-//                               hoverElevation: 0,
-//                               shape: RoundedRectangleBorder(
-//                                 borderRadius: BorderRadius.circular(3),
-//                               ),
-//                               onPressed: () {
-//                                 material.antiHabits = originalOne;
-//                                 Navigator.of(context).pop();
-//                               },
-//                               child: const Text(
-//                                 'إلغاء',
-//                                 style: TextStyle(
-//                                   fontFamily: 'Cairo',
-//                                   fontSize: 16,
-//                                   color: Colors.black,
-//                                 ),
-//                               ),
-//                             ),
-//                           ],
-//                         ),
-//                       ),
-//                     ],
-//                   ),
-//                 );
-//               },
-//             ),
-//           ),
-//         ),
-//   );
-// }

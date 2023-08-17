@@ -1,17 +1,15 @@
-import 'dart:convert';
+import 'package:equatable/equatable.dart';
 
-class ActiveMaterialModel{
+class ActiveMaterialModel extends Equatable{
   int? id;
   String? name;
   //change type into ActiveMaterialModel
   List<ActiveMaterialModel>? antiMaterials;
-  //change type into DiseaseModel
-  List<String>? antiDiseases;
-  //change type into BadHabitModel
-  List<String>? antiHabits;
 
 
-  ActiveMaterialModel({this.id, this.name, this.antiMaterials, this.antiDiseases, this.antiHabits});
+
+
+  ActiveMaterialModel({this.id, this.name, this.antiMaterials});
 
   ActiveMaterialModel.fromJson(Map<String, dynamic> source){
     id = source['id'];
@@ -27,4 +25,7 @@ class ActiveMaterialModel{
     //encoding
     return string;
   }
+
+  @override
+  List<Object?> get props => [id, name, antiMaterials];
 }
