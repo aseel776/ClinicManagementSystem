@@ -20,29 +20,20 @@ class ActiveMaterialsMainSection extends ConsumerStatefulWidget {
 
 class _ActiveMaterialsMainSectionState extends ConsumerState<ActiveMaterialsMainSection>{
 
-  late final PageController _pageController = PageController(initialPage: 0);
+  late final PageController _pageController = PageController(initialPage: 0, keepPage: true);
 
   @override
   void initState() {
     super.initState();
-    _pageController.addListener(() {
-      setState(() {
-        ref.read(currentPageProvider.notifier).state = _pageController.page!.toInt() + 1;
-      });
-    });
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await ref.read(activeMaterialsProvider.notifier).getAllMaterials(1);
-      final state = ref.read(activeMaterialsProvider);
-      if(state is LoadedActiveMaterialsState){
-        ref.read(totalPagesProvider.notifier).state = state.page.totalPages!;
-      }
+      await ref.read(activeMaterialsProvider.notifier).getAllMaterials(1, ref: ref);
     });
   }
 
   @override
   void dispose() {
-    super.dispose();
     _pageController.dispose();
+    super.dispose();
   }
 
   @override
@@ -170,6 +161,8 @@ class _ActiveMaterialsMainSectionState extends ConsumerState<ActiveMaterialsMain
                           await showInsertPopUp(context).then((newMaterial) async{
                             if(newMaterial != null){
                               await ref.read(activeMaterialsProvider.notifier).createMaterial(newMaterial);
+                              int page = ref.read(currentPageProvider);
+                              await ref.read(activeMaterialsProvider.notifier).getAllMaterials(page, ref: ref);
                             }
                           });
                         });
@@ -214,10 +207,11 @@ class _ActiveMaterialsMainSectionState extends ConsumerState<ActiveMaterialsMain
                             width: widget.sectionWidth * .035,
                             child: FloatingActionButton(
                               backgroundColor: AppColors.black,
-                              onPressed: () {
-                                WidgetsBinding.instance.addPostFrameCallback((_) async{
-                                  await handleNextPage(ref);
-                                });
+                              onPressed: () async{
+                                int totalPages = ref.read(totalPagesProvider);
+                                int page = ref.read(currentPageProvider);
+                                await handleNextPage(page, totalPages);
+                                print('afterrrrrrrrrrr');
                               },
                               child: const Icon(
                                 Icons.chevron_right,
@@ -235,10 +229,10 @@ class _ActiveMaterialsMainSectionState extends ConsumerState<ActiveMaterialsMain
                             width: widget.sectionWidth * .035,
                             child: FloatingActionButton(
                               backgroundColor: AppColors.black,
-                              onPressed: () {
-                                WidgetsBinding.instance.addPostFrameCallback((_) async {
-                                  await handlePreviousPage(ref);
-                                });
+                              onPressed: () async{
+                                int page = ref.read(currentPageProvider);
+                                await handlePreviousPage(page);
+                                print('afterrrrrrrrrrr');
                               },
                               child: const Icon(
                                 Icons.chevron_left,
@@ -262,41 +256,34 @@ class _ActiveMaterialsMainSectionState extends ConsumerState<ActiveMaterialsMain
     );
   }
 
-  handleNextPage(WidgetRef ref) async{
-    if (ref.read(currentPageProvider) < ref.read(totalPagesProvider)) {
-      int pageBefore = ref.read(currentPageProvider);
-      _pageController.nextPage(
+  handleNextPage(int currentPage, int totalPages) async{
+    if (currentPage < totalPages) {
+      await _pageController.nextPage(
         duration: const Duration(milliseconds: 500),
-        curve: Curves.ease,
-      ).whenComplete(() {
-        WidgetsBinding.instance.addPostFrameCallback((_) async{
-          await ref.read(activeMaterialsProvider.notifier).getAllMaterials(pageBefore + 1);
-          int pageAfter = ref.read(currentPageProvider);
-          if (pageAfter == ref.read(totalPagesProvider)) {
-            ref.read(nextPageFlag.notifier).state = false;
-          }
-          ref.read(previousPageFlag.notifier).state = true;
-        });
-      });
+        curve: Curves.easeInOut,
+      );
+      ref.read(currentPageProvider.notifier).state++;
+      ref.read(previousPageFlag.notifier).state = true;
+      await ref.read(activeMaterialsProvider.notifier).getAllMaterials(currentPage + 1, ref: ref);
+      if(currentPage + 1 == totalPages){
+        ref.read(nextPageFlag.notifier).state = false;
+      }
     }
   }
 
-  handlePreviousPage(WidgetRef ref) async{
-    if (ref.read(currentPageProvider) > 1) {
-      int pageBefore = ref.read(currentPageProvider);
-      _pageController.previousPage(
+  handlePreviousPage(int currentPage) async{
+    if (currentPage > 1) {
+      await _pageController.previousPage(
         duration: const Duration(milliseconds: 500),
-        curve: Curves.ease,
-      ).whenComplete(() async {
-        WidgetsBinding.instance.addPostFrameCallback((_) async{
-          await ref.read(activeMaterialsProvider.notifier).getAllMaterials(pageBefore - 1);
-          int pageAfter = ref.read(currentPageProvider);
-          if (pageAfter == 1) {
-            ref.read(previousPageFlag.notifier).state = false;
-          }
-          ref.read(nextPageFlag.notifier).state = true;
-        });
-      });
+        curve: Curves.easeOut,
+      );
+      print('previous PAGE');
+      ref.read(currentPageProvider.notifier).state--;
+      ref.read(nextPageFlag.notifier).state = true;
+      await ref.watch(activeMaterialsProvider.notifier).getAllMaterials(currentPage - 1, ref: ref);
+      if (currentPage - 1 == 1) {
+        ref.read(previousPageFlag.notifier).state = false;
+      }
     }
   }
 }

@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../control_states.dart';
 import './active_materials_state.dart';
 import './/core/error/failures.dart';
 import './/core/strings/failures.dart';
@@ -24,35 +25,40 @@ class ActiveMaterialsNotifier extends StateNotifier<ActiveMaterialsState> {
   late final ValueNotifier<GraphQLClient> clientNotifier = ValueNotifier<GraphQLClient>(client);
   late final ActiveMaterialsRepoImp repo = ActiveMaterialsRepoImp(client);
 
-  Future<ActiveMaterialsState> getAllMaterials(int page, {int? items}) async {
+  Future<void> getAllMaterials(int page, {int? items, WidgetRef? ref}) async {
+    items ??= 15;
     state = LoadingActiveMaterialsState();
-    final response = await repo.getActiveMaterials(page);
+    final response = await repo.getActiveMaterials(page, items: items);
     ActiveMaterialsState newState = _mapFailureOrMaterialsToState(response);
     state = newState;
-    return state;
+    if(state is LoadedActiveMaterialsState && ref != null){
+      final pageModel = state.props[0] as MaterialsPaginationModel;
+      print('lennnnnnnnnn is ${pageModel.materials!.length}');
+      ref.read(totalPagesProvider.notifier).state = pageModel.totalPages!.toInt();
+    }
+    // return state;
   }
 
-  Future<ActiveMaterialsState> createMaterial(ActiveMaterialModel body) async {
+  Future<void> createMaterial(ActiveMaterialModel body) async {
     state = LoadingActiveMaterialsState();
     final response = await repo.createActiveMaterial(body);
     ActiveMaterialsState newState = await _mapFailureOrSuccessToState(response);
     state = newState;
-    return state;
+    // return state;
   }
 
-  Future<ActiveMaterialsState> deleteMaterial(int materialId) async {
+  Future<void> deleteMaterial(int materialId) async {
     state = LoadingActiveMaterialsState();
     final response = await repo.deleteActiveMaterial(materialId);
     ActiveMaterialsState newState = await _mapFailureOrSuccessToState(response);
     state = newState;
-    return state;
+    // return state;
   }
 
   ActiveMaterialsState _mapFailureOrMaterialsToState(Either<Failure, MaterialsPaginationModel> either) {
     return either.fold(
       (failure) => ErrorActiveMaterialsState(message: _mapFailureToMessage(failure)),
       (page) {
-        pageNumber = page.currentPage!;
         return LoadedActiveMaterialsState(page: page);
       },
     );
@@ -61,7 +67,7 @@ class ActiveMaterialsNotifier extends StateNotifier<ActiveMaterialsState> {
   Future<ActiveMaterialsState> _mapFailureOrSuccessToState (Either<Failure, String> either) async{
     return either.fold(
       (failure) => ErrorActiveMaterialsState(message: _mapFailureToMessage(failure)),
-      (success) async => await getAllMaterials(pageNumber),
+      (success) => SuccessActiveMaterialsState(message: success),
     );
   }
 

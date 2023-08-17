@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../widgets/update_material.dart';
-import '../states/active_materials/active_materials_provider.dart';
 import './/core/app_colors.dart';
 import '../../data/models/active_material_model.dart';
 

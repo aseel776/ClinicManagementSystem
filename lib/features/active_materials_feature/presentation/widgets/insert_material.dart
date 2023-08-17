@@ -149,7 +149,7 @@ Future<ActiveMaterialModel?> showInsertPopUp(BuildContext context) async{
                           newMaterial.antiMaterials = await antiMaterialsSelect(
                             context,
                             newMaterial.antiMaterials!,
-                            state,
+                            containerProvider.read(activeMaterialsProvider),
                           );
                         },
                       );
