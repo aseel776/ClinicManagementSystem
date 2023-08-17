@@ -262,15 +262,15 @@ class _ActiveMaterialsMainSectionState extends ConsumerState<ActiveMaterialsMain
     );
   }
 
-  handleNextPage(WidgetRef ref) {
+  handleNextPage(WidgetRef ref) async{
     if (ref.read(currentPageProvider) < ref.read(totalPagesProvider)) {
       int pageBefore = ref.read(currentPageProvider);
-      ref.read(activeMaterialsProvider.notifier).getAllMaterials(pageBefore + 1);
       _pageController.nextPage(
         duration: const Duration(milliseconds: 500),
         curve: Curves.ease,
       ).whenComplete(() {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
+        WidgetsBinding.instance.addPostFrameCallback((_) async{
+          await ref.read(activeMaterialsProvider.notifier).getAllMaterials(pageBefore + 1);
           int pageAfter = ref.read(currentPageProvider);
           if (pageAfter == ref.read(totalPagesProvider)) {
             ref.read(nextPageFlag.notifier).state = false;
@@ -281,15 +281,15 @@ class _ActiveMaterialsMainSectionState extends ConsumerState<ActiveMaterialsMain
     }
   }
 
-  handlePreviousPage(WidgetRef ref) {
+  handlePreviousPage(WidgetRef ref) async{
     if (ref.read(currentPageProvider) > 1) {
       int pageBefore = ref.read(currentPageProvider);
-      ref.read(activeMaterialsProvider.notifier).getAllMaterials(pageBefore - 1);
       _pageController.previousPage(
         duration: const Duration(milliseconds: 500),
         curve: Curves.ease,
       ).whenComplete(() async {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
+        WidgetsBinding.instance.addPostFrameCallback((_) async{
+          await ref.read(activeMaterialsProvider.notifier).getAllMaterials(pageBefore - 1);
           int pageAfter = ref.read(currentPageProvider);
           if (pageAfter == 1) {
             ref.read(previousPageFlag.notifier).state = false;
