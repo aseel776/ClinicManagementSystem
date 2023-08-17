@@ -250,9 +250,9 @@ class _ActiveMaterialsMainSectionState extends ConsumerState<ActiveMaterialsMain
                       ),
                     ],
                   )
-                      : state is ErrorActiveMaterialsState
-                      ? Container(color: Colors.red)
-                      : Container(color: Colors.yellow),
+                      : state is LoadingActiveMaterialsState
+                      ? Container(color: Colors.yellow)
+                      : Container(color: Colors.red),
                 ),
               ],
             ),
