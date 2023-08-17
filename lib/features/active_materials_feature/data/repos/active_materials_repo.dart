@@ -7,17 +7,9 @@ import '../documents/get/active_material_query.dart';
 import '../documents/cud/active_material_mutation.dart';
 
 abstract class ActiveMaterialsRepo {
-  Future<Either<Failure, String>> createActiveMaterial(
-      ActiveMaterialModel body);
-
-  Future<Either<Failure, String>> updateActiveMaterial(
-      ActiveMaterialModel body);
-
+  Future<Either<Failure, String>> createActiveMaterial(ActiveMaterialModel body);
   Future<Either<Failure, String>> deleteActiveMaterial(int id);
-
   Future<Either<Failure, MaterialsPaginationModel>> getActiveMaterials(int page);
-
-  Future<Either<Failure, ActiveMaterialModel>> getActiveMaterial(int id);
 }
 
 class ActiveMaterialsRepoImp extends ActiveMaterialsRepo {
@@ -41,28 +33,6 @@ class ActiveMaterialsRepoImp extends ActiveMaterialsRepo {
     if (!response.hasException && response.data != null) {
       print('success from creation');
       return right("Created Successfully.");
-    } else {
-      return left(ServerFailure());
-    }
-  }
-
-  @override
-  Future<Either<Failure, String>> updateActiveMaterial(ActiveMaterialModel body) async {
-    final response = await gqlClient.query(
-      QueryOptions(
-        document: gql(ActiveMaterialMutation.updateActiveMaterials),
-        variables: {
-          'id': body.id,
-          'updateChemicalMaterialInput': {
-            'name': body.name,
-            'chemical_material_id': body.antiMaterials!.map((m) => m.id).toList(),
-          }
-        },
-      ),
-    );
-    if (!response.hasException && response.data != null) {
-      print('success from update');
-      return right("Updated Successfully.");
     } else {
       return left(ServerFailure());
     }
@@ -113,25 +83,6 @@ class ActiveMaterialsRepoImp extends ActiveMaterialsRepo {
         totalPages: totalPages,
       );
       return right(paginationModel);
-    } else {
-      return left(ServerFailure());
-    }
-  }
-
-  //move to another place
-  @override
-  Future<Either<Failure, ActiveMaterialModel>> getActiveMaterial(int id) async {
-    final response = await gqlClient.query(
-      QueryOptions(
-        document: gql(ActiveMaterialsQuery.getActiveMaterial),
-        variables: {'id': id},
-      ),
-    );
-
-    if (!response.hasException && response.data != null) {
-      print('success from get material');
-      Map<String, dynamic> src = response.data!['chemicalMaterial'];
-      return right(ActiveMaterialModel.fromJson(src));
     } else {
       return left(ServerFailure());
     }

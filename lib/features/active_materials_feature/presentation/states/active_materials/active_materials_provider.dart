@@ -16,13 +16,12 @@ final activeMaterialsProvider = StateNotifierProvider<ActiveMaterialsNotifier, A
 });
 
 class ActiveMaterialsNotifier extends StateNotifier<ActiveMaterialsState> {
-  GraphQLClient client;
-  int pageNumber = 1;
 
   ActiveMaterialsNotifier(this.client) : super(InitActiveMaterialsState());
 
+  GraphQLClient client;
+  int pageNumber = 1;
   late final ValueNotifier<GraphQLClient> clientNotifier = ValueNotifier<GraphQLClient>(client);
-
   late final ActiveMaterialsRepoImp repo = ActiveMaterialsRepoImp(client);
 
   Future<ActiveMaterialsState> getAllMaterials(int page, {int? items}) async {
@@ -36,14 +35,6 @@ class ActiveMaterialsNotifier extends StateNotifier<ActiveMaterialsState> {
   Future<ActiveMaterialsState> createMaterial(ActiveMaterialModel body) async {
     state = LoadingActiveMaterialsState();
     final response = await repo.createActiveMaterial(body);
-    ActiveMaterialsState newState = await _mapFailureOrSuccessToState(response);
-    state = newState;
-    return state;
-  }
-
-  Future<ActiveMaterialsState> updateMaterial(ActiveMaterialModel body) async {
-    state = LoadingActiveMaterialsState();
-    final response = await repo.updateActiveMaterial(body);
     ActiveMaterialsState newState = await _mapFailureOrSuccessToState(response);
     state = newState;
     return state;
