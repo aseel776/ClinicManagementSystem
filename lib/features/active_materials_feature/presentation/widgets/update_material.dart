@@ -3,15 +3,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import './/core/customs.dart';
 import './/core/app_colors.dart';
 import '../states/active_materials/active_materials_state.dart';
+import '../states/active_material/active_material_provider.dart';
 import '../states/active_materials/active_materials_provider.dart';
 import '../../data/models/active_material_model.dart';
 
 
-////////////FETCH MODEL FROM SERVER THEN CONTINUE SORTING
-
-Future<void> showUpdatePopUp(BuildContext context, ActiveMaterialModel material) async{
+Future<bool> showUpdatePopUp(BuildContext context, ActiveMaterialModel material) async{
   double screenWidth = MediaQuery.of(context).size.width;
-  double containerWidth = screenWidth * .35;
+  double containerWidth = screenWidth * .3;
   double screenHeight = MediaQuery.of(context).size.height;
   double containerHeight = screenHeight * .45;
 
@@ -19,6 +18,8 @@ Future<void> showUpdatePopUp(BuildContext context, ActiveMaterialModel material)
   final titleController = TextEditingController(text: material.name);
   bool validTitle = true;
   String titleError = '';
+  bool updateStatus = false;
+  List<ActiveMaterialModel> originalOne = material.antiMaterials!.toList();
 
   await showDialog(
     context: context,
@@ -132,11 +133,8 @@ Future<void> showUpdatePopUp(BuildContext context, ActiveMaterialModel material)
                         ),
                         onPressed: () {
                           final containerProvider = ProviderContainer();
-                          containerProvider
-                              .read(activeMaterialsProvider.notifier)
-                              .getAllMaterials(1, items: 1000)
-                              .then(
-                                (state) async {
+                          containerProvider.read(activeMaterialsProvider.notifier).getAllMaterials(1, items: 1000)
+                              .then((_) async {
                               material.antiMaterials ??= [];
                               material.antiMaterials =
                               await antiMaterialsSelect(
@@ -161,26 +159,32 @@ Future<void> showUpdatePopUp(BuildContext context, ActiveMaterialModel material)
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          MaterialButton(
-                            minWidth: containerWidth * .25,
-                            height: containerHeight * .15,
-                            color: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            onPressed: () {
-                              if (formKey.currentState!.validate() && validTitle) {
-                                print('sssssssssss');
-                              }
+                          Consumer(
+                            builder: (context, ref, child) {
+                              return MaterialButton(
+                                minWidth: containerWidth * .25,
+                                height: containerHeight * .15,
+                                color: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                onPressed: () async{
+                                  if (formKey.currentState!.validate() && validTitle) {
+                                    updateStatus = true;
+                                    Navigator.of(context).pop();
+                                    await ref.read(activeMaterialProvider.notifier).updateMaterial(material);
+                                  }
+                                },
+                                child: const Text(
+                                  'حفظ',
+                                  style: TextStyle(
+                                    fontFamily: 'Cairo',
+                                    fontSize: 16,
+                                    color: AppColors.black,
+                                  ),
+                                ),
+                              );
                             },
-                            child: const Text(
-                              'حفظ',
-                              style: TextStyle(
-                                fontFamily: 'Cairo',
-                                fontSize: 16,
-                                color: AppColors.black,
-                              ),
-                            ),
                           ),
                           SizedBox(
                             height: containerHeight * .15,
@@ -194,6 +198,7 @@ Future<void> showUpdatePopUp(BuildContext context, ActiveMaterialModel material)
                               borderRadius: BorderRadius.circular(10),
                             ),
                             onPressed: () {
+                              material.antiMaterials = originalOne;
                               Navigator.of(context).pop();
                             },
                             child: const Text(
@@ -216,6 +221,7 @@ Future<void> showUpdatePopUp(BuildContext context, ActiveMaterialModel material)
         );
     },
   );
+  return updateStatus;
 }
 
 Future<List<ActiveMaterialModel>> antiMaterialsSelect(int id, BuildContext context,
@@ -226,7 +232,7 @@ Future<List<ActiveMaterialModel>> antiMaterialsSelect(int id, BuildContext conte
   if (state is LoadedActiveMaterialsState) {
     materials = state.page.materials!.toList();
     materials.removeWhere((element) => element.id == id);
-    sortMaterials(materials, antiMaterials);
+    materials = sortMaterials(materials, antiMaterials);
   } else {
     materials = [];
   }
@@ -317,7 +323,16 @@ Future<List<ActiveMaterialModel>> antiMaterialsSelect(int id, BuildContext conte
                             );
                           },
                         )
-                            : const SizedBox(),
+                            : const Center(
+                          child: Text(
+                            'لا يوجد مواد كيميائية بعد',
+                            style: TextStyle(
+                              fontFamily: 'Cairo',
+                              fontSize: 18,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ),
                       ),
                       SizedBox(height: containerHeight * .04),
                       SizedBox(
@@ -383,14 +398,11 @@ Future<List<ActiveMaterialModel>> antiMaterialsSelect(int id, BuildContext conte
 
 
 List<ActiveMaterialModel> sortMaterials(List<ActiveMaterialModel> materials, List<ActiveMaterialModel> antiMaterials){
-  print(antiMaterials.contains(materials[0]));
   List<ActiveMaterialModel> sortedMaterials = materials.toList();
   sortedMaterials.sort((a, b) {
     if (antiMaterials.contains(a) && !antiMaterials.contains(b)) {
-      print('aaaaaaaaaaaaaaaaaaaaaaaa ${a.name}');
       return -1;
     } else if (!antiMaterials.contains(a) && antiMaterials.contains(b)) {
-      print('bbbbbbbbbbbbbbbbbbbbbbbb ${b.name}');
       return 1;
     } else {
       return 0;

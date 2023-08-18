@@ -163,7 +163,11 @@ Future<void> showDetailsPopUp(BuildContext context, int id) async {
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   onPressed: () async {
-                                    await showUpdatePopUp(context, state.material);
+                                    await showUpdatePopUp(context, state.material).then((value) async{
+                                      if(value){
+                                        await ref.read(activeMaterialProvider.notifier).getMaterial(id);
+                                      }
+                                    });
                                   },
                                   child: const Text(
                                     'تعديل',

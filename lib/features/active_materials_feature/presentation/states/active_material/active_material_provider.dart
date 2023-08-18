@@ -32,7 +32,7 @@ class ActiveMaterialNotifier extends StateNotifier<ActiveMaterialState> {
   Future<void> updateMaterial(ActiveMaterialModel body) async {
     state = LoadingActiveMaterialState();
     final response = await repo.updateActiveMaterial(body);
-    ActiveMaterialState newState = await _mapFailureOrSuccessToState(response, body.id!);
+    ActiveMaterialState newState = _mapFailureOrSuccessToState(response, body.id!);
     state = newState;
   }
 
