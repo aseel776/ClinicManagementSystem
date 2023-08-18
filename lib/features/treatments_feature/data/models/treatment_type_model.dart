@@ -1,12 +1,15 @@
-class TreatmentTypeModel{
+import 'package:equatable/equatable.dart';
 
-  int? id;
-  String? name;
+class TreatmentTypeModel extends Equatable{
+
+  late final int? id;
+  late final String? name;
 
   TreatmentTypeModel({this.id, this.name});
 
-  TreatmentTypeModel.fromJson(String source){
-    //decoding
+  TreatmentTypeModel.fromJson(Map<String, dynamic> source){
+    id = source['id'];
+    name = source['name'];
   }
 
   String toJson(){
@@ -14,5 +17,8 @@ class TreatmentTypeModel{
     //encoding
     return string;
   }
+
+  @override
+  List<Object?> get props => [id, name];
 
 }

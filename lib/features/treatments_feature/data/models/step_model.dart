@@ -5,7 +5,7 @@ class StepModel{
 
   StepModel({this.id, this.name});
 
-  StepModel.fromJson(String source){
+  StepModel.fromJson(Map<String, dynamic> source){
     //decoding
   }
 
