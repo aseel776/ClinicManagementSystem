@@ -1,7 +1,14 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 //controlling pagination
-final previousPageFlag = StateProvider<bool>((ref) => false);
-final nextPageFlag = StateProvider<bool>((ref) => true);
 final currentPageProvider = StateProvider((ref) => 1);
 final totalPagesProvider = StateProvider((ref) => 1);
+final previousPageFlag = StateProvider<bool>((ref) {
+  int page = ref.watch(currentPageProvider);
+  return page > 1;
+});
+final nextPageFlag = StateProvider<bool>((ref) {
+  int page = ref.watch(currentPageProvider);
+  int totalPages = ref.watch(totalPagesProvider);
+  return page < totalPages;
+});

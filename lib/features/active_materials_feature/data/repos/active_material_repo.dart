@@ -21,6 +21,7 @@ class ActiveMaterialRepoImp extends ActiveMaterialRepo {
       QueryOptions(
         document: gql(ActiveMaterialsQuery.getActiveMaterial),
         variables: {'id': id},
+        fetchPolicy: FetchPolicy.noCache,
       ),
     );
 
@@ -42,11 +43,10 @@ class ActiveMaterialRepoImp extends ActiveMaterialRepo {
           'id': body.id,
           'updateChemicalMaterialInput': {
             'name': body.name,
-            'chemical_material_id': body.antiMaterials!
-                .map((m) => m.id)
-                .toList(),
-          }
+            'chemical_material_id': body.antiMaterials!.map((m) => m.id).toList(),
+          },
         },
+        fetchPolicy: FetchPolicy.noCache,
       ),
     );
     if (!response.hasException && response.data != null) {

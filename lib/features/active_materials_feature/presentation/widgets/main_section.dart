@@ -1,3 +1,4 @@
+import 'package:clinic_management_system/features/active_materials_feature/data/models/active_material_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import './insert_material.dart';
@@ -156,16 +157,13 @@ class _ActiveMaterialsMainSectionState extends ConsumerState<ActiveMaterialsMain
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      onPressed: () {
-                        WidgetsBinding.instance.addPostFrameCallback((_) async{
-                          await showInsertPopUp(context).then((newMaterial) async{
-                            if(newMaterial != null){
-                              await ref.read(activeMaterialsProvider.notifier).createMaterial(newMaterial);
-                              int page = ref.read(currentPageProvider);
-                              await ref.read(activeMaterialsProvider.notifier).getAllMaterials(page, ref: ref);
-                            }
-                          });
-                        });
+                      onPressed: () async{
+                        ActiveMaterialModel? newMaterial = await showInsertPopUp(context);
+                        if (newMaterial != null) {
+                          await ref.read(activeMaterialsProvider.notifier).createMaterial(newMaterial);
+                          int page = ref.read(currentPageProvider);
+                          await ref.read(activeMaterialsProvider.notifier).getAllMaterials(page, ref: ref);
+                        }
                       },
                       child: const Text(
                         'إضافة مادة كيميائية',
@@ -211,7 +209,6 @@ class _ActiveMaterialsMainSectionState extends ConsumerState<ActiveMaterialsMain
                                 int totalPages = ref.read(totalPagesProvider);
                                 int page = ref.read(currentPageProvider);
                                 await handleNextPage(page, totalPages);
-                                print('afterrrrrrrrrrr');
                               },
                               child: const Icon(
                                 Icons.chevron_right,
@@ -232,7 +229,6 @@ class _ActiveMaterialsMainSectionState extends ConsumerState<ActiveMaterialsMain
                               onPressed: () async{
                                 int page = ref.read(currentPageProvider);
                                 await handlePreviousPage(page);
-                                print('afterrrrrrrrrrr');
                               },
                               child: const Icon(
                                 Icons.chevron_left,
@@ -260,14 +256,10 @@ class _ActiveMaterialsMainSectionState extends ConsumerState<ActiveMaterialsMain
     if (currentPage < totalPages) {
       await _pageController.nextPage(
         duration: const Duration(milliseconds: 500),
-        curve: Curves.easeInOut,
+        curve: Curves.ease,
       );
       ref.read(currentPageProvider.notifier).state++;
-      ref.read(previousPageFlag.notifier).state = true;
       await ref.read(activeMaterialsProvider.notifier).getAllMaterials(currentPage + 1, ref: ref);
-      if(currentPage + 1 == totalPages){
-        ref.read(nextPageFlag.notifier).state = false;
-      }
     }
   }
 
@@ -275,15 +267,10 @@ class _ActiveMaterialsMainSectionState extends ConsumerState<ActiveMaterialsMain
     if (currentPage > 1) {
       await _pageController.previousPage(
         duration: const Duration(milliseconds: 500),
-        curve: Curves.easeOut,
+        curve: Curves.ease,
       );
-      print('previous PAGE');
       ref.read(currentPageProvider.notifier).state--;
-      ref.read(nextPageFlag.notifier).state = true;
       await ref.watch(activeMaterialsProvider.notifier).getAllMaterials(currentPage - 1, ref: ref);
-      if (currentPage - 1 == 1) {
-        ref.read(previousPageFlag.notifier).state = false;
-      }
     }
   }
 }

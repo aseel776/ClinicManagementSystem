@@ -21,7 +21,6 @@ class ActiveMaterialsNotifier extends StateNotifier<ActiveMaterialsState> {
   ActiveMaterialsNotifier(this.client) : super(InitActiveMaterialsState());
 
   GraphQLClient client;
-  int pageNumber = 1;
   late final ValueNotifier<GraphQLClient> clientNotifier = ValueNotifier<GraphQLClient>(client);
   late final ActiveMaterialsRepoImp repo = ActiveMaterialsRepoImp(client);
 
@@ -29,30 +28,23 @@ class ActiveMaterialsNotifier extends StateNotifier<ActiveMaterialsState> {
     items ??= 15;
     state = LoadingActiveMaterialsState();
     final response = await repo.getActiveMaterials(page, items: items);
-    ActiveMaterialsState newState = _mapFailureOrMaterialsToState(response);
-    state = newState;
+    state = _mapFailureOrMaterialsToState(response);
     if(state is LoadedActiveMaterialsState && ref != null){
       final pageModel = state.props[0] as MaterialsPaginationModel;
-      print('lennnnnnnnnn is ${pageModel.materials!.length}');
       ref.read(totalPagesProvider.notifier).state = pageModel.totalPages!.toInt();
     }
-    // return state;
   }
 
   Future<void> createMaterial(ActiveMaterialModel body) async {
     state = LoadingActiveMaterialsState();
     final response = await repo.createActiveMaterial(body);
-    ActiveMaterialsState newState = await _mapFailureOrSuccessToState(response);
-    state = newState;
-    // return state;
+    state = _mapFailureOrSuccessToState(response);
   }
 
   Future<void> deleteMaterial(int materialId) async {
     state = LoadingActiveMaterialsState();
     final response = await repo.deleteActiveMaterial(materialId);
-    ActiveMaterialsState newState = await _mapFailureOrSuccessToState(response);
-    state = newState;
-    // return state;
+    state = _mapFailureOrSuccessToState(response);
   }
 
   ActiveMaterialsState _mapFailureOrMaterialsToState(Either<Failure, MaterialsPaginationModel> either) {
@@ -64,7 +56,7 @@ class ActiveMaterialsNotifier extends StateNotifier<ActiveMaterialsState> {
     );
   }
 
-  Future<ActiveMaterialsState> _mapFailureOrSuccessToState (Either<Failure, String> either) async{
+  ActiveMaterialsState _mapFailureOrSuccessToState (Either<Failure, String> either) {
     return either.fold(
       (failure) => ErrorActiveMaterialsState(message: _mapFailureToMessage(failure)),
       (success) => SuccessActiveMaterialsState(message: success),

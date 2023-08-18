@@ -28,6 +28,7 @@ class ActiveMaterialsRepoImp extends ActiveMaterialsRepo {
             'chemical_material_id': body.antiMaterials!.map((m) => m.id).toList(),
           },
         },
+        fetchPolicy: FetchPolicy.noCache,
       ),
     );
     if (!response.hasException && response.data != null) {
@@ -44,6 +45,7 @@ class ActiveMaterialsRepoImp extends ActiveMaterialsRepo {
       QueryOptions(
         document: gql(ActiveMaterialMutation.deleteActiveMaterials),
         variables: {'id': id},
+        fetchPolicy: FetchPolicy.noCache,
       ),
     );
 
@@ -65,6 +67,7 @@ class ActiveMaterialsRepoImp extends ActiveMaterialsRepo {
           'item_per_page': items,
           'page': page,
         },
+        fetchPolicy: FetchPolicy.noCache,
       ),
     );
 
