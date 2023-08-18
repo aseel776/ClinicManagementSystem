@@ -8,6 +8,7 @@ import './/core/graphql_client_provider.dart';
 import '../../../data/repos/treatments_repo.dart';
 import '../../../data/models/treatment_model.dart';
 import '../../states/treatments/treatments_state.dart';
+import '../../../data/models/treatments_page_model.dart';
 
 final treatmentsProvider = StateNotifierProvider<TreatmentsNotifier, TreatmentsState>((ref){
   final client = ref.watch(graphQlClientProvider);
@@ -21,52 +22,38 @@ class TreatmentsNotifier extends StateNotifier<TreatmentsState> {
   late final ValueNotifier<GraphQLClient> clientNotifier = ValueNotifier<GraphQLClient>(client);
   late final TreatmentsRepoImp repo = TreatmentsRepoImp(client);
 
-  Future<TreatmentsState> getAllTreatments() async {
+  Future<void> getAllTreatments({int? page, int? items}) async {
+    items ??= 100000;
+    page ??= 1;
     state = LoadingTreatmentsState();
-    final response = await repo.getTreatments();
-    TreatmentsState newState = _mapFailureOrTreatmentsToState(response);
-    state = newState;
-    return state;
+    final response = await repo.getTreatments(page, items);
+    state = _mapFailureOrTreatmentsToState(response);
   }
 
-  Future<TreatmentsState> createTreatment(TreatmentModel body) async {
-    var treatments = state.props as List<TreatmentModel>;
-    treatments = [...treatments, body];
+  Future<void> createTreatment(TreatmentModel body) async {
     state = LoadingTreatmentsState();
     final response = await repo.createTreatment(body);
-    TreatmentsState newState = _mapFailureOrSuccessToState(response);
-    state = newState;
-    return state;
+    state = _mapFailureOrSuccessToState(response);
   }
 
-  Future<TreatmentsState> updateTreatment(TreatmentModel body) async {
-    state = LoadingTreatmentsState();
-    final response = await repo.updateTreatment(body);
-    TreatmentsState newState = _mapFailureOrSuccessToState(response);
-    state = newState;
-    return state;
-  }
-
-  Future<TreatmentsState> deleteTreatment(int treatmentId) async {
+  Future<void> deleteTreatment(int treatmentId) async {
     state = LoadingTreatmentsState();
     final response = await repo.deleteTreatment(treatmentId);
-    TreatmentsState newState = _mapFailureOrSuccessToState(response);
-    state = newState;
-    return state;
+    state = _mapFailureOrSuccessToState(response);
   }
 
-  TreatmentsState _mapFailureOrTreatmentsToState(Either<Failure, List<TreatmentModel>> either) {
+  TreatmentsState _mapFailureOrTreatmentsToState(Either<Failure, TreatmentsPageModel> either) {
     return either.fold(
       (failure) => ErrorTreatmentsState(message: _mapFailureToMessage(failure)),
-      (treatments) => LoadedTreatmentsState(treatments: treatments),
+      (page) => LoadedTreatmentsState(page: page),
     );
   }
 
-  //Should either return a list<TreatmentModel> from repo with response or handle it here
+
   TreatmentsState _mapFailureOrSuccessToState(Either<Failure, String> either) {
     return either.fold(
       (failure) => ErrorTreatmentsState(message: _mapFailureToMessage(failure)),
-      (success) => LoadedTreatmentsState(treatments: <TreatmentModel>[]),
+      (success) => SuccessTreatmentsState(message: success),
     );
   }
 

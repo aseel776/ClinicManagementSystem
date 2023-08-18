@@ -7,7 +7,7 @@ import '../models/treatment_model.dart';
 import '../models/treatments_page_model.dart';
 
 abstract class TreatmentsRepo {
-  Future<Either<Failure, TreatmentModel>> createTreatment(TreatmentModel body);
+  Future<Either<Failure, String>> createTreatment(TreatmentModel body);
   Future<Either<Failure, String>> deleteTreatment(int id);
   Future<Either<Failure, TreatmentsPageModel>> getTreatments(int page, int items);
 }
@@ -18,7 +18,7 @@ class TreatmentsRepoImp extends TreatmentsRepo {
   TreatmentsRepoImp(this.gqlClient);
 
   @override
-  Future<Either<Failure, TreatmentModel>> createTreatment(TreatmentModel body) async {
+  Future<Either<Failure, String>> createTreatment(TreatmentModel body) async {
     final response = await gqlClient.query(
       QueryOptions(
         document: gql(TreatmentMutation.createTreatment),
@@ -27,8 +27,7 @@ class TreatmentsRepoImp extends TreatmentsRepo {
     );
     if (!response.hasException && response.data != null) {
       print('success from creation');
-      Map<String, dynamic> src = response.data!['createTreatment'];
-      return right(TreatmentModel.fromJson(src));
+      return right('Created Successfully');
     } else {
       return left(ServerFailure());
     }
