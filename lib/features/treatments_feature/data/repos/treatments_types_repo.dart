@@ -89,11 +89,12 @@ class TreatmentTypesRepoImp extends TreatmentTypesRepo{
     final response = await gqlClient.query(
       QueryOptions(
         document: gql(TreatmentTypesQuery.getTreatmentTypes),
+        fetchPolicy: FetchPolicy.noCache,
       ),
     );
     if (!response.hasException && response.data != null) {
-      final List<Map<String, dynamic>>? treatmentsDate = response.data!['data']['treatmentTypes'];
-      return right(treatmentsDate!.map((src) => TreatmentTypeModel.fromJson(src)).toList());
+      final List<Map<String, dynamic>>? types = response.data!['treatmentTypes'];
+      return right(types!.map((src) => TreatmentTypeModel.fromJson(src)).toList());
     } else {
       return left(ServerFailure());
     }
