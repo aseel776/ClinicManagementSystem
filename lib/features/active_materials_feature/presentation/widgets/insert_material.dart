@@ -223,6 +223,7 @@ Future<ActiveMaterialModel?> showInsertPopUp(BuildContext context) async{
     ),
   );
   if(returnMaterial){
+    newMaterial.antiMaterials??= [];
     return newMaterial;
   } else{
     return null;

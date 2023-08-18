@@ -4,7 +4,7 @@ import './/core/customs.dart';
 import './/core/app_colors.dart';
 import '../../data/models/active_material_model.dart';
 
-void showUpdatePopUp(BuildContext context, ActiveMaterialModel material) {
+Future<void> showUpdatePopUp(BuildContext context, ActiveMaterialModel material) async{
   double screenWidth = MediaQuery.of(context).size.width;
   double containerWidth = screenWidth * .35;
   double screenHeight = MediaQuery.of(context).size.height;
@@ -15,7 +15,7 @@ void showUpdatePopUp(BuildContext context, ActiveMaterialModel material) {
   bool validTitle = true;
   String titleError = '';
 
-  showDialog(
+  await showDialog(
     context: context,
     builder: (_) =>
         Dialog(

@@ -1,4 +1,3 @@
-import 'package:clinic_management_system/features/active_materials_feature/data/models/active_material_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import './insert_material.dart';
@@ -7,6 +6,7 @@ import './material_card.dart';
 import '../states/control_states.dart';
 import '../states/active_materials/active_materials_state.dart';
 import '../states/active_materials/active_materials_provider.dart';
+import '../../data/models/active_material_model.dart';
 
 class ActiveMaterialsMainSection extends ConsumerStatefulWidget {
   final double sectionWidth;

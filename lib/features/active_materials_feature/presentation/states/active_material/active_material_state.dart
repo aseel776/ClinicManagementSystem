@@ -27,3 +27,12 @@ class ErrorActiveMaterialState extends ActiveMaterialState {
   @override
   List<Object> get props => [message];
 }
+
+class SuccessActiveMaterialState extends ActiveMaterialState {
+  late final String message;
+
+  SuccessActiveMaterialState({required this.message});
+
+  @override
+  List<Object> get props => [message];
+}

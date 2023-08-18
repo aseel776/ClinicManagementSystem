@@ -1,3 +1,4 @@
+import 'package:clinic_management_system/features/active_materials_feature/presentation/states/active_material/active_material_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../widgets/update_material.dart';
@@ -34,12 +35,10 @@ class MaterialCard extends StatelessWidget {
         ),
       ),
       child: Consumer(
-        builder: (context, ref, child) =>
+        builder: (_, ref, child) =>
             InkWell(
-              onTap: () {
-                // ref.read(activeMaterialsProvider.notifier).get();
-                showUpdatePopUp(context, material);
-                print(material.name);
+              onTap: () async{
+                await showUpdatePopUp(context, material);
               },
               child: Container(
                 width: cardWidth,

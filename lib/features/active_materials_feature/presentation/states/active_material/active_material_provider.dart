@@ -9,7 +9,7 @@ import './/core/graphql_client_provider.dart';
 import '../../../data/repos/active_material_repo.dart';
 import '../../../data/models/active_material_model.dart';
 
-final activeMaterialsProvider = StateNotifierProvider<
+final activeMaterialProvider = StateNotifierProvider<
     ActiveMaterialNotifier,
     ActiveMaterialState>((ref) {
   final client = ref.watch(graphQlClientProvider);
@@ -23,37 +23,30 @@ class ActiveMaterialNotifier extends StateNotifier<ActiveMaterialState> {
   late final clientNotifier = ValueNotifier<GraphQLClient>(client);
   late final ActiveMaterialRepoImp repo = ActiveMaterialRepoImp(client);
 
-  Future<ActiveMaterialState> getMaterial(int id) async{
+  Future<void> getMaterial(int id) async{
     state = LoadingActiveMaterialState();
     final response = await repo.getActiveMaterial(id);
-    ActiveMaterialState newState = _mapFailureOrMaterialToState(response);
-    state = newState;
-    return state;
+    state = _mapFailureOrMaterialToState(response);
   }
 
-  Future<ActiveMaterialState> updateMaterial(ActiveMaterialModel body) async {
+  Future<void> updateMaterial(ActiveMaterialModel body) async {
     state = LoadingActiveMaterialState();
     final response = await repo.updateActiveMaterial(body);
     ActiveMaterialState newState = await _mapFailureOrSuccessToState(response, body.id!);
     state = newState;
-    return state;
   }
 
-  ActiveMaterialState _mapFailureOrMaterialToState(
-      Either<Failure, ActiveMaterialModel> either) {
+  ActiveMaterialState _mapFailureOrMaterialToState(Either<Failure, ActiveMaterialModel> either) {
     return either.fold(
-          (failure) =>
-          ErrorActiveMaterialState(message: _mapFailureToMessage(failure)),
-          (material) => LoadedActiveMaterialState(material: material),
+      (failure) => ErrorActiveMaterialState(message: _mapFailureToMessage(failure)),
+      (material) => LoadedActiveMaterialState(material: material),
     );
   }
 
-  Future<ActiveMaterialState> _mapFailureOrSuccessToState(
-      Either<Failure, String> either, int id) async {
+  ActiveMaterialState _mapFailureOrSuccessToState(Either<Failure, String> either, int id) {
     return either.fold(
-          (failure) =>
-          ErrorActiveMaterialState(message: _mapFailureToMessage(failure)),
-          (success) async => await getMaterial(id),
+      (failure) => ErrorActiveMaterialState(message: _mapFailureToMessage(failure)),
+      (success) => SuccessActiveMaterialState(message: success),
     );
   }
 
