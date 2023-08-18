@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
-import '../dummy_data.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import './/core/customs.dart';
 import './/core/app_colors.dart';
+import '../states/active_materials/active_materials_state.dart';
+import '../states/active_materials/active_materials_provider.dart';
 import '../../data/models/active_material_model.dart';
+
+
+////////////FETCH MODEL FROM SERVER THEN CONTINUE SORTING
 
 Future<void> showUpdatePopUp(BuildContext context, ActiveMaterialModel material) async{
   double screenWidth = MediaQuery.of(context).size.width;
   double containerWidth = screenWidth * .35;
   double screenHeight = MediaQuery.of(context).size.height;
-  double containerHeight = screenHeight * .6;
+  double containerHeight = screenHeight * .45;
 
   final formKey = GlobalKey<FormState>();
   final titleController = TextEditingController(text: material.name);
@@ -17,8 +22,8 @@ Future<void> showUpdatePopUp(BuildContext context, ActiveMaterialModel material)
 
   await showDialog(
     context: context,
-    builder: (_) =>
-        Dialog(
+    builder: (_) {
+      return Dialog(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(5),
           ),
@@ -33,12 +38,11 @@ Future<void> showUpdatePopUp(BuildContext context, ActiveMaterialModel material)
                     borderRadius: BorderRadius.circular(5),
                     color: AppColors.lightGreen,
                   ),
-                  padding: EdgeInsets.symmetric(
-                      vertical: containerHeight * .05),
+                  padding: EdgeInsets.symmetric(vertical: containerHeight * .05),
                   child: Column(
                     children: [
                       SizedBox(
-                        height: containerHeight * .08,
+                        height: containerHeight * .15,
                         child: const Text(
                           'تعديل',
                           style: TextStyle(
@@ -51,7 +55,7 @@ Future<void> showUpdatePopUp(BuildContext context, ActiveMaterialModel material)
                       SizedBox(height: containerHeight * .05),
                       SizedBox(
                         width: containerWidth * .8,
-                        height: containerHeight * .075,
+                        height: containerHeight * .1,
                         child: Row(
                           children: [
                             Container(
@@ -71,10 +75,8 @@ Future<void> showUpdatePopUp(BuildContext context, ActiveMaterialModel material)
                                 child: TextFormField(
                                   controller: titleController,
                                   decoration: decorateInsertMaterialField(
-                                    horizontalPadding: (containerWidth * .8) *
-                                        .05,
-                                    verticalPadding: (containerHeight * .075) *
-                                        .01,
+                                    horizontalPadding: (containerWidth * .8) * .05,
+                                    verticalPadding: (containerHeight * .1) * .01,
                                   ),
                                   cursorColor: Colors.black.withOpacity(.6),
                                   cursorWidth: 1.5,
@@ -100,7 +102,7 @@ Future<void> showUpdatePopUp(BuildContext context, ActiveMaterialModel material)
                       SizedBox(height: containerHeight * .01),
                       SizedBox(
                         width: containerWidth * .8,
-                        height: containerHeight * .05,
+                        height: containerHeight * .08,
                         child: Row(
                           children: [
                             SizedBox(width: containerWidth * .2),
@@ -123,13 +125,28 @@ Future<void> showUpdatePopUp(BuildContext context, ActiveMaterialModel material)
                       SizedBox(height: containerHeight * .035),
                       MaterialButton(
                         minWidth: containerWidth * .4,
-                        height: containerHeight * .125,
+                        height: containerHeight * .16,
                         color: AppColors.black,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15),
                         ),
                         onPressed: () {
-                          conflictsSelect(context);
+                          final containerProvider = ProviderContainer();
+                          containerProvider
+                              .read(activeMaterialsProvider.notifier)
+                              .getAllMaterials(1, items: 1000)
+                              .then(
+                                (state) async {
+                              material.antiMaterials ??= [];
+                              material.antiMaterials =
+                              await antiMaterialsSelect(
+                                material.id!,
+                                context,
+                                material.antiMaterials!,
+                                containerProvider.read(activeMaterialsProvider),
+                              );
+                            },
+                          );
                         },
                         child: const Text(
                           'التعارضات الدوائية',
@@ -140,56 +157,19 @@ Future<void> showUpdatePopUp(BuildContext context, ActiveMaterialModel material)
                           ),
                         ),
                       ),
-                      SizedBox(height: containerHeight * .04),
-                      MaterialButton(
-                        minWidth: containerWidth * .4,
-                        height: containerHeight * .125,
-                        color: AppColors.black,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        onPressed: () {},
-                        child: const Text(
-                          'التعارضات المرضية',
-                          style: TextStyle(
-                            fontFamily: 'Cairo',
-                            fontSize: 16,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: containerHeight * .04),
-                      MaterialButton(
-                        minWidth: containerWidth * .4,
-                        height: containerHeight * .125,
-                        color: AppColors.black,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        onPressed: () {},
-                        child: const Text(
-                          'تعارضات أخرى',
-                          style: TextStyle(
-                            fontFamily: 'Cairo',
-                            fontSize: 16,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: containerHeight * .075),
+                      SizedBox(height: containerHeight * .15),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           MaterialButton(
                             minWidth: containerWidth * .25,
-                            height: containerHeight * .1,
+                            height: containerHeight * .15,
                             color: Colors.white,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
                             onPressed: () {
-                              if (formKey.currentState!.validate() &&
-                                  validTitle) {
+                              if (formKey.currentState!.validate() && validTitle) {
                                 print('sssssssssss');
                               }
                             },
@@ -203,12 +183,12 @@ Future<void> showUpdatePopUp(BuildContext context, ActiveMaterialModel material)
                             ),
                           ),
                           SizedBox(
-                            height: containerHeight * .1,
+                            height: containerHeight * .15,
                             width: containerWidth * .1,
                           ),
                           MaterialButton(
                             minWidth: containerWidth * .25,
-                            height: containerHeight * .1,
+                            height: containerHeight * .15,
                             color: Colors.white,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
@@ -233,24 +213,32 @@ Future<void> showUpdatePopUp(BuildContext context, ActiveMaterialModel material)
               },
             ),
           ),
-        ),
+        );
+    },
   );
 }
 
-void conflictsSelect(BuildContext context) {
-  double screenWidth = MediaQuery
-      .of(context)
-      .size
-      .width;
+Future<List<ActiveMaterialModel>> antiMaterialsSelect(int id, BuildContext context,
+    List<ActiveMaterialModel> antiMaterials, ActiveMaterialsState state) async {
+
+  List<ActiveMaterialModel> originalOne = antiMaterials.map((e) => e).toList();
+  late List<ActiveMaterialModel> materials;
+  if (state is LoadedActiveMaterialsState) {
+    materials = state.page.materials!.toList();
+    materials.removeWhere((element) => element.id == id);
+    sortMaterials(materials, antiMaterials);
+  } else {
+    materials = [];
+  }
+
+  double screenWidth = MediaQuery.of(context).size.width;
   double containerWidth = screenWidth * .25;
-  double screenHeight = MediaQuery
-      .of(context)
-      .size
-      .height;
+  double screenHeight = MediaQuery.of(context).size.height;
   double containerHeight = screenHeight * .5;
 
-  showDialog(
+  await showDialog(
     context: context,
+    barrierDismissible: false,
     builder: (_) =>
         Dialog(
           shape: RoundedRectangleBorder(
@@ -296,30 +284,40 @@ void conflictsSelect(BuildContext context) {
                       SizedBox(height: containerHeight * .02),
                       SizedBox(
                         height: containerHeight * .655,
-                        child: ListView.builder(
-                          shrinkWrap: true,
+                        child: materials.isNotEmpty
+                            ? ListView.builder(
                           itemCount: materials.length,
                           itemBuilder: (context, index) {
                             return CheckboxListTile(
-                              controlAffinity: ListTileControlAffinity.leading,
-                              activeColor: AppColors.black,
-                              checkboxShape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(5),
-                              ),
-                              value: true,
+                              value: antiMaterials.contains(materials[index]),
                               onChanged: (value) {
-                                print(value);
+                                setState(() {
+                                    if (value!) {
+                                      antiMaterials.add(materials[index]);
+                                    } else {
+                                      antiMaterials.remove(materials[index]);
+                                    }
+                                  },
+                                );
                               },
                               title: Text(
                                 materials[index].name!,
                                 style: const TextStyle(
-                                    fontSize: 18,
-                                    fontFamily: 'Cairo',
-                                    color: AppColors.black),
+                                  fontSize: 18,
+                                  fontFamily: 'Cairo',
+                                  color: AppColors.black,
+                                ),
+                              ),
+                              controlAffinity:
+                              ListTileControlAffinity.leading,
+                              activeColor: AppColors.black,
+                              checkboxShape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(5),
                               ),
                             );
                           },
-                        ),
+                        )
+                            : const SizedBox(),
                       ),
                       SizedBox(height: containerHeight * .04),
                       SizedBox(
@@ -335,9 +333,11 @@ void conflictsSelect(BuildContext context) {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(3),
                               ),
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
                               child: const Text(
-                                'حفظ',
+                                'تأكيد',
                                 style: TextStyle(
                                   fontFamily: 'Cairo',
                                   fontSize: 16,
@@ -355,7 +355,8 @@ void conflictsSelect(BuildContext context) {
                                 borderRadius: BorderRadius.circular(3),
                               ),
                               onPressed: () {
-                                Navigator.of(context).pop();
+                                antiMaterials = originalOne.toList();
+                                Navigator.of(context).pop(originalOne);
                               },
                               child: const Text(
                                 'إلغاء',
@@ -377,4 +378,23 @@ void conflictsSelect(BuildContext context) {
           ),
         ),
   );
+  return antiMaterials;
+}
+
+
+List<ActiveMaterialModel> sortMaterials(List<ActiveMaterialModel> materials, List<ActiveMaterialModel> antiMaterials){
+  print(antiMaterials.contains(materials[0]));
+  List<ActiveMaterialModel> sortedMaterials = materials.toList();
+  sortedMaterials.sort((a, b) {
+    if (antiMaterials.contains(a) && !antiMaterials.contains(b)) {
+      print('aaaaaaaaaaaaaaaaaaaaaaaa ${a.name}');
+      return -1;
+    } else if (!antiMaterials.contains(a) && antiMaterials.contains(b)) {
+      print('bbbbbbbbbbbbbbbbbbbbbbbb ${b.name}');
+      return 1;
+    } else {
+      return 0;
+    }
+  });
+  return sortedMaterials;
 }

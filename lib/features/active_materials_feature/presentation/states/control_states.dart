@@ -12,3 +12,6 @@ final nextPageFlag = StateProvider<bool>((ref) {
   int totalPages = ref.watch(totalPagesProvider);
   return page < totalPages;
 });
+//to control antiMaterials box at details pop-up
+final isScrolling = StateProvider((ref) => false);
+final isHovering = StateProvider((ref) => false);
