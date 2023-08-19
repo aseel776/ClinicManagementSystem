@@ -1,8 +1,8 @@
-import 'package:clinic_management_system/features/problems_feature/presentation/widgets/main_section.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../features/active_materials_feature/presentation/widgets/main_section.dart';
 
-void main() async {
+void main() async{
   runApp(const MainPage());
 }
 
@@ -18,7 +18,7 @@ class MainPage extends StatelessWidget {
         title: "Clinic Management System",
         home: Directionality(
           textDirection: TextDirection.rtl,
-          child: ProblemsMainSection(sectionWidth: screenWidth * 0.8),
+          child: ActiveMaterialsMainSection(sectionWidth: screenWidth * 0.8),
         ),
         debugShowCheckedModeBanner: false,
       ),
