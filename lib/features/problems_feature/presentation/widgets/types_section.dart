@@ -1,11 +1,11 @@
-import 'package:clinic_management_system/features/problems_feature/presentation/states/problem_type/problem_type_provider.dart';
-import 'package:clinic_management_system/features/problems_feature/presentation/states/problem_type/problem_type_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import './/core/customs.dart';
 import './/core/app_colors.dart';
 import './type_tile.dart';
 import '../states/control_states.dart';
+import '../states/types/problem_type_state.dart';
+import '../states/types/problem_type_provider.dart';
 
 class ProblemTypesSection extends ConsumerStatefulWidget {
   final double sectionHeight;
@@ -110,6 +110,7 @@ class _ProblemTypesSectionState extends ConsumerState<ProblemTypesSection> {
                       ),
                     ),
                   ),
+                  SizedBox(height: widget.sectionHeight * .025)
                 ],
               ),
             ),

@@ -1,9 +1,9 @@
-import 'package:clinic_management_system/features/problems_feature/presentation/states/problem_type/problem_type_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import './/core/customs.dart';
 import './/core/app_colors.dart';
 import '../states/control_states.dart';
+import '../states/types/problem_type_provider.dart';
 import '../../data/models/problem_type_model.dart';
 
 class ProblemTypeTile extends ConsumerWidget {

@@ -1,3 +1,4 @@
+import 'package:clinic_management_system/features/problems_feature/presentation/widgets/problems_section.dart';
 import 'package:flutter/material.dart';
 import './/core/app_colors.dart';
 import './types_section.dart';
@@ -88,21 +89,13 @@ class ProblemsMainSection extends StatelessWidget {
                     SizedBox(width: sectionWidth * .025),
                     MaterialButton(
                       height: screenHeight * .08,
-                      minWidth: sectionWidth * .2,
+                      minWidth: sectionWidth * .175,
                       color: AppColors.lightGreen,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
                       ),
                       onPressed: () async {
-                        // ActiveMaterialModel? newMaterial = await showInsertPopUp(
-                        //     context);
-                        // if (newMaterial != null) {
-                        //   await ref.read(activeMaterialsProvider.notifier)
-                        //       .createMaterial(newMaterial);
-                        //   int page = ref.read(currentPageProvider);
-                        //   await ref.read(activeMaterialsProvider.notifier)
-                        //       .getAllMaterials(page, ref: ref);
-                        // }
+
                       },
                       child: Row(
                         children: [
@@ -114,10 +107,38 @@ class ProblemsMainSection extends StatelessWidget {
                               color: Colors.black,
                             ),
                           ),
-                          SizedBox(width: sectionWidth * .01),
+                          SizedBox(width: (sectionWidth * .175) * .02),
                           const Icon(
                             Icons.add,
-                            color: Colors.black,
+                          )
+                        ],
+                      ),
+                    ),
+                    const Expanded(child: SizedBox()),
+                    MaterialButton(
+                      height: screenHeight * .08,
+                      minWidth: sectionWidth * .15,
+                      color: AppColors.lightGreen,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      onPressed: () async {
+
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text(
+                            'تصفية',
+                            style: TextStyle(
+                              fontFamily: 'Cairo',
+                              fontSize: 16,
+                              color: Colors.black,
+                            ),
+                          ),
+                          SizedBox(width: (sectionWidth * .15) * .02),
+                          const Icon(
+                            Icons.filter_alt
                           )
                         ],
                       ),
@@ -127,14 +148,11 @@ class ProblemsMainSection extends StatelessWidget {
                 SizedBox(height: screenHeight * .05),
                 Row(
                   children: [
-                    Container(
-                      height: screenHeight * .675,
-                      width: sectionWidth * .6,
-                      alignment: Alignment.center,
-                      color: AppColors.lightGreen,
-                      child: Text('PROBLEMS'),
+                    ProblemsSection(
+                      sectionHeight: screenHeight * .675,
+                      sectionWidth: sectionWidth * .6,
                     ),
-                    SizedBox(width: sectionWidth * .05,),
+                    SizedBox(width: sectionWidth * .025),
                     ProblemTypesSection(
                       key: const ObjectKey(0),
                       sectionHeight: screenHeight * .675,
