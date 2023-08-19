@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import './/core/customs.dart';
 import './/core/app_colors.dart';
 import '../states/control_states.dart';
+import '../states/treatments_types/treatment_types_provider.dart';
 import '../../data/models/treatment_type_model.dart';
 
 class TypeTile extends ConsumerWidget {
@@ -61,13 +62,14 @@ class TypeTile extends ConsumerWidget {
                           return null;
                         }
                       },
-                      onFieldSubmitted: (value) {
+                      onFieldSubmitted: (value) async{
+                        ref.read(editingType(key).notifier).state = false;
                         if(value.isEmpty){
                           _controller.text = type.name!;
                         }else{
-                          //call edit function
+                          type.name = value;
+                          await ref.read(treatmentsTypesProvider.notifier).updateTreatmentType(type);
                         }
-                        ref.read(editingType(key).notifier).state = false;
                       },
                     ),
                   ),
@@ -75,8 +77,9 @@ class TypeTile extends ConsumerWidget {
                     width: tileWidth * .125,
                     height: tileHeight * .9,
                     child: FloatingActionButton(
-                      onPressed: () {
+                      onPressed: () async{
                         ref.read(editingType(key).notifier).state = false;
+                        await ref.read(treatmentsTypesProvider.notifier).deleteTreatmentType(type.id!);
                       },
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(5),
@@ -109,9 +112,10 @@ class TypeTile extends ConsumerWidget {
                       Text(
                         type.name!,
                         style: const TextStyle(
-                            fontFamily: 'Cairo',
-                            fontSize: 20,
-                            color: AppColors.black),
+                          fontFamily: 'Cairo',
+                          fontSize: 20,
+                          color: AppColors.black,
+                        ),
                       ),
                     ],
                   ),

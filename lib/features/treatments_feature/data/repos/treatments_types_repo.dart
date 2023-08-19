@@ -58,6 +58,7 @@ class TreatmentTypesRepoImp extends TreatmentTypesRepo{
       ),
     );
     if (!response.hasException && response.data != null) {
+      print('success from update');
       return right("Updated Successfully.");
     } else {
       return left(ServerFailure());

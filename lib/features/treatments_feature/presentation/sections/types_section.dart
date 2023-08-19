@@ -1,12 +1,11 @@
-import 'package:clinic_management_system/features/treatments_feature/presentation/states/treatments_types/treatment_types_provider.dart';
-import 'package:clinic_management_system/features/treatments_feature/presentation/states/treatments_types/treatment_types_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import './/core/customs.dart';
 import './/core/app_colors.dart';
 import '../widgets/type_tile.dart';
-import '../../dummy_data.dart';
 import '../states/control_states.dart';
+import '../states/treatments_types/treatment_types_state.dart';
+import '../states/treatments_types/treatment_types_provider.dart';
 
 class TreatmentTypesSection extends ConsumerStatefulWidget {
   final double sectionHeight;

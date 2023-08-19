@@ -2,8 +2,8 @@ import 'package:equatable/equatable.dart';
 
 class TreatmentTypeModel extends Equatable{
 
-  late final int? id;
-  late final String? name;
+  late int? id;
+  late String? name;
 
   TreatmentTypeModel({this.id, this.name});
 
