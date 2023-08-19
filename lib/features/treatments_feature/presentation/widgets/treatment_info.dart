@@ -1,5 +1,8 @@
+import 'package:clinic_management_system/features/treatments_feature/presentation/states/treatments/treatments_provider.dart';
+import 'package:clinic_management_system/features/treatments_feature/presentation/states/treatments/treatments_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import './/core/app_colors.dart';
 import '../states/control_states.dart';
 import '../widgets/upsert_treatment.dart';
@@ -77,23 +80,31 @@ class TreatmentInfo extends StatelessWidget {
                           color: Colors.white,
                         ),
                       ),
-                      FloatingActionButton(
-                        onPressed: () {
-
+                      Consumer(
+                        builder: (context, ref, child) {
+                          return FloatingActionButton(
+                            onPressed: () async{
+                              final tempState = ref.watch(treatmentsProvider);
+                              await ref.read(treatmentsProvider.notifier).deleteTreatment(treatment.id!);
+                              if(tempState is LoadedTreatmentsState){
+                                isExpanded.value = true;
+                              }
+                            },
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.zero,
+                            ),
+                            elevation: 0,
+                            hoverElevation: 0,
+                            focusElevation: 0,
+                            highlightElevation: 0,
+                            backgroundColor: treatment.color!,
+                            child: const Icon(
+                              Icons.delete,
+                              size: 24,
+                              color: Colors.white,
+                            ),
+                          );
                         },
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.zero,
-                        ),
-                        elevation: 0,
-                        hoverElevation: 0,
-                        focusElevation: 0,
-                        highlightElevation: 0,
-                        backgroundColor: treatment.color!,
-                        child: const Icon(
-                          Icons.delete,
-                          size: 24,
-                          color: Colors.white,
-                        ),
                       ),
                     ],
                   ),
