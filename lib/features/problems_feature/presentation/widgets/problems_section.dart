@@ -1,3 +1,5 @@
+import 'package:clinic_management_system/features/problems_feature/presentation/states/problems/problems_state.dart';
+import 'package:clinic_management_system/features/problems_feature/presentation/widgets/problem_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import './/core/app_colors.dart';
@@ -29,7 +31,7 @@ class _ProblemsSectionState extends ConsumerState<ProblemsSection> {
   @override
   Widget build(BuildContext context) {
 
-    // final state = ref.watch(problemsProvider);
+    final state = ref.watch(problemsProvider);
 
     return Container(
       width: widget.sectionWidth,
@@ -58,11 +60,29 @@ class _ProblemsSectionState extends ConsumerState<ProblemsSection> {
               ),
             ),
           ),
-          SingleChildScrollView(
-            child: Column(
-
+          state is LoadedProblemsState
+          ? Expanded(
+            child: GridView.builder(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                mainAxisSpacing: widget.sectionHeight * .01,
+                crossAxisSpacing: widget.sectionWidth * .025,
+                mainAxisExtent: widget.sectionHeight * .25,
+              ),
+              itemCount: state.page.problems!.length,
+              itemBuilder: (context, index) {
+                return ProblemTile(
+                  tileWidth: widget.sectionWidth * .45,
+                  tileHeight: widget.sectionHeight * .25,
+                  problem: state.page.problems![index],
+                );
+              },
             ),
-          ),
+          )
+              : state is LoadingProblemsState
+          ? Container(color: Colors.yellow,)
+          : Container(color: Colors.red),
+          SizedBox(height: widget.sectionHeight * .025),
         ],
       )
     );
