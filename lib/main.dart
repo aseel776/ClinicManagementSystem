@@ -1,3 +1,4 @@
+import 'package:clinic_management_system/features/problems_feature/presentation/widgets/main_section.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -10,17 +11,14 @@ class MainPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery
-        .sizeOf(context)
-        .width;
+    double screenWidth = MediaQuery.sizeOf(context).width;
 
     return ProviderScope(
       child: MaterialApp(
         title: "Clinic Management System",
         home: Directionality(
           textDirection: TextDirection.rtl,
-          // child: ActiveMaterialsMainSection(sectionWidth: screenWidth * 0.8),
-          child: Placeholder(),
+          child: ProblemsMainSection(sectionWidth: screenWidth * 0.8),
         ),
         debugShowCheckedModeBanner: false,
       ),

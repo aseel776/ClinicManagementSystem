@@ -3,7 +3,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 
 final graphQlClientProvider = StateProvider<GraphQLClient>((ref) {
   final GraphQLClient client = GraphQLClient(
-    link: HttpLink('https://music-mates-fun.herokuapp.com/graphql'),
+    link: HttpLink('http://localhost:3000/graphql'),
     cache: GraphQLCache(),
   );
   return client;

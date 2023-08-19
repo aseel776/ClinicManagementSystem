@@ -6,8 +6,7 @@ import '../documents/get/problem_type_query.dart';
 import '../documents/cud/problem_type_mutation.dart';
 
 abstract class ProblemTypesRepo {
-  Future<Either<Failure, ProblemTypeModel>> createProblemType(
-      ProblemTypeModel body);
+  Future<Either<Failure, String>> createProblemType(String name);
 
   Future<Either<Failure, String>> updateProblemType(ProblemTypeModel body);
 
@@ -22,14 +21,14 @@ class ProblemTypesRepoImp extends ProblemTypesRepo {
   ProblemTypesRepoImp(this.gqlClient);
 
   @override
-  Future<Either<Failure, ProblemTypeModel>> createProblemType(
-      ProblemTypeModel body) async {
+  Future<Either<Failure, String>> createProblemType(
+      String name) async {
     final response = await gqlClient.query(
       QueryOptions(
         document: gql(ProblemTypeMutation.createType),
         variables: {
           'createProblemTypeInput': {
-            'name': body.name,
+            'name': name,
           },
         },
         fetchPolicy: FetchPolicy.noCache,
@@ -37,8 +36,7 @@ class ProblemTypesRepoImp extends ProblemTypesRepo {
     );
     if (!response.hasException && response.data != null) {
       print('success from creation');
-      Map<String, dynamic> src = response.data!['createProblemType'];
-      return right(ProblemTypeModel.fromJson(src));
+      return right('Created Successfully');
     } else {
       return left(ServerFailure());
     }
@@ -94,9 +92,8 @@ class ProblemTypesRepoImp extends ProblemTypesRepo {
       ),
     );
     if (!response.hasException && response.data != null) {
-      final List<Map<String, dynamic>>? types = response.data!['problemTypes'];
-      return right(
-          types!.map((src) => ProblemTypeModel.fromJson(src)).toList());
+      final List<dynamic>? types = response.data!['problemTypes'];
+      return right(types!.map((src) => ProblemTypeModel.fromJson(src)).toList());
     } else {
       return left(ServerFailure());
     }
