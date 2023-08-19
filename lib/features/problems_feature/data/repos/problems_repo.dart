@@ -67,12 +67,10 @@ class ProblemsRepoImp extends ProblemsRepo {
     );
     if (!response.hasException && response.data != null) {
       print('success from getProblems');
-      final List<Map<String, dynamic>>? problemsData = response
-          .data!['problems'];
-      List<ProblemModel> problems = problemsData!.map((src) =>
-          ProblemModel.fromJson(src)).toList();
-      int currentPage = response.data!['page'];
-      int totalPages = response.data!['totalPages'];
+      final List<dynamic> problemsData = response.data!['problems']['items'];
+      List<ProblemModel> problems = problemsData.map((src) => ProblemModel.fromJson(src)).toList();
+      int currentPage = response.data!['problems']['page'];
+      int totalPages = response.data!['problems']['totalPages'];
       return right(ProblemsPageModel(totalPages: totalPages,
           currentPage: currentPage,
           problems: problems));

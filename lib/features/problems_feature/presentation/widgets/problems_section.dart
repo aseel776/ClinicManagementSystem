@@ -1,6 +1,7 @@
-import 'package:clinic_management_system/core/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import './/core/app_colors.dart';
+import '../states/problems/problems_provider.dart';
 
 class ProblemsSection extends ConsumerStatefulWidget {
   final double sectionWidth;
@@ -21,7 +22,7 @@ class _ProblemsSectionState extends ConsumerState<ProblemsSection> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async{
-      // await ref.read(problemsProvider.notifier).getAllProblems();
+      await ref.read(problemsProvider.notifier).getAllProblems();
     });
   }
 
@@ -29,7 +30,7 @@ class _ProblemsSectionState extends ConsumerState<ProblemsSection> {
   Widget build(BuildContext context) {
 
     // final state = ref.watch(problemsProvider);
-    
+
     return Container(
       width: widget.sectionWidth,
       height: widget.sectionHeight,
