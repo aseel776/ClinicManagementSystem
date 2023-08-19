@@ -1,4 +1,6 @@
-class StepModel{
+import 'package:equatable/equatable.dart';
+
+class StepModel extends Equatable{
 
   int? id;
   String? name;
@@ -7,12 +9,13 @@ class StepModel{
   StepModel({this.id, this.name, this.subSteps});
 
   StepModel.fromJson(Map<String, dynamic> source){
-    //make sure you get it from backend response
     id = source['id'];
     name = source['name'];
     if(source['subSteps'] != null){
-      final temp = source['subSteps'] as List<Map<String, dynamic>>;
+      final temp = source['subSteps'] as List<dynamic>;
       subSteps = temp.map((e) => e['name'] as String).toList();
+    } else{
+      subSteps = [];
     }
   }
 
@@ -34,4 +37,6 @@ class StepModel{
     };
   }
 
+  @override
+  List<Object?> get props => [id, name];
 }

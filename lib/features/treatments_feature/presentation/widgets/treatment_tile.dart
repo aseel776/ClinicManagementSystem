@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import './/core/app_colors.dart';
 import '../states/control_states.dart';
-import '../states/tile_size/tile_size_provider.dart';
 import '../states/tile_size/tile_size_state.dart';
+import '../states/treatment/treatment_state.dart';
+import '../states/treatment/treatment_provider.dart';
+import '../states/tile_size/tile_size_provider.dart';
 import '../../data/models/treatment_model.dart';
 
 class TreatmentTile extends ConsumerWidget {
@@ -32,13 +34,17 @@ class TreatmentTile extends ConsumerWidget {
       color: Colors.transparent,
       alignment: Alignment.center,
       child: InkWell(
-        onTap: () {
-          if(selectedTreatment == null){
-            selectedTreatment = ValueNotifier(treatment);
-          }else{
-            selectedTreatment!.value = treatment;
+        onTap: () async{
+          await ref.read(treatmentProvider.notifier).getTreatment(treatment.id!);
+          final tempState = ref.watch(treatmentProvider);
+          if(tempState is LoadedTreatmentState){
+            if (selectedTreatment == null) {
+              selectedTreatment = ValueNotifier(tempState.treatment);
+            } else {
+              selectedTreatment!.value = tempState.treatment;
+            }
+            isExpanded.value = false;
           }
-          isExpanded.value = false;
         },
         onHover: (value){
           if(value){

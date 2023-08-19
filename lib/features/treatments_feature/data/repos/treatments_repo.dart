@@ -64,10 +64,10 @@ class TreatmentsRepoImp extends TreatmentsRepo {
     );
     if (!response.hasException && response.data != null) {
       print('success from getTreatments');
-      final List<Map<String, dynamic>>? treatmentsDate = response.data!['treatments'];
-      List<TreatmentModel> treatments = treatmentsDate!.map((src) => TreatmentModel.fromJson(src)).toList();
-      int currentPage = response.data!['page'];
-      int totalPages = response.data!['totalPages'];
+      final List<dynamic>? treatmentsData = response.data!['treatments']['items'];
+      List<TreatmentModel> treatments = treatmentsData!.map((src) => TreatmentModel.fromJson(src)).toList();
+      int currentPage = response.data!['treatments']['page'];
+      int totalPages = response.data!['treatments']['totalPages'];
       return right(TreatmentsPageModel(totalPages: totalPages, currentPage: currentPage, treatments: treatments));
     } else {
       return left(ServerFailure());

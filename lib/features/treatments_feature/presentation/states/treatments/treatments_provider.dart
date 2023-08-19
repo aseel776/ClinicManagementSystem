@@ -17,7 +17,7 @@ final treatmentsProvider = StateNotifierProvider<TreatmentsNotifier, TreatmentsS
 
 class TreatmentsNotifier extends StateNotifier<TreatmentsState> {
   GraphQLClient client;
-  TreatmentsNotifier(this.client) : super(TreatmentsState as TreatmentsState);
+  TreatmentsNotifier(this.client) : super(InitTreatmentsState());
 
   late final ValueNotifier<GraphQLClient> clientNotifier = ValueNotifier<GraphQLClient>(client);
   late final TreatmentsRepoImp repo = TreatmentsRepoImp(client);
@@ -34,12 +34,18 @@ class TreatmentsNotifier extends StateNotifier<TreatmentsState> {
     state = LoadingTreatmentsState();
     final response = await repo.createTreatment(body);
     state = _mapFailureOrSuccessToState(response);
+    if(state is SuccessTreatmentsState){
+      await getAllTreatments();
+    }
   }
 
   Future<void> deleteTreatment(int treatmentId) async {
     state = LoadingTreatmentsState();
     final response = await repo.deleteTreatment(treatmentId);
     state = _mapFailureOrSuccessToState(response);
+    if (state is SuccessTreatmentsState) {
+      await getAllTreatments();
+    }
   }
 
   TreatmentsState _mapFailureOrTreatmentsToState(Either<Failure, TreatmentsPageModel> either) {

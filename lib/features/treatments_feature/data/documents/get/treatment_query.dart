@@ -28,10 +28,10 @@ class TreatmentsQuery{
         name
         price
         steps {
+            id
             name
             subSteps {
                 name
-                step_id
             }
         }
         treatment_type {

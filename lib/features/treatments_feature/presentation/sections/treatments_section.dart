@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import './/core/app_colors.dart';
 import '../widgets/treatment_tile.dart';
 import '../widgets/treatment_info.dart';
-import '../../dummy_data.dart';
 import '../states/control_states.dart';
+import '../states/treatments/treatments_state.dart';
+import '../states/treatments/treatments_provider.dart';
+import '../../data/models/treatment_model.dart';
 
-class TreatmentsSection extends StatelessWidget {
+class TreatmentsSection extends ConsumerStatefulWidget {
   final double sectionWidth;
   final double sectionHeight;
 
@@ -14,11 +17,27 @@ class TreatmentsSection extends StatelessWidget {
       : super(key: key);
 
   @override
+  ConsumerState<TreatmentsSection> createState() => _TreatmentsSectionState();
+}
+
+class _TreatmentsSectionState extends ConsumerState<TreatmentsSection> {
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async{
+      await ref.read(treatmentsProvider.notifier).getAllTreatments();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final state = ref.watch(treatmentsProvider);
+
     return ValueListenableBuilder<bool>(
       valueListenable: isExpanded,
       builder: (context, isExpandedValue, child) => SizedBox(
-        height: sectionHeight,
+        height: widget.sectionHeight,
         child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -26,8 +45,8 @@ class TreatmentsSection extends StatelessWidget {
               AnimatedContainer(
                 duration: const Duration(milliseconds: 750),
                 curve: Curves.linear,
-                width: sectionWidth,
-                height: isExpandedValue ? sectionHeight : sectionHeight * .495,
+                width: widget.sectionWidth,
+                height: isExpandedValue ? widget.sectionHeight : widget.sectionHeight * .495,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   // color: AppColors.lightBlue,
@@ -38,9 +57,9 @@ class TreatmentsSection extends StatelessWidget {
                   children: [
                     Container(
                       padding: EdgeInsets.only(
-                        top: sectionHeight * .025,
+                        top: widget.sectionHeight * .025,
                       ),
-                      height: sectionHeight * .1,
+                      height: widget.sectionHeight * .1,
                       child: const Text(
                         'المعالجات',
                         style: TextStyle(
@@ -55,7 +74,11 @@ class TreatmentsSection extends StatelessWidget {
                         borderRadius: const BorderRadius.vertical(
                           bottom: Radius.circular(20),
                         ),
-                        child: buildTreatmentsGridView(),
+                        child: state is LoadedTreatmentsState
+                          ? buildTreatmentsGridView(state.page.treatments!)
+                          : state is LoadedTreatmentsState
+                          ? Container(color: Colors.yellow)
+                          : Container(color: Colors.red),
                       ),
                     ),
                   ],
@@ -63,15 +86,15 @@ class TreatmentsSection extends StatelessWidget {
               ),
               if (!isExpandedValue)
                 SizedBox(
-                  height: sectionHeight * .505,
+                  height: widget.sectionHeight * .505,
                   child: Column(
                     children: [
                       SizedBox(
-                        height: sectionHeight * .01,
+                        height: widget.sectionHeight * .01,
                       ),
                       TreatmentInfo(
-                        containerHeight: sectionHeight * .495,
-                        containerWidth: sectionWidth,
+                        containerHeight: widget.sectionHeight * .495,
+                        containerWidth: widget.sectionWidth,
                       ),
                     ],
                   ),
@@ -83,7 +106,7 @@ class TreatmentsSection extends StatelessWidget {
     );
   }
 
-  buildTreatmentsGridView() {
+  buildTreatmentsGridView(List<TreatmentModel> treatments) {
     int rowsCount = (treatments.length / 2).ceil();
     return SingleChildScrollView(
       child: Column(
@@ -96,19 +119,19 @@ class TreatmentsSection extends StatelessWidget {
               children: [
                 Expanded(
                   child: TreatmentTile(
-                    sectionWidth: sectionWidth,
-                    sectionHeight: sectionHeight,
+                    sectionWidth: widget.sectionWidth,
+                    sectionHeight: widget.sectionHeight,
                     treatment: treatments[i],
-                    key: Key(treatments[i].id.toString()),
+                    key: ValueKey(treatments[i].id),
                   ),
                 ),
                 if (i + 1 < treatments.length)
                   Expanded(
                     child: TreatmentTile(
-                      sectionWidth: sectionWidth,
-                      sectionHeight: sectionHeight,
+                      sectionWidth: widget.sectionWidth,
+                      sectionHeight: widget.sectionHeight,
                       treatment: treatments[i + 1],
-                      key: Key(treatments[i + 1].id.toString()),
+                      key: ValueKey(treatments[i + 1].id),
                     ),
                   ),
               ],

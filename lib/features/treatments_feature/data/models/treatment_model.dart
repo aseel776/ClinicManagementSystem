@@ -1,9 +1,11 @@
 import 'dart:ui';
 
+import 'package:equatable/equatable.dart';
+
 import './step_model.dart';
 import 'treatment_type_model.dart';
 
-class TreatmentModel{
+class TreatmentModel extends Equatable{
 
   int? id;
   String? name;
@@ -16,13 +18,13 @@ class TreatmentModel{
   TreatmentModel({this.id, this.name, this.price, this.color, this.type, this.steps, this.channels});
 
   TreatmentModel.fromJson(Map<String, dynamic> source){
-    id = source[id];
+    id = source['id'];
     name = source['name'];
     color = _generateColor(source['color']);
     type = TreatmentTypeModel.fromJson(source['treatment_type']);
     if(source['price'] != null){
-      price = source[price];
-      final tempSteps = source['steps'] as List<Map<String, dynamic>>;
+      price = source['price'];
+      final tempSteps = source['steps'] as List<dynamic>;
       steps = tempSteps.map((e) => StepModel.fromJson(e)).toList();
       channels = steps![0].subSteps?? [];
     }
@@ -45,4 +47,6 @@ class TreatmentModel{
     return Color(colorValue).withOpacity(1);
   }
 
+  @override
+  List<Object?> get props => [id, name, color];
 }
