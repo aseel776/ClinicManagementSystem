@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import './/core/app_colors.dart';
+import './upsert_problem.dart';
+import '../states/types/problem_type_state.dart';
 import '../states/problems/problems_provider.dart';
+import '../states/types/problem_type_provider.dart';
 import '../../data/models/problem_model.dart';
 
 class ProblemTile extends StatelessWidget {
   final double tileWidth;
   final double tileHeight;
   final ProblemModel problem;
+
   const ProblemTile({
     Key? key,
     required this.tileWidth,
@@ -27,7 +31,7 @@ class ProblemTile extends StatelessWidget {
           ],
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
-        )
+        ),
       ),
       alignment: Alignment.center,
       child: Stack(
@@ -47,8 +51,7 @@ class ProblemTile extends StatelessWidget {
                   style: const TextStyle(
                       fontFamily: 'Cairo',
                       fontSize: 18,
-                      color: AppColors.black
-                  ),
+                      color: AppColors.black),
                 ),
                 SizedBox(height: tileHeight * .01),
                 Row(
@@ -72,30 +75,37 @@ class ProblemTile extends StatelessWidget {
           Positioned(
             right: tileWidth * .025,
             bottom: tileHeight * .05,
-            child: IconButton(
-              onPressed: () async {
-                print('edit');
-                // await showUpdateDialog();
+            child: Consumer(
+              builder: (context, ref, child) {
+                return IconButton(
+                  onPressed: () async {
+                    final tempState = ref.watch(problemTypesProvider);
+                    if(tempState is LoadedProblemTypesState){
+                      await showUpsertProblemPopUp(context, tempState.types, problem: problem);
+                    }else{
+                      await ref.read(problemTypesProvider.notifier).getAllTypes();
+                    }
+                  },
+                  icon: const Icon(
+                    Icons.edit,
+                  ),
+                );
               },
-              icon: const Icon(
-                Icons.edit,
-              ),
             ),
           ),
           Positioned(
             left: tileWidth * .025,
             bottom: tileHeight * .05,
             child: Consumer(
-              builder: (context, ref, child) =>
-                  IconButton(
-                    onPressed: () async {
-                      await ref.read(problemsProvider.notifier).deleteProblemType(problem.id!);
-                    },
-                    icon: const Icon(
-                      Icons.delete,
-                    ),
-                  ),
-            )
+              builder: (context, ref, child) => IconButton(
+                onPressed: () async {
+                  await ref.read(problemsProvider.notifier).deleteProblemType(problem.id!);
+                },
+                icon: const Icon(
+                  Icons.delete,
+                ),
+              ),
+            ),
           ),
         ],
       ),

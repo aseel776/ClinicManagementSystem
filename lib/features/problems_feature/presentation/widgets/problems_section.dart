@@ -1,8 +1,8 @@
-import 'package:clinic_management_system/features/problems_feature/presentation/states/problems/problems_state.dart';
-import 'package:clinic_management_system/features/problems_feature/presentation/widgets/problem_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import './problem_tile.dart';
 import './/core/app_colors.dart';
+import '../states/problems/problems_state.dart';
 import '../states/problems/problems_provider.dart';
 
 class ProblemsSection extends ConsumerStatefulWidget {

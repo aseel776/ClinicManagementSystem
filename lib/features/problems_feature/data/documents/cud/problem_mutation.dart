@@ -19,10 +19,7 @@ class ProblemMutation{
       updateProblemInput: \$updateProblemInput
       ) {
         name
-        Problem_type {
-            id
-            name
-        }
+        problem_type_id
     }
   }
   ''';

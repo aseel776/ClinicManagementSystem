@@ -24,6 +24,12 @@ class ProblemsRepoImp extends ProblemsRepo {
     final response = await gqlClient.query(
       QueryOptions(
         document: gql(ProblemMutation.createProblem),
+        variables: {
+          'createProblemInput': {
+            'name': body.name,
+            'problem_type_id': body.type!.id
+          }
+        },
         fetchPolicy: FetchPolicy.noCache,
       ),
     );
