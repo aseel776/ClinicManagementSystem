@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import './/core/app_colors.dart';
-import '../treatment_tile.dart';
-import '../treatment_info.dart';
-import '../../../dummy_data.dart';
-import '../../states/control_states.dart';
+import '../widgets/treatment_tile.dart';
+import '../widgets/treatment_info.dart';
+import '../../dummy_data.dart';
+import '../states/control_states.dart';
 
 class TreatmentsSection extends StatelessWidget {
   final double sectionWidth;

@@ -1,20 +1,16 @@
-import 'package:clinic_management_system/features/treatments_feature/presentation/states/control_states.dart';
 import 'package:clinic_management_system/features/treatments_feature/presentation/widgets/upsert_treatment.dart';
 import 'package:flutter/material.dart';
 import 'types_section.dart';
 import 'treatments_section.dart';
 import './/core/app_colors.dart';
-import '../../controllers/main_section_controller.dart';
 
 class TreatmentsMainSection extends StatelessWidget {
   final double sectionWidth;
 
-  TreatmentsMainSection({
+  const TreatmentsMainSection({
     Key? key,
     required this.sectionWidth
   }) : super(key: key);
-
-  final _controller = MainSectionController();
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +73,6 @@ class TreatmentsMainSection extends StatelessWidget {
                             child: Directionality(
                               textDirection: TextDirection.rtl,
                               child: TextField(
-                                controller: _controller.searchController,
                                 textAlign: TextAlign.right,
                                 cursorColor: AppColors.black,
                                 style: TextStyle(

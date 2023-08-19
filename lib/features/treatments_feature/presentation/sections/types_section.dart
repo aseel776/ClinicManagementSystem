@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import './/core/customs.dart';
 import './/core/app_colors.dart';
-import '../type_tile.dart';
-import '../../../dummy_data.dart';
-import '../../states/control_states.dart';
+import '../widgets/type_tile.dart';
+import '../../dummy_data.dart';
+import '../states/control_states.dart';
 
 class TreatmentTypesSection extends StatelessWidget {
   final double sectionHeight;
