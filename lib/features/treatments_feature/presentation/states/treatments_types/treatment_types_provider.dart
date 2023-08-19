@@ -16,59 +16,55 @@ final treatmentsTypesProvider = StateNotifierProvider<TreatmentTypesNotifier, Tr
 
 class TreatmentTypesNotifier extends StateNotifier<TreatmentTypesState> {
   GraphQLClient client;
-  TreatmentTypesNotifier(this.client) : super (TreatmentTypesState as TreatmentTypesState);
+  TreatmentTypesNotifier(this.client) : super (InitTreatmentTypesState());
 
   late final ValueNotifier<GraphQLClient> clientNotifier = ValueNotifier<GraphQLClient>(client);
   late final TreatmentTypesRepoImp repo = TreatmentTypesRepoImp(client);
 
-  Future<TreatmentTypesState> getAllTreatments() async {
+  Future<void> getAllTreatmentsTypes() async {
     state = LoadingTreatmentTypesState();
     final response = await repo.getTreatmentTypes();
-    TreatmentTypesState newState = _mapFailureOrTypesToState(response);
-    state = newState;
-    return state;
+    state = _mapFailureOrTypesToState(response);
   }
 
-  Future<TreatmentTypesState> createTreatment(TreatmentTypeModel body) async {
-    var treatments = state.props as List<TreatmentTypeModel>;
-    treatments = [...treatments, body];
+  Future<void> createTreatmentType(String name) async {
+        state = LoadingTreatmentTypesState();
+    final response = await repo.createTreatmentType(name);
+    state = _mapFailureOrSuccessToState(response);
+    if(state is SuccessTreatmentTypesState){
+      await getAllTreatmentsTypes();
+    }
+  }
+
+  Future<void> updateTreatmentType(TreatmentTypeModel body) async {
     state = LoadingTreatmentTypesState();
     final response = await repo.updateTreatmentType(body);
-    TreatmentTypesState newState = _mapFailureOrSuccessToState(response);
-    state = newState;
-    return state;
+    state = _mapFailureOrSuccessToState(response);
+    if(state is SuccessTreatmentTypesState){
+      await getAllTreatmentsTypes();
+    }
   }
 
-  Future<TreatmentTypesState> updateTreatment(TreatmentTypeModel body) async {
-    state = LoadingTreatmentTypesState();
-    final response = await repo.updateTreatmentType(body);
-    TreatmentTypesState newState = _mapFailureOrSuccessToState(response);
-    state = newState;
-    return state;
-  }
-
-  Future<TreatmentTypesState> deleteTreatment(int typeId) async {
+  Future<void> deleteTreatmentType(int typeId) async {
     state = LoadingTreatmentTypesState();
     final response = await repo.deleteTreatmentType(typeId);
-    TreatmentTypesState newState = _mapFailureOrSuccessToState(response);
-    state = newState;
-    return state;
+    state = _mapFailureOrSuccessToState(response);
+    if(state is SuccessTreatmentTypesState){
+      await getAllTreatmentsTypes();
+    }
   }
 
   TreatmentTypesState _mapFailureOrTypesToState(Either<Failure, List<TreatmentTypeModel>> either) {
     return either.fold(
-          (failure) =>
-          ErrorTreatmentTypesState(message: _mapFailureToMessage(failure)),
-          (types) => LoadedTreatmentTypesState(types: types),
+      (failure) => ErrorTreatmentTypesState(message: _mapFailureToMessage(failure)),
+      (types) => LoadedTreatmentTypesState(types: types),
     );
   }
 
-  //Should either return a list<TreatmentTypeModel> from repo with response or handle it here
   TreatmentTypesState _mapFailureOrSuccessToState(Either<Failure, String> either) {
     return either.fold(
-          (failure) =>
-          ErrorTreatmentTypesState(message: _mapFailureToMessage(failure)),
-          (success) => LoadedTreatmentTypesState(types: <TreatmentTypeModel>[]),
+      (failure) => ErrorTreatmentTypesState(message: _mapFailureToMessage(failure)),
+      (success) => SuccessTreatmentTypesState(message: success),
     );
   }
 

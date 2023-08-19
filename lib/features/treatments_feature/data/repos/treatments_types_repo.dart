@@ -7,7 +7,7 @@ import '../documents/cud/treatment_type_mutation.dart';
 
 abstract class TreatmentTypesRepo {
 
-  Future<Either<Failure, TreatmentTypeModel>> createTreatmentType(TreatmentTypeModel body);
+  Future<Either<Failure, String>> createTreatmentType(String name);
 
   Future<Either<Failure, String>> updateTreatmentType(TreatmentTypeModel body);
 
@@ -23,13 +23,13 @@ class TreatmentTypesRepoImp extends TreatmentTypesRepo{
   TreatmentTypesRepoImp(this.gqlClient);
 
   @override
-  Future<Either<Failure, TreatmentTypeModel>> createTreatmentType(TreatmentTypeModel body) async {
+  Future<Either<Failure, String>> createTreatmentType(String name) async {
     final response = await gqlClient.query(
       QueryOptions(
         document: gql(TreatmentTypeMutation.createTreatmentType),
         variables: {
           'createTreatmentTypeInput': {
-            'name': body.name,
+            'name': name,
           }
         },
         fetchPolicy: FetchPolicy.noCache,
@@ -37,8 +37,7 @@ class TreatmentTypesRepoImp extends TreatmentTypesRepo{
     );
     if (!response.hasException && response.data != null) {
       print('success from creation');
-      Map<String, dynamic> src = response.data!['createTreatmentType'];
-      return right(TreatmentTypeModel.fromJson(src));
+      return right('Created Successfully.');
     } else {
       return left(ServerFailure());
     }
@@ -93,7 +92,8 @@ class TreatmentTypesRepoImp extends TreatmentTypesRepo{
       ),
     );
     if (!response.hasException && response.data != null) {
-      final List<Map<String, dynamic>>? types = response.data!['treatmentTypes'];
+      print('success from get types');
+      final List<dynamic>? types = response.data!['treatmentTypes'];
       return right(types!.map((src) => TreatmentTypeModel.fromJson(src)).toList());
     } else {
       return left(ServerFailure());

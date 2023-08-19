@@ -25,3 +25,12 @@ class ErrorTreatmentTypesState extends TreatmentTypesState {
   @override
   List<Object> get props => [message];
 }
+
+class SuccessTreatmentTypesState extends TreatmentTypesState {
+  late final String message;
+
+  SuccessTreatmentTypesState({required this.message});
+
+  @override
+  List<Object> get props => [message];
+}
