@@ -1,7 +1,5 @@
 import 'dart:ui';
-
 import 'package:equatable/equatable.dart';
-
 import './step_model.dart';
 import 'treatment_type_model.dart';
 
@@ -20,7 +18,7 @@ class TreatmentModel extends Equatable{
   TreatmentModel.fromJson(Map<String, dynamic> source){
     id = source['id'];
     name = source['name'];
-    color = _generateColor(source['color']);
+    color = generateColorFromString(source['color']);
     type = TreatmentTypeModel.fromJson(source['treatment_type']);
     if(source['price'] != null){
       price = source['price'];
@@ -41,10 +39,26 @@ class TreatmentModel extends Equatable{
     return map;
   }
 
-  Color _generateColor(String inputColor){
+  Color generateColorFromString(String inputColor){
     int colorHash = inputColor.hashCode;
     int colorValue = colorHash & 0x00FFFFFF;
     return Color(colorValue).withOpacity(1);
+  }
+
+  String generateStringFromColor(){
+    return color!.value.toRadixString(16);
+  }
+
+  TreatmentModel copy(){
+    return TreatmentModel(
+      id: id,
+      name: name,
+      color: color,
+      price: price,
+      channels: channels!.toList(),
+      steps: steps!.toList(),
+      type: type,
+    );
   }
 
   @override

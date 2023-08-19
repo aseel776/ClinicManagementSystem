@@ -63,8 +63,8 @@ class TreatmentInfo extends StatelessWidget {
                         ),
                       ),
                       FloatingActionButton(
-                        onPressed: () {
-                          showUpsertPopUp(context, treatment: treatment);
+                        onPressed: () async{
+                          await showUpsertPopUp(context, originalTreatment: treatment);
                         },
                         shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.zero,

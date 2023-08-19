@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import '../models/step_model.dart';
 import './/core/error/failures.dart';
 import '..//documents/cud/treatment_mutation.dart';
 import '..//documents/get/treatment_query.dart';
@@ -22,6 +23,9 @@ class TreatmentsRepoImp extends TreatmentsRepo {
     final response = await gqlClient.query(
       QueryOptions(
         document: gql(TreatmentMutation.createTreatment),
+        variables: {
+          'createTreatmentInput': _createTreatmentInput(body),
+        },
         fetchPolicy: FetchPolicy.noCache,
       ),
     );
@@ -31,6 +35,36 @@ class TreatmentsRepoImp extends TreatmentsRepo {
     } else {
       return left(ServerFailure());
     }
+  }
+
+  Object _createTreatmentInput(TreatmentModel body){
+    Object obj = {
+      'name': body.name,
+      'color': body.generateStringFromColor(),
+      'price': body.price,
+      'treatment_type_id': body.type!.id,
+      'steps' : body.steps!.map((s) => _createStepInput(s)).toList(),
+    };
+    return obj;
+  }
+
+  Object _createStepInput(StepModel step){
+    if(step.subSteps!.isNotEmpty){
+      return {
+        'name': step.name,
+        'subSteps': step.subSteps!.map((e) => _createSubStepInput(e)).toList(),
+      };
+    } else{
+      return {
+        'name': step.name,
+      };
+    }
+  }
+
+  Object _createSubStepInput(String name){
+    return {
+      'name': name
+    };
   }
 
   @override
