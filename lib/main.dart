@@ -11,14 +11,13 @@ class MainPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.sizeOf(context).width;
 
-    return ProviderScope(
+    return const ProviderScope(
       child: MaterialApp(
         title: "Clinic Management System",
         home: Directionality(
           textDirection: TextDirection.rtl,
-          child: AppointmentsMainSection(sectionWidth: screenWidth * 0.8),
+          child: AppointmentsMainSection(),
         ),
         debugShowCheckedModeBanner: false,
       ),
