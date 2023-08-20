@@ -8,6 +8,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/graphql_client_provider.dart';
 import '../../../../core/strings/failures.dart';
+import '../../data/models/diseases_patient.dart';
 import '../../data/models/patient.dart';
 
 final patientsCrudProvider =
@@ -42,6 +43,17 @@ class PatientsCrudNotifier extends StateNotifier<AddEditDeletePatientState> {
     return state;
   }
 
+  // Future<void> createPatientDiseases(PatientDiseases patientDiseases) async {
+  //   state = LoadingAddEditDeletePatientState();
+  //   print("after Loading");
+  //   final response =
+  //       await respositoryImpl.createNewPatientDiseases(patientDiseases);
+  //   print("done");
+  //   state = _mapFailureOrPatientToState(either: response);
+  //   print("state afterrrrrrrr");
+  //   print(state);
+  // }
+
   AddEditDeletePatientState _mapFailureOrPatientToState(
     Either<Failure, Patient> either,
   ) {
@@ -51,6 +63,16 @@ class PatientsCrudNotifier extends StateNotifier<AddEditDeletePatientState> {
       (patient) => PatientAddEditDeleteSuccessState(patient: patient),
     );
   }
+
+  // AddEditDeletePatientState _mapFailureOrToState(
+  //   Either<Failure, String> either,
+  // ) {
+  //   return either.fold(
+  //     (failure) => ErrorAddEditDeletePatientState(
+  //         message: _mapFailureToMessage(failure)),
+  //     (patient) => PatientAddEditDeleteSuccessState(patient: patient),
+  //   );
+  // }
 
   String _mapFailureToMessage(Failure failure) {
     switch (failure.runtimeType) {

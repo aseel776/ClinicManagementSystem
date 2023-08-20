@@ -11,15 +11,13 @@ import 'package:clinic_management_system/features/patients_management/data/model
 import 'package:clinic_management_system/features/patients_management/data/models/diseases_patient.dart';
 import 'package:clinic_management_system/features/patients_management/data/models/medicines_intake.dart';
 import 'package:clinic_management_system/features/patients_management/presentation/pages/patients_index.dart';
-import 'package:clinic_management_system/features/patients_management/presentation/riverpod/patients_provider.dart';
+
 import 'package:clinic_management_system/features/patients_management/presentation/widgets/disease_card.dart';
 
 import 'package:clinic_management_system/features/patients_management/presentation/widgets/select_chip.dart';
 import 'package:clinic_management_system/features/patients_management/presentation/widgets/step1_form.dart';
 import 'package:clinic_management_system/features/patients_management/presentation/widgets/step2_form.dart';
 import 'package:clinic_management_system/features/patients_management/presentation/widgets/textField.dart';
-
-import 'package:dartz/dartz.dart';
 
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';

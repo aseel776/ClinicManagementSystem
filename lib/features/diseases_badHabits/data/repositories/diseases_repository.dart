@@ -42,7 +42,7 @@ class DiseaseRepositoryImpl implements DiseaseRepository {
   Future<Either<Failure, DiseasesTable>> getPaginatedDiseases(
       double itemPerPage, double page) async {
     final response = await gqlClient.query(QueryOptions(
-      document: gql(Diseases.query),
+      document: gql(Diseases.diseasesQuery),
       fetchPolicy: FetchPolicy.noCache,
       variables: {'itemPerPage': itemPerPage, 'page': page},
     ));

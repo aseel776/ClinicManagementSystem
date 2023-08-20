@@ -23,7 +23,7 @@ class AddUpdateDeleteMedicinesNotifier
     extends StateNotifier<AddDeleteUpdateMedicinesState> {
   GraphQLClient client;
   AddUpdateDeleteMedicinesNotifier({required this.client})
-      : super(AddDeleteUpdateMedicinesState as AddDeleteUpdateMedicinesState);
+      : super(AddDeleteUpdateMedicinesInitial());
 
   late final ValueNotifier<GraphQLClient> clientNotifier =
       ValueNotifier<GraphQLClient>(client);
@@ -35,14 +35,24 @@ class AddUpdateDeleteMedicinesNotifier
   //   link: HttpLink('https://music-mates-fun.herokuapp.com/graphql'),
   //   cache: GraphQLCache(),
   // ));
-    final MedicineRespositoryImpl respositoryImpl = MedicineRespositoryImpl(
+  final MedicineRespositoryImpl respositoryImpl = MedicineRespositoryImpl(
       /**************** the 'client cause error here ????'********************* */
       GraphQLClient(
-    link: HttpLink('https://music-mates-fun.herokuapp.com/graphql'),
+    link: HttpLink('http://localhost:3000/graphql'),
     cache: GraphQLCache(),
   ));
 
   Future<AddDeleteUpdateMedicinesState> addMedicine(Medicine medicine) async {
+    state = LoadingAddDeleteUpdateMedicinesState();
+    final response = await respositoryImpl.addNewMedicine(medicine);
+    AddDeleteUpdateMedicinesState newState =
+        _eitherDoneMessageOrErrorState(response);
+    state = newState;
+    return state;
+  }
+
+  Future<AddDeleteUpdateMedicinesState> deleteMedicine(
+      Medicine medicine) async {
     state = LoadingAddDeleteUpdateMedicinesState();
     final response = await respositoryImpl.addNewMedicine(medicine);
     AddDeleteUpdateMedicinesState newState =

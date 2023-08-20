@@ -24,7 +24,7 @@ class DiseasesNotifier extends StateNotifier<DiseasesState> {
 
   late final ValueNotifier<GraphQLClient> clientNotifier =
       ValueNotifier<GraphQLClient>(client);
-
+      
   // Initialize repository to call the functions
   final DiseaseRepositoryImpl repositoryImpl = DiseaseRepositoryImpl(
     GraphQLClient(

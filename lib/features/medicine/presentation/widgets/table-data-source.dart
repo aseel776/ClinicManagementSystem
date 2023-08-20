@@ -23,11 +23,14 @@ class DataSource extends DataTableSource {
       index: index,
       // onSelectChanged: (value) => print("asdas"),
       cells: [
+        DataCell(
+          Text(row.id.toString()),
+        ),
         DataCell(Text(row.name!),
             onTap: () => animatedContainer(context, ref, index, false)),
         DataCell(Text(row.concentration.toString())),
-        DataCell(Text(row.concentration.toString())),
-        DataCell(Text(row.id.toString())),
+        DataCell(Text(row.category.toString())),
+        DataCell(Text(row.name.toString())),
       ],
     );
   }

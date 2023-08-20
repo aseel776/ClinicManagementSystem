@@ -5,6 +5,7 @@ import 'package:clinic_management_system/features/medicine/presentation/widgets/
 import 'package:clinic_management_system/features/patients_management/presentation/widgets/medical_images.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import '../../data/models/patient.dart';
 import '../riverpod/patients_provider.dart';
@@ -261,6 +262,7 @@ class _PatientProfileState extends ConsumerState<PatientProfile>
                           color: AppColors.black,
                         ),
                       ),
+                      // (state)
                       Expanded(
                         child: ListView.builder(
                           itemCount: payments.length,
@@ -323,10 +325,11 @@ class _PatientProfileState extends ConsumerState<PatientProfile>
                       ),
                       Expanded(
                           child: ListView.builder(
-                        itemCount: widget.patient.patientPayments!.length,
+                        itemCount:
+                            widget.patient.patientPayments!.payments!.length,
                         itemBuilder: (context, index) {
                           final payment =
-                              widget.patient.patientPayments![index];
+                              widget.patient.patientPayments!.payments![index];
                           return Column(
                             children: [
                               GestureDetector(
@@ -731,53 +734,59 @@ class _PatientProfileState extends ConsumerState<PatientProfile>
                       const SizedBox(
                         height: 10,
                       ),
-                      Expanded(
-                        child: ListView.builder(
-                          itemCount: widget.patient.patientPayments!.length,
-                          itemBuilder: (context, index) {
-                            final payment =
-                                widget.patient.patientPayments![index];
-                            return Column(
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    Container(
-                                      width: 10,
-                                      height: 10,
-                                      decoration: const BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: Colors.teal,
+                      (widget.patient.patientPayments!.payments != null)
+                          ? Expanded(
+                              child: ListView.builder(
+                                itemCount: widget
+                                    .patient.patientPayments!.payments!.length,
+                                itemBuilder: (context, index) {
+                                  final payment = widget.patient
+                                      .patientPayments!.payments![index];
+                                  return Column(
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          Container(
+                                            width: 10,
+                                            height: 10,
+                                            decoration: const BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: Colors.teal,
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            width: 8,
+                                          ),
+                                          PrimaryText(
+                                              text: payment.date.toString()),
+                                          SizedBox(width: sectionWidth * 0.01),
+                                          const Icon(
+                                            Icons.arrow_forward,
+                                            size: 14,
+                                            color: AppColors.black,
+                                          ),
+                                          SizedBox(width: sectionWidth * 0.01),
+                                          PrimaryText(
+                                              text: '${payment.amount} ألف'),
+                                        ],
                                       ),
-                                    ),
-                                    const SizedBox(
-                                      width: 8,
-                                    ),
-                                    PrimaryText(text: payment.date.toString()),
-                                    SizedBox(width: sectionWidth * 0.01),
-                                    const Icon(
-                                      Icons.arrow_forward,
-                                      size: 14,
-                                      color: AppColors.black,
-                                    ),
-                                    SizedBox(width: sectionWidth * 0.01),
-                                    PrimaryText(text: '${payment.amount} ألف'),
-                                  ],
-                                ),
-                                const SizedBox(height: 7),
-                                Divider(
-                                  color: AppColors.black.withOpacity(0.3),
-                                  height: 1,
-                                ),
-                                SizedBox(
-                                  height: 5,
-                                )
-                              ],
-                            );
-                          },
-                        ),
-                      ),
+                                      const SizedBox(height: 7),
+                                      Divider(
+                                        color: AppColors.black.withOpacity(0.3),
+                                        height: 1,
+                                      ),
+                                      SizedBox(
+                                        height: 5,
+                                      )
+                                    ],
+                                  );
+                                },
+                              ),
+                            )
+                          : LoadingAnimationWidget.inkDrop(
+                              color: AppColors.black, size: 25),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: PrimaryText(

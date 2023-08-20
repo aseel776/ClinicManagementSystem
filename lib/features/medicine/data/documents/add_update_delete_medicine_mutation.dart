@@ -32,6 +32,7 @@ class MedicineMutationDocsGql {
         payment_type {
           name
         }
+      
         order_items {
           product {
             name

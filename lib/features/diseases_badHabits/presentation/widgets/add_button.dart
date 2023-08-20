@@ -73,7 +73,9 @@ class AddButton extends ConsumerWidget {
     ref.watch(diseaseName.notifier).state.text = "";
 
     //active materials
-    await ref.watch(activeMaterialsProvider.notifier).getAllMaterials(1, items: 10000);
+    await ref
+        .watch(activeMaterialsProvider.notifier)
+        .getAllMaterials(1, items: 10000);
     final stateActive = ref.watch(activeMaterialsProvider.notifier).state;
     ref.watch(multiSelect);
 
@@ -296,10 +298,11 @@ class AddButton extends ConsumerWidget {
                           width: screenWidth! * 0.08,
                           child: ElevatedButton(
                               onPressed: () {
-                                List<ActiveMaterialModel>? selectedMaterials = ref
-                                    .watch(multiSelect.notifier)
-                                    .state
-                                    .cast<ActiveMaterialModel>();
+                                List<ActiveMaterialModel>? selectedMaterials =
+                                    ref
+                                        .watch(multiSelect.notifier)
+                                        .state
+                                        .cast<ActiveMaterialModel>();
                                 BadHabit newBadHabit = BadHabit(
                                     name: ref
                                         .watch(badHabitsName.notifier)
@@ -341,7 +344,9 @@ class AddButton extends ConsumerWidget {
   }
 
   void antiMaterialsSelect(BuildContext context, WidgetRef ref) async {
-    await ref.watch(activeMaterialsProvider.notifier).getAllMaterials(1, items: 10000);
+    await ref
+        .watch(activeMaterialsProvider.notifier)
+        .getAllMaterials(1, items: 10000);
     final stateActive = ref.watch(activeMaterialsProvider.notifier).state;
     // material.antiMaterials ??= [];
     // List<String>? originalOne = material.antiMaterials!.toList();

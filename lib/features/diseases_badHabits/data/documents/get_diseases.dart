@@ -1,17 +1,26 @@
 class Diseases {
-  static const query = '''
-                query Diseases(\$itemPerPage: Float!, \$page: Float!) {
-                  diseases(item_per_page: \$itemPerPage, page: \$page) {
-                    page
-                    item_per_page
-                    totalPages
-                    items {
-                      id
-                      name
-                    }
-                  }
-                }
-              ''';
+  static const String diseasesQuery = r'''
+  query Diseases($itemPerPage: Float!, $page: Float!) {
+    diseases(item_per_page: $itemPerPage, page: $page) {
+      item_per_page
+      page
+      totalPages
+      items {
+        id
+        name
+        diseaseChemicalMaterials {
+          chemical_material_id
+          disease_id
+          id
+          chemical_material {
+            id
+            name
+          }
+        }
+      }
+    }
+  }
+''';
 
   static const String diseasesSearchQuery = '''
   query Diseases(\$search: String!, \$itemPerPage: Float!, \$page: Float!) {
@@ -22,9 +31,17 @@ class Diseases {
       items {
         id
         name
+        diseaseChemicalMaterials {
+          chemical_material_id
+          disease_id
+          id
+          chemical_material {
+            id
+            name
+          }
+        }
       }
     }
   }
 ''';
-
 }

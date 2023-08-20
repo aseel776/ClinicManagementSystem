@@ -1,6 +1,7 @@
 import 'package:clinic_management_system/features/patients_management/data/models/diseases_patient.dart';
 import 'package:clinic_management_system/features/patients_management/data/models/patient_cost.dart';
 import 'package:clinic_management_system/features/patients_management/data/models/patient_payments.dart';
+import 'package:clinic_management_system/features/patients_management/data/models/patient_payments_table.dart';
 import 'package:equatable/equatable.dart';
 import 'package:intl/intl.dart';
 
@@ -20,7 +21,7 @@ class Patient extends Equatable {
   List<PatientMedicine> patientMedicines;
   List<PatientBadHabits> patientBadHabits;
   List<PatientDiseases> patientDiseases;
-  List<PatientPayment>? patientPayments;
+  PatientPaymentsTable? patientPayments;
   List<PatientCost>? patientCosts;
 
   Patient(
@@ -51,8 +52,8 @@ class Patient extends Equatable {
     final patientDiseasesList = (json['patient_diseases'] as List<dynamic>?)
         ?.map((diseaseJson) => PatientDiseases.fromJson(diseaseJson))
         .toList();
-    final patientPaymentsList = (json['patient_payments'] as List<dynamic>?)
-        ?.map((payment) => PatientPayment.fromJson(payment))
+    final patientPaymentsList = (json['patient_payments'] as dynamic)
+        ?.map((payment) => PatientPaymentsTable.fromJson(payment))
         .toList();
     final patientCostsList = (json['patient_costs'] as List<dynamic>?)
         ?.map((cost) => PatientCost.fromJson(cost))
@@ -71,7 +72,7 @@ class Patient extends Equatable {
         patientMedicines: patientMedicinesList ?? [],
         patientBadHabits: patientBadHabitsList ?? [],
         patientDiseases: patientDiseasesList ?? [],
-        patientPayments: patientPaymentsList ?? [],
+        patientPayments: patientPaymentsList,
         patientCosts: patientCostsList ?? []);
   }
 
@@ -106,8 +107,7 @@ class Patient extends Equatable {
           patientDiseases!.map((disease) => disease.toJson()).toList();
     }
     if (patientPayments != null) {
-      jsonMap['patient_payments'] =
-          patientPayments!.map((payments) => payments.toJson()).toList();
+      jsonMap['patient_payments'] = patientPayments!.toJson();
     }
     if (patientCosts != null) {
       jsonMap['patient_costs'] =

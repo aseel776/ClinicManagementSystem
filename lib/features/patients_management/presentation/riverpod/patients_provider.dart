@@ -3,6 +3,7 @@ import 'package:clinic_management_system/features/patients_management/data/model
 import 'package:clinic_management_system/features/patients_management/data/models/medicines_intake.dart';
 import 'package:clinic_management_system/features/patients_management/data/models/patient_cost.dart';
 import 'package:clinic_management_system/features/patients_management/data/models/patient_payments.dart';
+import 'package:clinic_management_system/features/patients_management/data/models/patient_payments_table.dart';
 import 'package:clinic_management_system/features/patients_management/data/models/patients_table.dart';
 import 'package:clinic_management_system/features/patients_management/data/repository/patient_crud_repository.dart';
 import 'package:clinic_management_system/features/patients_management/presentation/riverpod/patient_crud_state.dart';
@@ -57,6 +58,18 @@ class PatientsNotifier extends StateNotifier<PatientsState> {
     print(state);
   }
 
+  Future<void> getPaginatedSearchPatients(
+      double itemPerPage, double page, String search) async {
+    state = LoadingPatientsState();
+    print("after Loading");
+    final response = await repositoryImpl.getPaginatedSearchPatients(
+        itemPerPage, page, search);
+    print("done");
+    state = _mapFailureOrPatientToState(either: response);
+    print("state afterrrrrrrr");
+    print(state);
+  }
+
   Future<void> getPatientPayments(
     double itemPerPage,
     double page,
@@ -91,7 +104,7 @@ class PatientsNotifier extends StateNotifier<PatientsState> {
           sort_field,
           sort_order,
         );
-        List<PatientPayment> paymentsList = [];
+        late PatientPaymentsTable paymentsList;
         response.fold((failure) {
           ErrorPatientsState(message: _mapFailureToMessage(failure));
         }, (payments) {

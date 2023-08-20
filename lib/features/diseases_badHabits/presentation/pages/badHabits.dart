@@ -57,7 +57,12 @@ class _BadHabitsState extends ConsumerState<BadHabits> {
                 SearchField(
                   sectionWidth: sectionWidth,
                   sectionHeight: sectionHeight,
-                  onTextChanged: (text) {},
+                  onTextChanged: (text) {
+                    ref.watch(currentPageBadHabitsTable.notifier).state = 1;
+                    ref
+                        .watch(badHabitsProvider.notifier)
+                        .getPaginatedSearchBadHabits(8, 1, text);
+                  },
                 ),
                 SizedBox(
                   width: sectionWidth * 0.03,
@@ -119,7 +124,8 @@ class _BadHabitsState extends ConsumerState<BadHabits> {
                           SizedBox(
                               width: sectionWidth,
                               // height: sectionHeight * 0.3,
-                              child: BadHabitsTableWidget(badHabits: state.badHabits)),
+                              child: BadHabitsTableWidget(
+                                  badHabits: state.badHabits)),
                           SizedBox(
                             height: 20,
                           ),

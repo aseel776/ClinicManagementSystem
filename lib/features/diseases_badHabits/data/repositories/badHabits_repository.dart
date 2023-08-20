@@ -15,6 +15,8 @@ abstract class BadHabitRepository {
   Future<Either<Failure, List<BadHabit>>> getBadHabits();
   Future<Either<Failure, BadHabitsTable>> getPaginatedBadHabits(
       double itemPerPage, double page);
+  Future<Either<Failure, BadHabitsTable>> getPaginatedSearchBadHabits(
+      double itemPerPage, double page, String search);
 }
 
 class BadHabitRepositoryImpl implements BadHabitRepository {
@@ -44,8 +46,41 @@ class BadHabitRepositoryImpl implements BadHabitRepository {
       double itemPerPage, double page) async {
     final response = await gqlClient.query(QueryOptions(
       fetchPolicy: FetchPolicy.noCache,
-      document: gql(BadHabitsDocsGql.query),
+      document: gql(BadHabitsDocsGql.badHabitsQuery),
       variables: {'itemPerPage': itemPerPage, 'page': page},
+    ));
+
+    if (!response.hasException && response.data != null) {
+      final Map<String, dynamic> data = response.data!['badHabits'];
+      final List<dynamic> items = data['items'];
+      final total = data['totalPages'];
+
+      List<BadHabit> list =
+          items.map((json) => BadHabit.fromJson(json)).toList();
+      BadHabitsTable badHabitsList =
+          BadHabitsTable(badHabits: list, totalPages: total);
+      print("sksssss");
+      if (badHabitsList.badHabits == null || badHabitsList.badHabits!.isEmpty) {
+        print("lllll");
+        return left(ServerFailure());
+      }
+
+      print("lissst");
+      print(badHabitsList.badHabits![0].name);
+      return right(badHabitsList);
+    } else {
+      print('GraphQL Error: ${response.exception}');
+      return left(ServerFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, BadHabitsTable>> getPaginatedSearchBadHabits(
+      double itemPerPage, double page, String search) async {
+    final response = await gqlClient.query(QueryOptions(
+      fetchPolicy: FetchPolicy.noCache,
+      document: gql(BadHabitsDocsGql.badHabitsSearchQuery),
+      variables: {'itemPerPage': itemPerPage, 'page': page, 'search': search},
     ));
 
     if (!response.hasException && response.data != null) {

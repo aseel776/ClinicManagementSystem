@@ -1,4 +1,5 @@
 import 'package:clinic_management_system/features/diseases_badHabits/presentation/pages/general.dart';
+import 'package:clinic_management_system/features/lab_feature/presentation/pages/lab_screen.dart';
 import 'package:clinic_management_system/features/medicine/data/model/active_materials.dart';
 import 'package:clinic_management_system/features/medicine/presentation/Pages/medicine_page.dart';
 import 'package:clinic_management_system/features/patients_management/presentation/pages/patients.dart';
@@ -37,12 +38,12 @@ class _SidebarState extends ConsumerState<Sidebar> {
         pageName: "Appointments",
         svgIconPath: "assets/svgs/appointment.svg"): General(),
     NavBarData(pageName: "Patients", svgIconPath: "assets/svgs/patients.svg"):
-        CreatePatients(),
+        PatientIndex(),
     NavBarData(
-            pageName: "Repository", svgIconPath: "assets/svgs/repository.svg"):
-        TreatmentsMainSection(),
+        pageName: "Repository",
+        svgIconPath: "assets/svgs/repository.svg"): TreatmentsMainSection(),
     NavBarData(pageName: "Payments", svgIconPath: "assets/svgs/payments.svg"):
-        RepositoryScreen()
+        LabsScreen()
   };
 
   void select(int n, WidgetRef ref) {

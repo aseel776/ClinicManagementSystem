@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class TypeDropDown extends StatefulWidget {
   String? hintText;
-  List<Map<String, dynamic>> items;
+  List<String> items;
   TypeDropDown({super.key, this.hintText, required this.items});
 
   @override
@@ -41,12 +41,12 @@ class _MyDropdownFormFieldState extends State<TypeDropDown> {
       },
       items: widget.items.map<DropdownMenuItem<String>>((item) {
         return DropdownMenuItem<String>(
-          value: item['text'],
+          value: item,
           child: Row(
             children: [
-              Icon(item['icon']),
-              const SizedBox(width: 10),
-              Text(item['text']),
+              // Icon(item['icon']),
+              // const SizedBox(width: 10),
+              Text(item),
             ],
           ),
         );

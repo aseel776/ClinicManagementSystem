@@ -16,11 +16,20 @@ class Disease {
   });
 
   factory Disease.fromJson(Map<String, dynamic> json) {
+    List<ActiveMaterialModel>? materialsList;
+    if (json.containsKey('diseaseChemicalMaterials')) {
+      List<dynamic> materialsData = json['diseaseChemicalMaterials'];
+      materialsList = materialsData
+          .map((materialData) =>
+              ActiveMaterialModel.fromJson(materialData['chemical_material']))
+          .toList();
+    }
+
     return Disease(
       id: json['id'],
       name: json['name'],
       // description: json['description'],
-      // antiMaterials: List<String>.from(json['antiMaterials']),
+      antiMaterials: materialsList,
       // isFlipped: json['isFlipped'] ?? false,
     );
   }
@@ -30,7 +39,7 @@ class Disease {
       'id': id,
       'diseaseName': name,
       'chemicalMaterialIds':
-          antiMaterials!.map((material) => material.id).toList(),
+          antiMaterials?.map((material) => material.id).toList(),
     };
   }
 }

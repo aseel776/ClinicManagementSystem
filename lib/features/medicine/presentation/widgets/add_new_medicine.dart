@@ -8,27 +8,18 @@ import 'package:clinic_management_system/features/patients_management/presentati
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class AddMedicineDialog {
-  List<String> medicineTypes = [
-    'نوع 1',
-    'نوع 2',
-    'نوع 3',
-    'نوع 4',
-  ];
-  String selectedType = "نووع 1";
+import '../../data/model/category.dart';
+import '../riverpod/medicines/categories_provider.dart';
 
-  Map<String, IconData> typeIcons = {
-    'نوع 1': Icons.medical_services,
-    'نوع 2': Icons.local_pharmacy,
-    'نوع 3': Icons.healing,
-    'نوع 4': Icons.personal_injury_outlined,
-  };
+class AddMedicineDialog {
   StateProvider medicineName =
       StateProvider<TextEditingController>((ref) => TextEditingController());
   StateProvider medicineConcentration =
       StateProvider<TextEditingController>((ref) => TextEditingController());
 
-  showDialog1(BuildContext context, WidgetRef ref) {
+  showDialog1(BuildContext context, WidgetRef ref, List<Category> cat) {
+    ref.watch(categoriesProvider);
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -198,20 +189,8 @@ class AddMedicineDialog {
                                         width: maxWidth * 0.2,
                                         child: TypeDropDown(
                                           hintText: "الشكل الدوائي",
-                                          items: [
-                                            {
-                                              'text': 'Option 1',
-                                              'icon': Icons.check_circle,
-                                            },
-                                            {
-                                              'text': 'Option 2',
-                                              'icon': Icons.star,
-                                            },
-                                            {
-                                              'text': 'Option 3',
-                                              'icon': Icons.access_alarm,
-                                            },
-                                          ],
+                                          items:
+                                              cat.map((e) => e.name).toList(),
                                         ),
                                       ),
                                     ],
@@ -235,26 +214,26 @@ class AddMedicineDialog {
                                       SizedBox(
                                         width: maxWidth * 0,
                                       ),
-                                      Container(
-                                        width: maxWidth * 0.2,
-                                        child: TypeDropDown(
-                                          hintText: "المواد الفعالة ",
-                                          items: [
-                                            {
-                                              'text': 'Option 1',
-                                              'icon': Icons.check_circle,
-                                            },
-                                            {
-                                              'text': 'Option 2',
-                                              'icon': Icons.star,
-                                            },
-                                            {
-                                              'text': 'Option 3',
-                                              'icon': Icons.access_alarm,
-                                            },
-                                          ],
-                                        ),
-                                      )
+                                      // Container(
+                                      //   width: maxWidth * 0.2,
+                                      //   child: TypeDropDown(
+                                      //     hintText: "المواد الفعالة ",
+                                      //     items: [
+                                      //       {
+                                      //         'text': 'Option 1',
+                                      //         'icon': Icons.check_circle,
+                                      //       },
+                                      //       {
+                                      //         'text': 'Option 2',
+                                      //         'icon': Icons.star,
+                                      //       },
+                                      //       {
+                                      //         'text': 'Option 3',
+                                      //         'icon': Icons.access_alarm,
+                                      //       },
+                                      //     ],
+                                      //   ),
+                                      // )
                                     ],
                                   ),
                                 ],
@@ -267,7 +246,9 @@ class AddMedicineDialog {
                             child: Row(
                               children: [
                                 ElevatedButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    
+                                  },
                                   style: ButtonStyle(
                                       backgroundColor:
                                           MaterialStateProperty.all(

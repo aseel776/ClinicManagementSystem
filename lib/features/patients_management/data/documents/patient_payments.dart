@@ -40,6 +40,9 @@ class PatientPaymentsDocsGql {
           item_per_page
           page
           totalPages
+           meta {
+            total
+           }
           items {
             amount
             date

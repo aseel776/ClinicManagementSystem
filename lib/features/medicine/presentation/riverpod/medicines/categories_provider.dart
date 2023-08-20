@@ -12,17 +12,17 @@ import '../../../../../core/error/failures.dart';
 import '../../../../../core/graphql_client_provider.dart';
 import '../../../../../core/strings/failures.dart';
 
-final medicinesProvider =
-    StateNotifierProvider<MedicinesNotifier, MedicinesState>(
+final categoriesProvider =
+    StateNotifierProvider<CategoriesNotifier, MedicinesState>(
   (ref) {
     GraphQLClient client = ref.watch(graphQlClientProvider);
-    return MedicinesNotifier(client: client);
+    return CategoriesNotifier(client: client);
   },
 );
 
-class MedicinesNotifier extends StateNotifier<MedicinesState> {
+class CategoriesNotifier extends StateNotifier<MedicinesState> {
   GraphQLClient client;
-  MedicinesNotifier({required this.client}) : super(MedicinesInitial());
+  CategoriesNotifier({required this.client}) : super(MedicinesInitial());
 
   late final ValueNotifier<GraphQLClient> clientNotifier =
       ValueNotifier<GraphQLClient>(client);
@@ -35,37 +35,10 @@ class MedicinesNotifier extends StateNotifier<MedicinesState> {
     cache: GraphQLCache(),
   ));
 
-  // Future<MedicinesState> getAllMedicines() async {
-  //   state = LoadingMedicinesState();
-  //   final response = await respositoryImpl.getMedicine();
-  //   MedicinesState newState = _mapFailureOrMedicinesToState(response);
-  //   state = newState;
-  //   return state;
-  // }
-
-  Future<void> getPaginatedMedicines(double itemPerPage, double page) async {
-    state = LoadingMedicinesState();
-    final response =
-        await respositoryImpl.getPaginatedMedicines(itemPerPage, page);
-    state = _mapFailureOrMedicinesToState(response);
-  }
-
   Future<void> getCategories() async {
-    final statebefore = state;
     state = LoadingMedicinesState();
     final response = await respositoryImpl.getCategories();
     state = _mapFailureOrCategoriesToState(response);
-    state = statebefore;
-  }
-
-  MedicinesState _mapFailureOrMedicinesToState(
-      Either<Failure, MedicinesTable> either) {
-    return either.fold(
-      (failure) => ErrorMedicinesState(message: _mapFailureToMessage(failure)),
-      (medicines) => LoadedMedicinesState(
-          medicines: medicines.medicinesList!,
-          totalPages: medicines.totalPages),
-    );
   }
 
   MedicinesState _mapFailureOrCategoriesToState(

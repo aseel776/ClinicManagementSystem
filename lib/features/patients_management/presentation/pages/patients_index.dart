@@ -5,7 +5,6 @@ import 'package:clinic_management_system/features/patients_management/presentati
 import 'package:clinic_management_system/features/patients_management/presentation/riverpod/patients_provider.dart';
 import 'package:clinic_management_system/features/patients_management/presentation/riverpod/patients_state.dart';
 
-import 'package:dartz/dartz.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -16,6 +15,7 @@ import '../../data/models/patient.dart';
 
 StateProvider totalPagesPatientsTable = StateProvider((ref) => 1);
 StateProvider currentPagePatientsTable = StateProvider((ref) => 1);
+StateProvider patientSearch = StateProvider((ref) => TextEditingController());
 
 class PatientIndex extends ConsumerStatefulWidget {
   const PatientIndex({Key? key}) : super(key: key);
@@ -47,6 +47,8 @@ class PatientIndexState extends ConsumerState<PatientIndex> {
     final state = ref.watch(patientsProvider.notifier).state;
     final totalPages = ref.watch(totalPagesPatientsTable);
     final currentPage = ref.watch(currentPagePatientsTable);
+    ref.watch(patientSearch);
+
     return Column(
       children: [
         const Padding(
@@ -116,15 +118,28 @@ class PatientIndexState extends ConsumerState<PatientIndex> {
                                   color: Colors.grey.withOpacity(.8),
                                 ),
                               ),
-                              const Expanded(
+                              Expanded(
                                 child: Padding(
-                                  padding: EdgeInsets.symmetric(
+                                  padding: const EdgeInsets.symmetric(
                                     vertical: defaultSpace,
                                   ),
                                   child: TextField(
-                                    // onChanged: _onSearchTextChanged,
-                                    style: TextStyle(fontSize: 12),
-                                    decoration: InputDecoration(
+                                    controller:
+                                        ref.watch(patientSearch.notifier).state,
+                                    onChanged: (search) {
+                                      print(search);
+                                      ref
+                                          .watch(
+                                              currentPagePatientsTable.notifier)
+                                          .state = 1;
+                                      ref
+                                          .watch(patientsProvider.notifier)
+                                          .getPaginatedSearchPatients(
+                                              5, 1, search);
+                                      print('end');
+                                    },
+                                    style: const TextStyle(fontSize: 12),
+                                    decoration: const InputDecoration(
                                       border: InputBorder.none,
                                     ),
                                   ),
