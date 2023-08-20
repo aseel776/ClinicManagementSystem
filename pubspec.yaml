@@ -92,9 +92,6 @@ flutter:
   fonts:
     - family: Cairo
       fonts:
-<<<<<<< HEAD
-        - asset: assets/fonts/Cairo-VariableFont_slnt,wght.ttf
-=======
         - asset: assets/fonts/Cairo-VariableFont.ttf
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
@@ -104,6 +101,5 @@ flutter:
   #       - asset: fonts/TrajanPro_Bold.ttf
   #         weight: 700
   #
->>>>>>> 3571630ae7a498d5757b81712d8718fbf8f935ec
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
