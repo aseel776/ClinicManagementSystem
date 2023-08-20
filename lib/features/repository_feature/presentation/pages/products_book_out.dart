@@ -1,7 +1,7 @@
 import 'dart:ui';
-
-import 'package:clinic_management_system/features/patients_management/presentation/widgets/textField.dart';
-import 'package:clinic_management_system/features/repository_feature/data/models/book_out.dart';
+import 'package:clinic_management_system/core/primaryText.dart';
+import 'package:clinic_management_system/core/textField.dart';
+import 'package:clinic_management_system/features/patients_management/presentation/pages/patients_index.dart';
 import 'package:clinic_management_system/features/repository_feature/presentation/riverpod/book_out_provider.dart';
 import 'package:clinic_management_system/features/repository_feature/presentation/riverpod/book_out_state.dart';
 import 'package:flutter/cupertino.dart';
@@ -9,8 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/app_colors.dart';
-import '../../../medicine/presentation/widgets/primaryText.dart';
-import '../../../patients_management/presentation/pages/patients_index.dart';
 import '../../data/models/product.dart';
 import '../../data/models/select_stored_product.dart';
 
@@ -395,7 +393,7 @@ class _ProductsBookOutState extends ConsumerState<ProductsBookOut> {
         builder: (context) => BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
               child: Dialog(
-                backgroundColor: AppColors.grey,
+                backgroundColor: AppColors.lightGrey,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15),
                 ),

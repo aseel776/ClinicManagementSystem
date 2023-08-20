@@ -1,6 +1,8 @@
 import 'dart:ui';
 
 import 'package:clinic_management_system/core/app_colors.dart';
+import 'package:clinic_management_system/core/primaryText.dart';
+import 'package:clinic_management_system/core/textField.dart';
 
 import 'package:clinic_management_system/features/repository_feature/data/models/product.dart';
 import 'package:clinic_management_system/features/repository_feature/data/models/stored_product.dart';
@@ -15,8 +17,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import '../../../diseases_badHabits_teeth/presentation/widgets/delete_snack_bar.dart';
-import '../../../medicine/presentation/widgets/primaryText.dart';
-import '../../../patients_management/presentation/widgets/textField.dart';
 
 StateProvider showAllProducts = StateProvider((ref) => true);
 StateProvider showStoredProducts = StateProvider((ref) => false);
@@ -450,7 +450,7 @@ class _RepositoryScreenState extends ConsumerState<RepositoryScreen> {
         builder: (context) => BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
               child: Dialog(
-                backgroundColor: AppColors.grey,
+                backgroundColor: AppColors.lightGrey,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15),
                 ),

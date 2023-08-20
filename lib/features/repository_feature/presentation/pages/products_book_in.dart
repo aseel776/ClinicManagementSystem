@@ -1,3 +1,5 @@
+import 'package:clinic_management_system/core/pagination_widget.dart';
+import 'package:clinic_management_system/core/primaryText.dart';
 import 'package:clinic_management_system/features/repository_feature/data/models/book_in.dart';
 import 'package:clinic_management_system/features/repository_feature/presentation/riverpod/book_in_provider.dart';
 import 'package:clinic_management_system/features/repository_feature/presentation/riverpod/book_in_state.dart';
@@ -6,8 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/app_colors.dart';
-import '../../../medicine/presentation/widgets/primaryText.dart';
-import '../../../patients_management/presentation/pages/patients_index.dart';
+// import '../../../patients_management/presentation/pages/patients_index.dart';
 import '../../data/models/product.dart';
 
 StateProvider totalPagesBookIns = StateProvider((ref) => 1);
