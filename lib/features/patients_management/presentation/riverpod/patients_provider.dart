@@ -53,6 +53,8 @@ class PatientsNotifier extends StateNotifier<PatientsState> {
         await repositoryImpl.getPaginatedPatients(itemPerPage, page);
     print("done");
     state = _mapFailureOrPatientToState(either: response);
+    print("state afterrrrrrrr");
+    print(state);
   }
 
   Future<void> getPatientPayments(
@@ -62,6 +64,8 @@ class PatientsNotifier extends StateNotifier<PatientsState> {
     String sort_field,
     String sort_order,
   ) async {
+    print("patientPaymentsState");
+    print(state);
     if (state is LoadedPatientsState) {
       final state1 = state;
       final totalPages;
@@ -77,7 +81,7 @@ class PatientsNotifier extends StateNotifier<PatientsState> {
 
       int patientIndex =
           updatedPatients.indexWhere((patient) => patient.id == patientId);
-      state = LoadingPatientsState();
+      // state = LoadingPatientsState();
 
       if (patientIndex != -1) {
         final response = await repositoryImpl.getPatientPayments(
@@ -88,10 +92,11 @@ class PatientsNotifier extends StateNotifier<PatientsState> {
           sort_order,
         );
         List<PatientPayment> paymentsList = [];
-        response.fold(
-            (failure) =>
-                ErrorPatientsState(message: _mapFailureToMessage(failure)),
-            (payments) => paymentsList = payments);
+        response.fold((failure) {
+          ErrorPatientsState(message: _mapFailureToMessage(failure));
+        }, (payments) {
+          paymentsList = payments;
+        });
 
         // Update the patientPayments for the specific patient
         updatedPatients[patientIndex].patientPayments =
@@ -104,6 +109,8 @@ class PatientsNotifier extends StateNotifier<PatientsState> {
         );
       }
     }
+    print("state afterrrrrrrrPayments");
+    print(state);
   }
 
   Future<void> getPatientCosts(
@@ -147,18 +154,22 @@ class PatientsNotifier extends StateNotifier<PatientsState> {
             costsList; // Update the patient in the copied list
 
         // Notify the state that the data has changed
-        state = LoadingPatientsState();
+        // state = LoadingPatientsState();
         state = LoadedPatientsState(
           patients: updatedPatients,
           totalPages: totalPages,
         );
       }
     }
+    print("state afterrrrrrrrCosts");
+    print(state);
   }
 
   Future<void> getPatientBadHabits(
     int patientId,
   ) async {
+    print("stateeeee");
+    print(state);
     if (state is LoadedPatientsState) {
       final state1 = state;
       final totalPages;
@@ -173,6 +184,8 @@ class PatientsNotifier extends StateNotifier<PatientsState> {
 
       int patientIndex =
           updatedPatients.indexWhere((patient) => patient.id == patientId);
+      print("patienttttt indexxxxxx");
+      print(patientIndex);
 
       if (patientIndex != -1) {
         final response = await repositoryImpl.getPatientBadHabits(
@@ -189,7 +202,7 @@ class PatientsNotifier extends StateNotifier<PatientsState> {
             badHabitsList; // Update the patient in the copied list
 
         // Notify the state that the data has changed
-        state = LoadingPatientsState();
+        // state = LoadingPatientsState();
         state = LoadedPatientsState(
           patients: updatedPatients,
           totalPages: totalPages,
@@ -231,7 +244,7 @@ class PatientsNotifier extends StateNotifier<PatientsState> {
             diseasesList; // Update the patient in the copied list
 
         // Notify the state that the data has changed
-        state = LoadingPatientsState();
+        // state = LoadingPatientsState();
         state = LoadedPatientsState(
           patients: updatedPatients,
           totalPages: totalPages,
@@ -273,7 +286,7 @@ class PatientsNotifier extends StateNotifier<PatientsState> {
             medicinesList; // Update the patient in the copied list
 
         // Notify the state that the data has changed
-        state = LoadingPatientsState();
+        // state = LoadingPatientsState();
         state = LoadedPatientsState(
           patients: updatedPatients,
           totalPages: totalPages,

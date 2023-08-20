@@ -3,22 +3,22 @@
 import 'dart:ui';
 
 import 'package:clinic_management_system/core/app_colors.dart';
-import 'package:clinic_management_system/features/diseases_badHabits/data/models/badHabits.dart';
-import 'package:clinic_management_system/features/diseases_badHabits/data/models/diseases.dart';
-import 'package:clinic_management_system/features/diseases_badHabits/presentation/riverpod/diseases/diseases_provider.dart';
-import 'package:clinic_management_system/features/diseases_badHabits/presentation/riverpod/diseases/diseases_state.dart';
+
 import 'package:clinic_management_system/features/medicine/presentation/riverpod/medicines/medicines_state.dart';
 
 import 'package:clinic_management_system/features/medicine/presentation/widgets/primaryText.dart';
 import 'package:clinic_management_system/features/patients_management/data/models/badHabits_patient.dart';
 import 'package:clinic_management_system/features/patients_management/data/models/diseases_patient.dart';
 import 'package:clinic_management_system/features/patients_management/data/models/medicines_intake.dart';
+import 'package:clinic_management_system/features/patients_management/presentation/pages/patients_index.dart';
+import 'package:clinic_management_system/features/patients_management/presentation/riverpod/patients_provider.dart';
 import 'package:clinic_management_system/features/patients_management/presentation/widgets/disease_card.dart';
 
 import 'package:clinic_management_system/features/patients_management/presentation/widgets/select_chip.dart';
 import 'package:clinic_management_system/features/patients_management/presentation/widgets/step1_form.dart';
 import 'package:clinic_management_system/features/patients_management/presentation/widgets/step2_form.dart';
 import 'package:clinic_management_system/features/patients_management/presentation/widgets/textField.dart';
+
 import 'package:dartz/dartz.dart';
 
 import 'package:dotted_border/dotted_border.dart';
@@ -27,8 +27,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:searchfield/searchfield.dart';
 
+import '../../../../sidebar/presentation/pages/sidebar.dart';
+import '../../../diseases_badHabits/data/models/badHabits.dart';
+import '../../../diseases_badHabits/data/models/diseases.dart';
 import '../../../diseases_badHabits/presentation/riverpod/badHabits/badHabits_provider.dart';
 import '../../../diseases_badHabits/presentation/riverpod/badHabits/badHabits_state.dart';
+import '../../../diseases_badHabits/presentation/riverpod/diseases/diseases_provider.dart';
+
+import '../../../diseases_badHabits/presentation/riverpod/diseases/diseases_state.dart';
 import '../../../medicine/data/model/medicine_model.dart';
 import '../../../medicine/presentation/riverpod/medicines/medicines_provider.dart';
 import '../../data/models/patient.dart';
@@ -279,7 +285,10 @@ class _Step3FormState extends ConsumerState<Step3Form> {
                     ref.watch(selectedMedicines.notifier).state;
                 ref
                     .watch(patientsCrudProvider.notifier)
-                    .createNewPatient(newPatient);
+                    .createNewPatient(newPatient)
+                    .then((value) {
+                  ref.watch(pageProvider.notifier).state = PatientIndex();
+                });
               },
               style: const ButtonStyle(
                 backgroundColor: MaterialStatePropertyAll(AppColors.lightGreen),
@@ -600,6 +609,15 @@ class _Step3FormState extends ConsumerState<Step3Form> {
 
                                 PatientDiseases selected1 = PatientDiseases();
                                 selected1.disease = currentDisease;
+                                if (ref
+                                        .watch(controlledSelect.notifier)
+                                        .state ==
+                                    "controlled") {
+                                  selected1.controlled = true;
+                                } else {
+                                  selected1.controlled = false;
+                                }
+
                                 selected1.date =
                                     ref.watch(diseaseDateString.notifier).state;
 

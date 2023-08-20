@@ -1,9 +1,12 @@
 import 'package:clinic_management_system/features/diseases_badHabits/presentation/pages/general.dart';
+import 'package:clinic_management_system/features/medicine/data/model/active_materials.dart';
 import 'package:clinic_management_system/features/medicine/presentation/Pages/medicine_page.dart';
 import 'package:clinic_management_system/features/patients_management/presentation/pages/patients.dart';
 import 'package:clinic_management_system/features/patients_management/presentation/pages/patients_index.dart';
 import 'package:clinic_management_system/features/repository_feature/presentation/pages/repository.dart';
+import 'package:clinic_management_system/features/treatments_feature/presentation/sections/main_section.dart';
 import 'package:flutter/material.dart';
+import '../../../features/active_materials_feature/presentation/widgets/main_section.dart';
 import '../widgets/navbar_item.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -36,8 +39,8 @@ class _SidebarState extends ConsumerState<Sidebar> {
     NavBarData(pageName: "Patients", svgIconPath: "assets/svgs/patients.svg"):
         CreatePatients(),
     NavBarData(
-        pageName: "Repository",
-        svgIconPath: "assets/svgs/repository.svg"): PatientIndex(),
+            pageName: "Repository", svgIconPath: "assets/svgs/repository.svg"):
+        TreatmentsMainSection(),
     NavBarData(pageName: "Payments", svgIconPath: "assets/svgs/payments.svg"):
         RepositoryScreen()
   };

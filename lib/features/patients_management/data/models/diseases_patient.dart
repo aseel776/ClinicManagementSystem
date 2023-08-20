@@ -1,12 +1,14 @@
-import 'package:clinic_management_system/features/diseases_badHabits/data/models/diseases.dart';
 import 'package:equatable/equatable.dart';
+
+import '../../../diseases_badHabits/data/models/diseases.dart';
 
 class PatientDiseases extends Equatable {
   int? id;
   String? date;
   Disease? disease;
+  bool? controlled;
 
-  PatientDiseases({this.id, this.date, this.disease});
+  PatientDiseases({this.id, this.date, this.disease, this.controlled});
 
   factory PatientDiseases.fromJson(Map<String, dynamic> json) {
     final diseaseJson = json['disease'];
@@ -20,7 +22,8 @@ class PatientDiseases extends Equatable {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> json = {
-      'disease_id': id,
+      'disease_id': disease!.id,
+      'tight': controlled
     };
 
     // if (date != null) {

@@ -1,7 +1,11 @@
 import 'package:clinic_management_system/core/app_colors.dart';
 import 'package:clinic_management_system/features/medicine/presentation/widgets/primaryText.dart';
+
 import 'package:clinic_management_system/features/patients_management/data/models/patient.dart';
+
+import 'package:clinic_management_system/features/patients_management/presentation/pages/patients_index.dart';
 import 'package:clinic_management_system/features/patients_management/presentation/riverpod/create_patient_provider.dart';
+
 import 'package:clinic_management_system/features/patients_management/presentation/widgets/textField.dart';
 
 import 'package:flutter/material.dart';
@@ -9,6 +13,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 
+import '../../../../sidebar/presentation/pages/sidebar.dart';
 import '../../../diseases_badHabits/presentation/widgets/tooltip_custom.dart';
 
 StateProvider name =
@@ -180,7 +185,10 @@ class Step1Form extends ConsumerWidget {
                   print("phone: " + newPatient.phone!);
                   ref
                       .watch(patientsCrudProvider.notifier)
-                      .createNewPatient(newPatient);
+                      .createNewPatient(newPatient)
+                      .then((value) {
+                    ref.watch(pageProvider.notifier).state = PatientIndex();
+                  });
                 },
                 style: const ButtonStyle(
                   backgroundColor:

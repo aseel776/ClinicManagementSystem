@@ -5,34 +5,28 @@ import 'treatments_section.dart';
 import './/core/app_colors.dart';
 
 class TreatmentsMainSection extends StatelessWidget {
-  final double sectionWidth;
-
   const TreatmentsMainSection({
     Key? key,
-    required this.sectionWidth
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.sizeOf(context).width;
-    double screenHeight = MediaQuery.sizeOf(context).height;
+    double screenWidth = MediaQuery.sizeOf(context).width * 0.83;
+    double screenHeight = MediaQuery.sizeOf(context).height * 0.93;
 
     return Scaffold(
       //row and scaffold to be removed
       body: Row(
         children: [
           //to be removed
-          Container(
-            width: screenWidth - sectionWidth,
-            color: AppColors.black,
-          ),
+
           //return starts here
           Container(
-            width: sectionWidth,
+            width: screenWidth,
             color: AppColors.lightGrey,
             // color: Colors.white,
             padding: EdgeInsets.symmetric(
-              horizontal: sectionWidth * .02,
+              horizontal: screenWidth * .02,
               vertical: screenHeight * .04,
             ),
             child: Column(
@@ -43,7 +37,7 @@ class TreatmentsMainSection extends StatelessWidget {
                   children: [
                     //search bar
                     Container(
-                      width: sectionWidth * 0.7,
+                      width: screenWidth * 0.7,
                       height: screenHeight * 0.06,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(15),
@@ -51,25 +45,25 @@ class TreatmentsMainSection extends StatelessWidget {
                         // color: AppColors.lightBlue,
                       ),
                       padding: EdgeInsets.symmetric(
-                        horizontal: sectionWidth * 0.01,
+                        horizontal: screenWidth * 0.01,
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           //search icon
                           SizedBox(
-                            width: sectionWidth * .02,
+                            width: screenWidth * .02,
                             height: screenHeight * .04,
                             child: Icon(
                               Icons.search,
                               color: AppColors.black.withOpacity(0.5),
-                              size: sectionWidth * .018,
+                              size: screenWidth * .018,
                             ),
                           ),
-                          SizedBox(width: sectionWidth * .01),
+                          SizedBox(width: screenWidth * .01),
                           //text field
                           SizedBox(
-                            width: sectionWidth * .6,
+                            width: screenWidth * .6,
                             child: Directionality(
                               textDirection: TextDirection.rtl,
                               child: TextField(
@@ -96,11 +90,11 @@ class TreatmentsMainSection extends StatelessWidget {
                         ],
                       ),
                     ),
-                    SizedBox(width: sectionWidth * .01),
+                    SizedBox(width: screenWidth * .01),
                     //add treatment button
                     SizedBox(
                       height: screenHeight * .06,
-                      width: sectionWidth * .125,
+                      width: screenWidth * .125,
                       child: MaterialButton(
                         color: AppColors.lightGreen,
                         // color: AppColors.black,
@@ -122,11 +116,11 @@ class TreatmentsMainSection extends StatelessWidget {
                         ),
                       ),
                     ),
-                    SizedBox(width: sectionWidth * .01),
+                    SizedBox(width: screenWidth * .01),
                     //filter button
                     SizedBox(
                       height: screenHeight * .06,
-                      width: sectionWidth * .1,
+                      width: screenWidth * .1,
                       child: MaterialButton(
                         color: AppColors.lightGreen,
                         // color: AppColors.black.withOpacity(.95),
@@ -142,7 +136,7 @@ class TreatmentsMainSection extends StatelessWidget {
                               Icons.filter_alt,
                               color: AppColors.black,
                               // color: Colors.white,
-                              size: sectionWidth * .02,
+                              size: screenWidth * .02,
                             ),
                             const Text(
                               'تصفية',
@@ -165,13 +159,13 @@ class TreatmentsMainSection extends StatelessWidget {
                   children: [
                     TreatmentsSection(
                       key: const ObjectKey(1),
-                      sectionWidth: sectionWidth * .6,
+                      sectionWidth: screenWidth * .6,
                       sectionHeight: screenHeight * .83,
                     ),
-                    SizedBox(width: sectionWidth * .01),
+                    SizedBox(width: screenWidth * .01),
                     TreatmentTypesSection(
                       key: const ObjectKey(0),
-                      sectionWidth: sectionWidth * .375,
+                      sectionWidth: screenWidth * .375,
                       sectionHeight: screenHeight * .83,
                     ),
                   ],

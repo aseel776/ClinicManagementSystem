@@ -4,12 +4,14 @@ import 'package:clinic_management_system/features/patients_management/presentati
 import 'package:clinic_management_system/features/patients_management/presentation/pages/patients.dart';
 import 'package:clinic_management_system/features/patients_management/presentation/riverpod/patients_provider.dart';
 import 'package:clinic_management_system/features/patients_management/presentation/riverpod/patients_state.dart';
-import 'package:clinic_management_system/sidebar/presentation/pages/sidebar.dart';
+
+import 'package:dartz/dartz.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
+import '../../../../sidebar/presentation/pages/sidebar.dart';
 import '../../data/models/patient.dart';
 
 StateProvider totalPagesPatientsTable = StateProvider((ref) => 1);
@@ -158,7 +160,8 @@ class PatientIndexState extends ConsumerState<PatientIndex> {
                             ),
                             GestureDetector(
                               onTap: () {
-                                ref.watch(pageProvider.notifier).state = CreatePatients();
+                                ref.watch(pageProvider.notifier).state =
+                                    CreatePatients();
                               },
                               child: Container(
                                 width: 120,

@@ -13,6 +13,8 @@ Row addRadioButton(int btnValue, String title, List<String> listValue,
           value: listValue[btnValue],
           groupValue: ref.watch(provider),
           onChanged: (value) {
+            print("valueee");
+            print(value);
             ref.read(provider.notifier).state = value.toString();
           }),
       Text(title),

@@ -169,6 +169,7 @@ class PatientsRepositoryImpl implements PatientsRepository {
         'patient_id': patientId,
       },
     ));
+    print("responseeeeeeeeee");
     print(response);
 
     if (!response.hasException && response.data != null) {
