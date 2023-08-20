@@ -1,7 +1,4 @@
-import 'package:clinic_management_system/core/app_colors.dart';
-import 'package:clinic_management_system/features/diseases_badHabits_teeth/data/models/badHabits.dart';
 import 'package:clinic_management_system/features/medicine/presentation/widgets/primaryText.dart';
-import 'package:clinic_management_system/features/patients_management/presentation/widgets/step3_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

@@ -16,7 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import '../../../diseases_badHabits_teeth/presentation/widgets/delete_snack_bar.dart';
+import '../../../diseases_badHabits/presentation/widgets/delete_snack_bar.dart';
 
 StateProvider showAllProducts = StateProvider((ref) => true);
 StateProvider showStoredProducts = StateProvider((ref) => false);

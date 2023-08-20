@@ -159,8 +159,7 @@ class PatientIndexState extends ConsumerState<PatientIndex> {
                             ),
                             GestureDetector(
                               onTap: () {
-                                ref.watch(pageProvider.notifier).state =
-                                    CreatePatients();
+                                ref.watch(pageProvider.notifier).state => CreatePatients();
                               },
                               child: Container(
                                 width: 120,

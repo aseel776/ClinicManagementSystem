@@ -3,10 +3,10 @@
 import 'dart:ui';
 
 import 'package:clinic_management_system/core/app_colors.dart';
-import 'package:clinic_management_system/features/diseases_badHabits_teeth/data/models/badHabits.dart';
-import 'package:clinic_management_system/features/diseases_badHabits_teeth/data/models/diseases.dart';
-import 'package:clinic_management_system/features/diseases_badHabits_teeth/presentation/riverpod/diseases/diseases_provider.dart';
-import 'package:clinic_management_system/features/diseases_badHabits_teeth/presentation/riverpod/diseases/diseases_state.dart';
+import 'package:clinic_management_system/features/diseases_badHabits/data/models/badHabits.dart';
+import 'package:clinic_management_system/features/diseases_badHabits/data/models/diseases.dart';
+import 'package:clinic_management_system/features/diseases_badHabits/presentation/riverpod/diseases/diseases_provider.dart';
+import 'package:clinic_management_system/features/diseases_badHabits/presentation/riverpod/diseases/diseases_state.dart';
 import 'package:clinic_management_system/features/medicine/presentation/riverpod/medicines/medicines_state.dart';
 
 import 'package:clinic_management_system/features/medicine/presentation/widgets/primaryText.dart';
@@ -27,8 +27,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:searchfield/searchfield.dart';
 
-import '../../../diseases_badHabits_teeth/presentation/riverpod/badHabits/badHabits_provider.dart';
-import '../../../diseases_badHabits_teeth/presentation/riverpod/badHabits/badHabits_state.dart';
+import '../../../diseases_badHabits/presentation/riverpod/badHabits/badHabits_provider.dart';
+import '../../../diseases_badHabits/presentation/riverpod/badHabits/badHabits_state.dart';
 import '../../../medicine/data/model/medicine_model.dart';
 import '../../../medicine/presentation/riverpod/medicines/medicines_provider.dart';
 import '../../data/models/patient.dart';
@@ -313,7 +313,7 @@ class _Step3FormState extends ConsumerState<Step3Form> {
         builder: (context) => BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
               child: Dialog(
-                  backgroundColor: AppColors.grey,
+                  backgroundColor: AppColors.lightGrey,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15),
                   ),
@@ -439,7 +439,7 @@ class _Step3FormState extends ConsumerState<Step3Form> {
         builder: (context) => BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
               child: Dialog(
-                  backgroundColor: AppColors.grey,
+                  backgroundColor: AppColors.lightGrey,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15),
                   ),
@@ -652,7 +652,7 @@ class _Step3FormState extends ConsumerState<Step3Form> {
         builder: (context) => BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
               child: Dialog(
-                backgroundColor: AppColors.grey,
+                backgroundColor: AppColors.lightGrey,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15),
                 ),

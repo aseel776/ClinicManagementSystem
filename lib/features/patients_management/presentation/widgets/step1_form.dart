@@ -1,8 +1,6 @@
 import 'package:clinic_management_system/core/app_colors.dart';
 import 'package:clinic_management_system/features/medicine/presentation/widgets/primaryText.dart';
-import 'package:clinic_management_system/features/patients_management/data/models/badHabits_patient.dart';
 import 'package:clinic_management_system/features/patients_management/data/models/patient.dart';
-import 'package:clinic_management_system/features/patients_management/presentation/pages/patients.dart';
 import 'package:clinic_management_system/features/patients_management/presentation/riverpod/create_patient_provider.dart';
 import 'package:clinic_management_system/features/patients_management/presentation/widgets/textField.dart';
 
@@ -11,7 +9,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 
-import '../../../diseases_badHabits_teeth/presentation/widgets/tooltip_custom.dart';
+import '../../../diseases_badHabits/presentation/widgets/tooltip_custom.dart';
 
 StateProvider name =
     StateProvider<TextEditingController>((ref) => TextEditingController());

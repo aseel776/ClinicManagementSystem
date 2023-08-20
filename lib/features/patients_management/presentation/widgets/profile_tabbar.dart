@@ -1,12 +1,9 @@
 import 'package:clinic_management_system/core/app_colors.dart';
-import 'package:clinic_management_system/features/diseases_badHabits_teeth/presentation/pages/diseases.dart';
 import 'package:flutter/material.dart';
-
-import '../../../diseases_badHabits_teeth/presentation/pages/badHabits.dart';
-import '../../../diseases_badHabits_teeth/presentation/widgets/content_view.dart';
-import '../../../diseases_badHabits_teeth/presentation/widgets/custom_tab.dart';
-import '../../../diseases_badHabits_teeth/presentation/widgets/custom_tab_bar.dart';
-import '../../../diseases_badHabits_teeth/presentation/widgets/tab_controller_handler.dart';
+import '../../../diseases_badHabits/presentation/widgets/content_view.dart';
+import '../../../diseases_badHabits/presentation/widgets/custom_tab.dart';
+import '../../../diseases_badHabits/presentation/widgets/custom_tab_bar.dart';
+import '../../../diseases_badHabits/presentation/widgets/tab_controller_handler.dart';
 
 class ProfileTabBar extends StatefulWidget {
   @override

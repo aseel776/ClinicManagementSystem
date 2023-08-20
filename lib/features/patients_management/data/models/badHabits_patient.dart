@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import '../../../diseases_badHabits_teeth/data/models/badHabits.dart';
+import '../../../diseases_badHabits/data/models/badHabits.dart';
 
 class PatientBadHabits extends Equatable {
   int? id;

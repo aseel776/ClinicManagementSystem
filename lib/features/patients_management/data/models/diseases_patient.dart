@@ -1,6 +1,4 @@
-import 'package:clinic_management_system/features/diseases_badHabits_teeth/data/models/badHabits.dart';
-import 'package:clinic_management_system/features/diseases_badHabits_teeth/data/models/diseases.dart';
-import 'package:clinic_management_system/features/medicine/data/model/medicine_model.dart';
+import 'package:clinic_management_system/features/diseases_badHabits/data/models/diseases.dart';
 import 'package:equatable/equatable.dart';
 
 class PatientDiseases extends Equatable {
