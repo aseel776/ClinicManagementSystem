@@ -1,8 +1,10 @@
+import 'package:clinic_management_system/features/active_materials_feature/data/models/active_material_model.dart';
+
 class Disease {
   final int? id;
   final String name;
   // final String description;
-  final List<ActiveMaterials>? antiMaterials;
+  final List<ActiveMaterialModel>? antiMaterials;
   bool isFlipped;
 
   Disease({

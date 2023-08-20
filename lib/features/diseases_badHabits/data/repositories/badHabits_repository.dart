@@ -1,6 +1,5 @@
 import 'package:clinic_management_system/core/error/failures.dart';
-import 'package:clinic_management_system/features/diseases_badHabits_teeth/data/documents/get_badHabits.dart';
-import 'package:clinic_management_system/features/diseases_badHabits_teeth/presentation/widgets/bad_habits_table.dart';
+import 'package:clinic_management_system/features/diseases_badHabits/data/documents/get_badHabits.dart';
 
 import 'package:dartz/dartz.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';

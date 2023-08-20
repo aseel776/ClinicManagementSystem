@@ -1,23 +1,19 @@
 // ignore_for_file: use_build_context_synchronously
-
 import 'dart:ui';
-
-import 'package:clinic_management_system/features/diseases_badHabits_teeth/data/models/badHabits.dart';
-import 'package:clinic_management_system/features/diseases_badHabits_teeth/data/models/diseases.dart';
-import 'package:clinic_management_system/features/diseases_badHabits_teeth/presentation/pages/diseases.dart';
-import 'package:clinic_management_system/features/diseases_badHabits_teeth/presentation/riverpod/badHabits/add_update_delete_provider.dart';
-import 'package:clinic_management_system/features/diseases_badHabits_teeth/presentation/riverpod/badHabits/badHabits_provider.dart';
-import 'package:clinic_management_system/features/diseases_badHabits_teeth/presentation/riverpod/diseases/diseases_provider.dart';
-import 'package:clinic_management_system/features/medicine/data/model/active_materials.dart';
-
+import 'package:clinic_management_system/features/diseases_badHabits/data/models/badHabits.dart';
+import 'package:clinic_management_system/features/diseases_badHabits/data/models/diseases.dart';
+import 'package:clinic_management_system/features/diseases_badHabits/presentation/pages/diseases.dart';
+import 'package:clinic_management_system/features/diseases_badHabits/presentation/riverpod/badHabits/add_update_delete_provider.dart';
+import 'package:clinic_management_system/features/diseases_badHabits/presentation/riverpod/badHabits/badHabits_provider.dart';
+import 'package:clinic_management_system/features/diseases_badHabits/presentation/riverpod/diseases/diseases_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import '../../../../core/app_colors.dart';
-import '../../../medicine/presentation/riverpod/active_materials/active_materials_provider.dart';
-import '../../../medicine/presentation/riverpod/active_materials/active_materials_state.dart';
-import '../../../medicine/presentation/widgets/primaryText.dart';
-import '../../../patients_management/presentation/widgets/textField.dart';
+import 'package:clinic_management_system/features/active_materials_feature/data/models/active_material_model.dart';
+import 'package:clinic_management_system/features/active_materials_feature/presentation/states/active_materials/active_materials_provider.dart';
+import 'package:clinic_management_system/features/active_materials_feature/presentation/states/active_materials/active_materials_state.dart';
+import 'package:clinic_management_system/core/primaryText.dart';
+import 'package:clinic_management_system/core/textField.dart';
 import '../pages/badHabits.dart';
 import '../riverpod/diseases/add_update_delete_provider.dart';
 
@@ -77,7 +73,7 @@ class AddButton extends ConsumerWidget {
     ref.watch(diseaseName.notifier).state.text = "";
 
     //active materials
-    await ref.watch(activeMaterialsProvider.notifier).getAllMaterials();
+    await ref.watch(activeMaterialsProvider.notifier).getAllMaterials(1, items: 10000);
     final stateActive = ref.watch(activeMaterialsProvider.notifier).state;
     ref.watch(multiSelect);
 
@@ -87,7 +83,7 @@ class AddButton extends ConsumerWidget {
         builder: (context) => BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
               child: Dialog(
-                  backgroundColor: AppColors.grey,
+                  backgroundColor: AppColors.lightGrey,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15),
                   ),
@@ -135,8 +131,8 @@ class AddButton extends ConsumerWidget {
                                     ),
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 12),
-                                    child: Row(
-                                      children: const [
+                                    child: const Row(
+                                      children: [
                                         Icon(
                                           Icons.arrow_drop_down_circle_outlined,
                                           color: Colors.black54,
@@ -162,10 +158,10 @@ class AddButton extends ConsumerWidget {
                           width: screenWidth! * 0.08,
                           child: ElevatedButton(
                               onPressed: () async {
-                                List<ActiveMaterials>? a = ref
+                                List<ActiveMaterialModel>? a = ref
                                     .watch(multiSelect.notifier)
                                     .state
-                                    .cast<ActiveMaterials>();
+                                    .cast<ActiveMaterialModel>();
 
                                 Disease disease = Disease(
                                     name: ref
@@ -216,7 +212,7 @@ class AddButton extends ConsumerWidget {
         builder: (context) => BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
               child: Dialog(
-                  backgroundColor: AppColors.grey,
+                  backgroundColor: AppColors.lightGrey,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15),
                   ),
@@ -300,10 +296,10 @@ class AddButton extends ConsumerWidget {
                           width: screenWidth! * 0.08,
                           child: ElevatedButton(
                               onPressed: () {
-                                List<ActiveMaterials>? selectedMaterials = ref
+                                List<ActiveMaterialModel>? selectedMaterials = ref
                                     .watch(multiSelect.notifier)
                                     .state
-                                    .cast<ActiveMaterials>();
+                                    .cast<ActiveMaterialModel>();
                                 BadHabit newBadHabit = BadHabit(
                                     name: ref
                                         .watch(badHabitsName.notifier)
@@ -345,13 +341,13 @@ class AddButton extends ConsumerWidget {
   }
 
   void antiMaterialsSelect(BuildContext context, WidgetRef ref) async {
-    await ref.watch(activeMaterialsProvider.notifier).getAllMaterials();
+    await ref.watch(activeMaterialsProvider.notifier).getAllMaterials(1, items: 10000);
     final stateActive = ref.watch(activeMaterialsProvider.notifier).state;
     // material.antiMaterials ??= [];
     // List<String>? originalOne = material.antiMaterials!.toList();
     final materials;
     if (stateActive is LoadedActiveMaterialsState) {
-      materials = stateActive.materials;
+      materials = stateActive.page.materials;
     } else {
       materials = [];
     }
@@ -419,8 +415,8 @@ class AddButton extends ConsumerWidget {
                             onChanged: (value) {
                               setState(() {
                                 if (value!) {
-                                  ActiveMaterials selected1 =
-                                      materials[index] as ActiveMaterials;
+                                  ActiveMaterialModel selected1 =
+                                      materials[index] as ActiveMaterialModel;
 
                                   if (selected1.name! != "" &&
                                       !ref
@@ -455,8 +451,8 @@ class AddButton extends ConsumerWidget {
                                         (element) =>
                                             element == materials[index])) {
                                   print(value.toString() + "removed");
-                                  ActiveMaterials? selected1 =
-                                      materials[index] as ActiveMaterials?;
+                                  ActiveMaterialModel selected1 =
+                                      materials[index] as ActiveMaterialModel;
 
                                   List list =
                                       ref.watch(multiSelect.notifier).state!;

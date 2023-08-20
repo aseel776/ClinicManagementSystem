@@ -1,5 +1,6 @@
 import 'package:clinic_management_system/core/app_colors.dart';
-import 'package:clinic_management_system/features/diseases_badHabits_teeth/presentation/pages/diseases.dart';
+import 'package:clinic_management_system/features/diseases_badHabits/presentation/pages/diseases.dart';
+import 'package:clinic_management_system/features/problems_feature/presentation/widgets/main_section.dart';
 import 'package:flutter/material.dart';
 
 import '../widgets/content_view.dart';
@@ -23,7 +24,7 @@ class _GeneralState extends State<General> with SingleTickerProviderStateMixin {
   double? bottomPadding;
   double? sidePadding;
 
-  List<ContentView> contentViews = [
+  late List<ContentView> contentViews = [
     ContentView(
       tab: CustomTab(title: 'الأمراض'),
       content: DiseaseListPage(),
@@ -34,7 +35,9 @@ class _GeneralState extends State<General> with SingleTickerProviderStateMixin {
     ),
     ContentView(
       tab: CustomTab(title: 'مشاكل الأسنان'),
-      content: Container(),
+      content: ProblemsMainSection(
+        sectionWidth: ??????,
+      ),
     )
   ];
 

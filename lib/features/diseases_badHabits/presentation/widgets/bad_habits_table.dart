@@ -1,20 +1,15 @@
 import 'dart:ui';
-
-import 'package:clinic_management_system/features/diseases_badHabits_teeth/presentation/pages/badHabits.dart';
-import 'package:clinic_management_system/features/diseases_badHabits_teeth/presentation/riverpod/badHabits/add_update_delete_provider.dart';
-import 'package:clinic_management_system/features/diseases_badHabits_teeth/presentation/riverpod/badHabits/badHabits_provider.dart';
-import 'package:clinic_management_system/features/diseases_badHabits_teeth/presentation/riverpod/badHabits/badHabits_state.dart';
-import 'package:clinic_management_system/features/diseases_badHabits_teeth/presentation/widgets/delete_bottom_sheet.dart';
-import 'package:clinic_management_system/features/medicine/presentation/widgets/primaryText.dart';
+import 'package:clinic_management_system/features/diseases_badHabits/presentation/pages/badHabits.dart';
+import 'package:clinic_management_system/features/diseases_badHabits/presentation/riverpod/badHabits/add_update_delete_provider.dart';
+import 'package:clinic_management_system/features/diseases_badHabits/presentation/riverpod/badHabits/badHabits_provider.dart';
+import 'package:clinic_management_system/core/primaryText.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-
 import '../../../../core/app_colors.dart';
-
-import '../../../medicine/data/model/active_materials.dart';
-import '../../../medicine/presentation/riverpod/active_materials/active_materials_provider.dart';
-import '../../../medicine/presentation/riverpod/active_materials/active_materials_state.dart';
-import '../../../patients_management/presentation/widgets/textField.dart';
+import 'package:clinic_management_system/features/active_materials_feature/data/models/active_material_model.dart';
+import 'package:clinic_management_system/features/active_materials_feature/presentation/states/active_materials/active_materials_provider.dart';
+import 'package:clinic_management_system/features/active_materials_feature/presentation/states/active_materials/active_materials_state.dart';
+import 'package:clinic_management_system/core/textField.dart';
 import '../../data/models/badHabits.dart';
 import 'add_button.dart';
 import 'delete_snack_bar.dart';
@@ -110,7 +105,7 @@ class BadHabitsTableWidget extends ConsumerWidget {
                                                   sigmaX: 2, sigmaY: 2),
                                               child: Dialog(
                                                   backgroundColor:
-                                                      AppColors.grey,
+                                                      AppColors.lightGrey,
                                                   shape: RoundedRectangleBorder(
                                                     borderRadius:
                                                         BorderRadius.circular(
@@ -259,14 +254,13 @@ class BadHabitsTableWidget extends ConsumerWidget {
                                                               0.08,
                                                           child: ElevatedButton(
                                                               onPressed: () {
-                                                                List<ActiveMaterials>?
+                                                                List<ActiveMaterialModel>?
                                                                     selectedMaterials =
                                                                     ref
                                                                         .watch(multiSelect
                                                                             .notifier)
                                                                         .state
-                                                                        .cast<
-                                                                            ActiveMaterials>();
+                                                                        .cast<ActiveMaterialModel>();
                                                                 BadHabit newBadHabit = BadHabit(
                                                                     id: row.id,
                                                                     name: ref
@@ -405,7 +399,7 @@ class DataSource extends DataTableSource {
                                   filter:
                                       ImageFilter.blur(sigmaX: 2, sigmaY: 2),
                                   child: Dialog(
-                                      backgroundColor: AppColors.grey,
+                                      backgroundColor: AppColors.lightGrey,
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(15),
                                       ),
@@ -527,13 +521,13 @@ class DataSource extends DataTableSource {
                                                   0.08,
                                               child: ElevatedButton(
                                                   onPressed: () {
-                                                    List<ActiveMaterials>?
+                                                    List<ActiveMaterialModel>?
                                                         selectedMaterials = ref
                                                             .watch(multiSelect
                                                                 .notifier)
                                                             .state
                                                             .cast<
-                                                                ActiveMaterials>();
+                                                                ActiveMaterialModel>();
                                                     BadHabit newBadHabit = BadHabit(
                                                         id: row.id,
                                                         name: ref
@@ -620,13 +614,13 @@ class DataSource extends DataTableSource {
   }
 
   void antiMaterialsSelect(BuildContext context, WidgetRef ref) async {
-    await ref.watch(activeMaterialsProvider.notifier).getAllMaterials();
+    await ref.watch(activeMaterialsProvider.notifier).getAllMaterials(1, items: 10000);
     final stateActive = ref.watch(activeMaterialsProvider.notifier).state;
     // material.antiMaterials ??= [];
     // List<String>? originalOne = material.antiMaterials!.toList();
     final materials;
     if (stateActive is LoadedActiveMaterialsState) {
-      materials = stateActive.materials;
+      materials = stateActive.page.materials;
     } else {
       materials = [];
     }
@@ -694,8 +688,8 @@ class DataSource extends DataTableSource {
                             onChanged: (value) {
                               setState(() {
                                 if (value!) {
-                                  ActiveMaterials selected1 =
-                                      materials[index] as ActiveMaterials;
+                                  ActiveMaterialModel selected1 =
+                                      materials[index] as ActiveMaterialModel;
 
                                   if (selected1.name! != "" &&
                                       !ref
@@ -730,8 +724,8 @@ class DataSource extends DataTableSource {
                                         (element) =>
                                             element == materials[index])) {
                                   print(value.toString() + "removed");
-                                  ActiveMaterials? selected1 =
-                                      materials[index] as ActiveMaterials?;
+                                  ActiveMaterialModel? selected1 =
+                                      materials[index] as ActiveMaterialModel?;
 
                                   List list =
                                       ref.watch(multiSelect.notifier).state!;

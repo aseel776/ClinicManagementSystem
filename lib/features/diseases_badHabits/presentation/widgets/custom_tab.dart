@@ -1,5 +1,5 @@
 import 'package:clinic_management_system/core/app_colors.dart';
-import 'package:clinic_management_system/features/medicine/presentation/widgets/primaryText.dart';
+import 'package:clinic_management_system/core/primaryText.dart';
 import 'package:flutter/material.dart';
 
 class CustomTab extends StatelessWidget {

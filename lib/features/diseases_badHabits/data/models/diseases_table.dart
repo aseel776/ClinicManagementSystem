@@ -1,4 +1,4 @@
-import 'package:clinic_management_system/features/diseases_badHabits_teeth/data/models/diseases.dart';
+import 'package:clinic_management_system/features/diseases_badHabits/data/models/diseases.dart';
 
 class DiseasesTable {
   List<Disease>? diseases;

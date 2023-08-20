@@ -1,28 +1,24 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:ui';
-
-import 'package:clinic_management_system/core/app_colors.dart';
-import 'package:clinic_management_system/features/diseases_badHabits_teeth/presentation/riverpod/diseases/add_update_delete_provider.dart';
-import 'package:clinic_management_system/features/diseases_badHabits_teeth/presentation/riverpod/diseases/diseases_provider.dart';
-import 'package:clinic_management_system/features/diseases_badHabits_teeth/presentation/riverpod/diseases/diseases_state.dart';
-import 'package:clinic_management_system/features/diseases_badHabits_teeth/presentation/widgets/delete_snack_bar.dart';
-
-import 'package:clinic_management_system/features/medicine/presentation/widgets/primaryText.dart';
 import 'package:flutter/material.dart';
-
 import 'package:flip_card/flip_card.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
-
-import '../../../medicine/data/model/active_materials.dart';
-import '../../../medicine/presentation/riverpod/active_materials/active_materials_provider.dart';
-import '../../../medicine/presentation/riverpod/active_materials/active_materials_state.dart';
-import '../../../patients_management/presentation/widgets/textField.dart';
-import '../../data/models/diseases.dart';
 import '../widgets/add_button.dart';
 import '../widgets/search_field.dart';
 import '../widgets/tooltip_custom.dart';
+import '../../data/models/diseases.dart';
+import 'package:clinic_management_system/core/primaryText.dart';
+import 'package:clinic_management_system/core/app_colors.dart';
+import 'package:clinic_management_system/core/textField.dart';
+import 'package:clinic_management_system/features/diseases_badHabits/presentation/riverpod/diseases/add_update_delete_provider.dart';
+import 'package:clinic_management_system/features/diseases_badHabits/presentation/riverpod/diseases/diseases_provider.dart';
+import 'package:clinic_management_system/features/diseases_badHabits/presentation/riverpod/diseases/diseases_state.dart';
+import 'package:clinic_management_system/features/diseases_badHabits/presentation/widgets/delete_snack_bar.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:clinic_management_system/features/active_materials_feature/data/models/active_material_model.dart';
+import 'package:clinic_management_system/features/active_materials_feature/presentation/states/active_materials/active_materials_provider.dart';
+import 'package:clinic_management_system/features/active_materials_feature/presentation/states/active_materials/active_materials_state.dart';
 
 StateProvider totalPagesDiseases = StateProvider((ref) => 1);
 StateProvider currentPageDiseases = StateProvider((ref) => 1);
@@ -130,14 +126,9 @@ class _DiseaseListPageState extends ConsumerState<DiseaseListPage>
                   children: [
                     ElevatedButton(
                       onPressed: () {
-                        ScaffoldMessenger.of(context)
-                            .showSnackBar(DeleteSnackBar(() async {
-                          await ref
-                              .watch(diseasesCrudProvider.notifier)
-                              .deleteDisease(disease);
-                          await ref
-                              .watch(diseasesProvider.notifier)
-                              .getPaginatedDiseases(8, 1);
+                        ScaffoldMessenger.of(context).showSnackBar(DeleteSnackBar(() async {
+                          await ref.watch(diseasesCrudProvider.notifier).deleteDisease(disease);
+                          await ref.watch(diseasesProvider.notifier).getPaginatedDiseases(8, 1);
                           ref.watch(currentPageDiseases.notifier).state = 1;
                         }));
                       },
@@ -155,14 +146,11 @@ class _DiseaseListPageState extends ConsumerState<DiseaseListPage>
                     ElevatedButton(
                       onPressed: () async {
                         //active materials
-                        await ref
-                            .watch(activeMaterialsProvider.notifier)
-                            .getAllMaterials();
-                        final stateActive =
-                            ref.watch(activeMaterialsProvider.notifier).state;
+                        await ref.watch(activeMaterialsProvider.notifier)
+                            .getAllMaterials(1, items: 10000);
+                        final stateActive = ref.watch(activeMaterialsProvider.notifier).state;
                         ref.watch(multiSelect);
-                        ref.watch(diseaseName.notifier).state.text =
-                            disease.name;
+                        ref.watch(diseaseName.notifier).state.text = disease.name;
 
                         // TextEditingController notes = TextEditingController();
                         return showDialog(
@@ -171,17 +159,13 @@ class _DiseaseListPageState extends ConsumerState<DiseaseListPage>
                                   filter:
                                       ImageFilter.blur(sigmaX: 2, sigmaY: 2),
                                   child: Dialog(
-                                      backgroundColor: AppColors.grey,
+                                      backgroundColor: AppColors.lightGrey,
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(15),
                                       ),
                                       child: SizedBox(
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.4,
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                0.45,
+                                        width: MediaQuery.of(context).size.width * 0.4,
+                                        height: MediaQuery.of(context).size.height * 0.45,
                                         child: Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.center,
@@ -197,65 +181,43 @@ class _DiseaseListPageState extends ConsumerState<DiseaseListPage>
                                             Directionality(
                                               textDirection: TextDirection.rtl,
                                               child: SizedBox(
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.2,
+                                                width: MediaQuery.of(context).size.width * 0.2,
                                                 child: textfield(
-                                                    "اسم المرض",
-                                                    ref
-                                                        .watch(diseaseName
-                                                            .notifier)
-                                                        .state,
-                                                    "",
-                                                    1),
+                                                  "اسم المرض",
+                                                  ref.watch(diseaseName.notifier).state,
+                                                  "",
+                                                  1,
+                                                ),
                                               ),
                                             ),
                                             const SizedBox(height: 20),
                                             StatefulBuilder(
                                                 builder: (context, setState) {
                                               return Directionality(
-                                                textDirection:
-                                                    TextDirection.rtl,
+                                                textDirection: TextDirection.rtl,
                                                 child: SizedBox(
-                                                    width:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .width *
-                                                            0.2,
+                                                    width: MediaQuery.of(context).size.width * 0.2,
                                                     child: GestureDetector(
                                                       onTap: () {
                                                         antiMaterialsSelect(
                                                             context, ref);
                                                       },
                                                       child: Container(
-                                                        height: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .height *
-                                                            0.08,
-                                                        decoration:
-                                                            BoxDecoration(
+                                                        height: MediaQuery.of(context).size.height * 0.08,
+                                                        decoration: BoxDecoration(
                                                           color: Colors.white,
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(15),
+                                                          borderRadius: BorderRadius.circular(15),
                                                           border: Border.all(
                                                             color: Colors.grey,
                                                             width: 1,
                                                           ),
                                                         ),
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .symmetric(
-                                                                horizontal: 12),
+                                                        padding: const EdgeInsets.symmetric(horizontal: 12),
                                                         child: const Row(
                                                           children: [
                                                             Icon(
-                                                              Icons
-                                                                  .arrow_drop_down_circle_outlined,
-                                                              color: Colors
-                                                                  .black54,
+                                                              Icons.arrow_drop_down_circle_outlined,
+                                                              color: Colors.black54,
                                                             ),
                                                             SizedBox(width: 8),
                                                             Text(
@@ -263,9 +225,7 @@ class _DiseaseListPageState extends ConsumerState<DiseaseListPage>
                                                               style: TextStyle(
                                                                 color: Colors
                                                                     .black54,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w600,
+                                                                fontWeight: FontWeight.w600,
                                                               ),
                                                             )
                                                           ],
@@ -284,20 +244,10 @@ class _DiseaseListPageState extends ConsumerState<DiseaseListPage>
                                                   0.08,
                                               child: ElevatedButton(
                                                   onPressed: () async {
-                                                    List<ActiveMaterials>? a = ref
-                                                        .watch(multiSelect
-                                                            .notifier)
-                                                        .state
-                                                        .cast<
-                                                            ActiveMaterials>();
-
+                                                    List<ActiveMaterialModel>? a = ref.watch(multiSelect.notifier).state.cast<ActiveMaterialModel>();
                                                     Disease diseaseNew = Disease(
                                                         id: disease.id,
-                                                        name: ref
-                                                            .watch(diseaseName
-                                                                .notifier)
-                                                            .state
-                                                            .text,
+                                                        name: ref.watch(diseaseName.notifier).state.text,
                                                         antiMaterials: a);
                                                     await ref
                                                         .watch(
@@ -523,13 +473,13 @@ class _DiseaseListPageState extends ConsumerState<DiseaseListPage>
   }
 
   void antiMaterialsSelect(BuildContext context, WidgetRef ref) async {
-    await ref.watch(activeMaterialsProvider.notifier).getAllMaterials();
+    await ref.watch(activeMaterialsProvider.notifier).getAllMaterials(1, items: 10000);
     final stateActive = ref.watch(activeMaterialsProvider.notifier).state;
     // material.antiMaterials ??= [];
     // List<String>? originalOne = material.antiMaterials!.toList();
     final materials;
     if (stateActive is LoadedActiveMaterialsState) {
-      materials = stateActive.materials;
+      materials = stateActive.page.materials;
     } else {
       materials = [];
     }
@@ -597,8 +547,8 @@ class _DiseaseListPageState extends ConsumerState<DiseaseListPage>
                             onChanged: (value) {
                               setState(() {
                                 if (value!) {
-                                  ActiveMaterials selected1 =
-                                      materials[index] as ActiveMaterials;
+                                  ActiveMaterialModel selected1 =
+                                      materials[index] as ActiveMaterialModel;
 
                                   if (selected1.name! != "" &&
                                       !ref
@@ -633,8 +583,8 @@ class _DiseaseListPageState extends ConsumerState<DiseaseListPage>
                                         (element) =>
                                             element == materials[index])) {
                                   print(value.toString() + "removed");
-                                  ActiveMaterials? selected1 =
-                                      materials[index] as ActiveMaterials?;
+                                  ActiveMaterialModel? selected1 =
+                                      materials[index] as ActiveMaterialModel?;
 
                                   List list =
                                       ref.watch(multiSelect.notifier).state!;

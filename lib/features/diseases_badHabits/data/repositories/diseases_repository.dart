@@ -1,7 +1,7 @@
 import 'package:clinic_management_system/core/error/failures.dart';
-import 'package:clinic_management_system/features/diseases_badHabits_teeth/data/documents/diseases_crud.dart';
-import 'package:clinic_management_system/features/diseases_badHabits_teeth/data/documents/get_diseases.dart';
-import 'package:clinic_management_system/features/diseases_badHabits_teeth/data/models/diseases_table.dart';
+import 'package:clinic_management_system/features/diseases_badHabits/data/documents/diseases_crud.dart';
+import 'package:clinic_management_system/features/diseases_badHabits/data/documents/get_diseases.dart';
+import 'package:clinic_management_system/features/diseases_badHabits/data/models/diseases_table.dart';
 
 import 'package:dartz/dartz.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';

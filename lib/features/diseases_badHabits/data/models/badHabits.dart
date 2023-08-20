@@ -1,8 +1,9 @@
+import 'package:clinic_management_system/features/active_materials_feature/data/models/active_material_model.dart';
+
 class BadHabit {
   final int? id;
   final String name;
-  // final String description;
-  final List<ActiveMaterials>? antiMaterials;
+  final List<ActiveMaterialModel>? antiMaterials;
 
   BadHabit({this.id, required this.name, this.antiMaterials
       // required this.description,

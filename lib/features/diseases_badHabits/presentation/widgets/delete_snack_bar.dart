@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/app_colors.dart';
-import '../../../medicine/presentation/widgets/primaryText.dart';
+import 'package:clinic_management_system/core/primaryText.dart';
 import 'bad_habits_table.dart';
 
 SnackBar DeleteSnackBar(Function onDelete) {

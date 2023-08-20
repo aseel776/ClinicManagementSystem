@@ -20,7 +20,7 @@ class SearchField extends StatelessWidget {
       height: sectionHeight * 0.07,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15),
-        border: Border.all(color: AppColors.grey, width: 3),
+        border: Border.all(color: AppColors.lightGrey, width: 3),
         color: Colors.white,
       ),
       child: Row(

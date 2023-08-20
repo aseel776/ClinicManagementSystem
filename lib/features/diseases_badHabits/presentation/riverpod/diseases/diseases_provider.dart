@@ -1,4 +1,4 @@
-import 'package:clinic_management_system/features/diseases_badHabits_teeth/data/models/diseases_table.dart';
+import 'package:clinic_management_system/features/diseases_badHabits/data/models/diseases_table.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

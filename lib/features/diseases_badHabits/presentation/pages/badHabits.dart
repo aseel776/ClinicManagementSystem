@@ -1,9 +1,10 @@
-import 'package:clinic_management_system/features/diseases_badHabits_teeth/data/models/badHabits.dart';
-import 'package:clinic_management_system/features/diseases_badHabits_teeth/presentation/riverpod/badHabits/badHabits_provider.dart';
-import 'package:clinic_management_system/features/diseases_badHabits_teeth/presentation/riverpod/badHabits/badHabits_state.dart';
-import 'package:clinic_management_system/features/diseases_badHabits_teeth/presentation/widgets/bad_habits_table.dart';
-import 'package:clinic_management_system/features/medicine/presentation/widgets/primaryText.dart';
-import 'package:clinic_management_system/features/patients_management/presentation/pages/patients_index.dart';
+import 'package:clinic_management_system/core/pagination_widget.dart';
+import 'package:clinic_management_system/features/diseases_badHabits/data/models/badHabits.dart';
+import 'package:clinic_management_system/features/diseases_badHabits/presentation/riverpod/badHabits/badHabits_provider.dart';
+import 'package:clinic_management_system/features/diseases_badHabits/presentation/riverpod/badHabits/badHabits_state.dart';
+import 'package:clinic_management_system/features/diseases_badHabits/presentation/widgets/bad_habits_table.dart';
+import 'package:clinic_management_system/core/primaryText.dart';
+// import 'package:clinic_management_system/features/patients_management/presentation/pages/patients_index.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -118,8 +119,7 @@ class _BadHabitsState extends ConsumerState<BadHabits> {
                           SizedBox(
                               width: sectionWidth,
                               // height: sectionHeight * 0.3,
-                              child: BadHabitsTableWidget(
-                                  badHabits: state.badHabits)),
+                              child: BadHabitsTableWidget(badHabits: state.badHabits)),
                           SizedBox(
                             height: 20,
                           ),
