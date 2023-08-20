@@ -11,7 +11,7 @@ import 'package:clinic_management_system/features/repository_feature/presentatio
 import 'package:clinic_management_system/features/repository_feature/presentation/riverpod/products_crud_provider.dart';
 import 'package:clinic_management_system/features/repository_feature/presentation/riverpod/products_provider.dart';
 import 'package:clinic_management_system/features/repository_feature/presentation/riverpod/products_state.dart';
-import 'package:clinic_management_system/features/sidebar/presentation/pages/sidebar.dart';
+import 'package:clinic_management_system/sidebar/presentation/pages/sidebar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';

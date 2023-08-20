@@ -1,14 +1,9 @@
+import 'package:clinic_management_system/features/diseases_badHabits/presentation/pages/general.dart';
 import 'package:clinic_management_system/features/medicine/presentation/Pages/medicine_page.dart';
 import 'package:clinic_management_system/features/patients_management/presentation/pages/patients.dart';
 import 'package:clinic_management_system/features/patients_management/presentation/pages/patients_index.dart';
 import 'package:clinic_management_system/features/repository_feature/presentation/pages/repository.dart';
 import 'package:flutter/material.dart';
-import '../../../diseases_badHabits_teeth/presentation/pages/badHabits.dart';
-import '../../../diseases_badHabits_teeth/presentation/pages/diseases.dart';
-import '../../../diseases_badHabits_teeth/presentation/pages/general.dart';
-import '../../../diseases_badHabits_teeth/presentation/widgets/content_view.dart';
-import '../../../diseases_badHabits_teeth/presentation/widgets/custom_tab.dart';
-import '../../../patients_management/presentation/pages/patient_profile.dart';
 import '../widgets/navbar_item.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

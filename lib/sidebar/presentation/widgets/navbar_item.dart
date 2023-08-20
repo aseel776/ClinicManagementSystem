@@ -1,6 +1,4 @@
 import 'package:clinic_management_system/core/app_colors.dart';
-import 'package:clinic_management_system/features/sidebar/data/models/rive_model.dart';
-import 'package:clinic_management_system/features/sidebar/presentation/widgets/rive_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
@@ -33,8 +31,6 @@ class _NavBarItemState extends ConsumerState<NavBarItem>
   Animation<double>? _anim2;
   Animation<double>? _anim3;
   Animation<Color?>? _color;
-
-  late RiveAnimationController __controller;
 
   bool hovered = false;
 
