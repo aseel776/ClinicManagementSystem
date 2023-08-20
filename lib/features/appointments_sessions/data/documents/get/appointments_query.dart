@@ -18,6 +18,17 @@ class AppointmentsQuery{
   ''';
 
   static const getAppointment = '''
-  
+  query PatientAppointment (\$id: Int!){
+    patientAppointment(id: \$id) {
+        date
+        id
+        notes
+        patient_id
+        phase
+        place
+        state
+        type
+    }
+  }
   ''';
 }

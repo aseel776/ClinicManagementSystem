@@ -8,7 +8,9 @@ import '../documents/get/appointments_query.dart';
 
 abstract class AppointmentsRepo{
   Future<Either<Failure, AppointmentsPage>> getAllAppointments(String date);
+  Future<Either<Failure, AppointmentModel>> getAppointment(int id);
   Future<Either<Failure, String>> createAppointment(AppointmentModel app);
+  Future<Either<Failure, String>> updateAppointment(AppointmentModel app);
   Future<Either<Failure, String>> deleteAppointment(int id);
 }
 
@@ -19,7 +21,6 @@ class AppointmentsRepoImp extends AppointmentsRepo{
 
   @override
   Future<Either<Failure, AppointmentsPage>> getAllAppointments(String date) async{
-    date = '2024-09-09 15:00:00.000';
     final response = await gqlClient.query(
       QueryOptions(
         document: gql(AppointmentsQuery.getAppointments),
@@ -94,6 +95,67 @@ class AppointmentsRepoImp extends AppointmentsRepo{
     if (!response.hasException && response.data != null) {
       print('success from delete');
       return right('Created Successfully');
+    } else {
+      return left(ServerFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, AppointmentModel>> getAppointment(int id) async{
+    final response = await gqlClient.query(
+      QueryOptions(
+        document: gql(AppointmentsQuery.getAppointment),
+        variables: {
+          'id': id,
+        },
+        fetchPolicy: FetchPolicy.noCache,
+      ),
+    );
+    if (!response.hasException && response.data != null) {
+      print('success from get app');
+      final appData = response.data!['patientAppointment'];
+      return right(AppointmentModel.fromJson(appData));
+    } else {
+      return left(ServerFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, String>> updateAppointment(AppointmentModel app) async{
+    final response = await gqlClient.query(
+      QueryOptions(
+        document: gql(AppointmentsMutation.updateAppointment),
+        variables: {
+          'updatePatientAppointment': app.reserveId != null
+              ? {
+            'id': app.id,
+            'date': app.time.toString(),
+            'notes': app.notes ?? '',
+            // 'patient_id': app.patient.id
+            'patient_id': 1,
+            'phase': app.nextPhase ?? '',
+            'place': app.place ?? '',
+            'type': app.type,
+            'reservation_id': app.reserveId,
+          }
+              : {
+            'id': app.id,
+            'date': app.time.toString(),
+            'notes': app.notes ?? '',
+            // 'patient_id': app.patient.id
+            'patient_id': 1,
+            'phase': app.nextPhase ?? '',
+            'place': app.place ?? '',
+            'type': app.type,
+          },
+        },
+        fetchPolicy: FetchPolicy.noCache,
+      ),
+    );
+
+    if (!response.hasException && response.data != null) {
+      print('success from update');
+      return right('Updated Successfully');
     } else {
       return left(ServerFailure());
     }

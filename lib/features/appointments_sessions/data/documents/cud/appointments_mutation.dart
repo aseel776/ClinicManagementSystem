@@ -10,7 +10,9 @@ class AppointmentsMutation{
 
   static const updateAppointment = '''
   mutation UpdatePatientAppointment (\$updatePatientAppointmentInput: UpdatePatientAppointmentInput!){
-    updatePatientAppointment(updatePatientAppointmentInput:\$updatePatientAppointmentInput) {
+    updatePatientAppointment(
+      updatePatientAppointmentInput: \$updatePatientAppointmentInput
+      ) {
         id
     }
   }
