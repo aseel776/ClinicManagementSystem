@@ -46,12 +46,33 @@ class AppointmentsRepoImp extends AppointmentsRepo{
       QueryOptions(
         document: gql(AppointmentsMutation.createAppointment),
         variables: {
-
+          'createPatientAppointmentInput': app.reserveId != null
+              ? {
+            'date': app.time.toString(),
+            'notes': app.notes?? '',
+            // 'patient_id': app.patient.id
+            'patient_id': 1,
+            'phase': app.nextPhase?? '',
+            'place': app.place?? '',
+            'type': app.type,
+            'reservation_id': app.reserveId,
+          }
+          : {
+            'date': app.time.toString(),
+            'notes': app.notes ?? '',
+            // 'patient_id': app.patient.id
+            'patient_id': 1,
+            'phase': app.nextPhase ?? '',
+            'place': app.place ?? '',
+            'type': app.type,
+          },
         },
+        fetchPolicy: FetchPolicy.noCache,
       ),
     );
 
     if(!response.hasException && response.data != null){
+      print('success from creation');
       return right('Created Successfully');
     }else{
       return left(ServerFailure());
@@ -62,13 +83,16 @@ class AppointmentsRepoImp extends AppointmentsRepo{
   Future<Either<Failure, String>> deleteAppointment(int id) async{
     final response = await gqlClient.query(
       QueryOptions(
-        document: gql(AppointmentsMutation.createAppointment),
+        document: gql(AppointmentsMutation.deleteAppointment),
         variables: {
+          'id': id,
         },
+        fetchPolicy: FetchPolicy.noCache,
       ),
     );
 
     if (!response.hasException && response.data != null) {
+      print('success from delete');
       return right('Created Successfully');
     } else {
       return left(ServerFailure());

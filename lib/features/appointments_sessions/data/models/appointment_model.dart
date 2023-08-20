@@ -18,8 +18,9 @@ class AppointmentModel extends Equatable{
    */
   String? type;
   String? notes;
+  int? reserveId;
 
-  AppointmentModel({this.id, this.time, this.type, this.patient, this.place, this.nextPhase, this.notes, this.status});
+  AppointmentModel({this.id, this.time, this.type, this.patient, this.place, this.nextPhase, this.notes, this.status, this.reserveId});
 
   AppointmentModel.fromJson(Map<String, dynamic> src){
     id = src['id'];
@@ -30,6 +31,9 @@ class AppointmentModel extends Equatable{
     type = src['type'];
     status = src['state'];
     notes = src['notes'];
+    if(src.containsKey('reservation_id')){
+      reserveId = src['reservation_id'];
+    }
   }
 
   Map<String, dynamic> toJson(){

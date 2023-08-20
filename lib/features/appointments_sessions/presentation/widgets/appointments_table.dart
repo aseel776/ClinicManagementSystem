@@ -1,10 +1,10 @@
-import 'package:clinic_management_system/features/appointments_sessions/presentation/states/appoitments/appointments_state.dart';
-import 'package:clinic_management_system/features/appointments_sessions/presentation/states/appoitments/appoitments_provider.dart';
-import 'package:clinic_management_system/features/appointments_sessions/presentation/states/control_states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import './/core/app_colors.dart';
+import '../states/control_states.dart';
 import '../../data/models/appointment_model.dart';
+import '../states/appointments/appointments_state.dart';
+import '../states/appointments/appointments_provider.dart';
 
 class AppointmentsTable extends ConsumerStatefulWidget {
   final double tableWidth;
@@ -40,10 +40,12 @@ class _AppointmentsTableState extends ConsumerState<AppointmentsTable> {
       width: widget.tableWidth,
       height: widget.tableHeight,
       child: state is LoadedAppointmentsState
-          ? Column(
-        children: [
-          SizedBox(height: widget.tableHeight * .05),
-          Expanded(
+          ? Padding(
+            padding: EdgeInsets.only(
+              top: widget.tableHeight * .05,
+              left: widget.tableWidth * .025,
+              right: widget.tableWidth * .025,
+            ),
             child: SingleChildScrollView(
               child: DataTable(
                 columnSpacing: 0,
@@ -53,7 +55,7 @@ class _AppointmentsTableState extends ConsumerState<AppointmentsTable> {
                   DataColumn(label: createPatientLabel('المريض')),
                   DataColumn(label: createPlace('مكان العلاج')),
                   DataColumn(label: createPhase('المرحلة')),
-                  DataColumn(label: createText('ملاحظات')),
+                  // DataColumn(label: createText('ملاحظات')),
                   DataColumn(label: createText('العمليات')),
                 ],
                 rows: [
@@ -61,9 +63,7 @@ class _AppointmentsTableState extends ConsumerState<AppointmentsTable> {
                 ],
               ),
             ),
-          ),
-        ],
-      )
+          )
           : state is LoadingAppointmentsState
           ? Container(color: Colors.yellow)
           : Container(color: Colors.red),
@@ -95,8 +95,8 @@ class _AppointmentsTableState extends ConsumerState<AppointmentsTable> {
         DataCell(createPatientLabel(app.patient!)),
         DataCell(createPlace(app.place!)),
         DataCell(createPhase(app.nextPhase!)),
-        DataCell(createNotes(app.notes!)),
-        DataCell(createButtons()),
+        // DataCell(createNotes(app.notes!)),
+        DataCell(createButtons(app)),
       ],
     );
   }
@@ -129,16 +129,85 @@ class _AppointmentsTableState extends ConsumerState<AppointmentsTable> {
     );
   }
   
-  createNotes(String notes){
-    return SizedBox(
-      width: widget.tableWidth * .2,
-      child: createText(notes),
-    );
-  }
+  // createNotes(String notes){
+  //   return SizedBox(
+  //     width: widget.tableWidth * .2,
+  //     child: Text(
+  //       notes,
+  //       overflow: TextOverflow.fade,
+  //       style: const TextStyle(
+  //         fontFamily: 'Cairo',
+  //         fontSize: 14,
+  //         color: AppColors.black,
+  //       ),
+  //     ),
+  //   );
+  // }
 
-  createButtons(){
-    return Container(
-      width: widget.tableWidth * .25,
+  createButtons(AppointmentModel app){
+    return SizedBox(
+      width: widget.tableWidth * .35,
+      child: Row(
+        children: [
+          MaterialButton(
+            onPressed: (){
+              //push new session page
+            },
+            minWidth: widget.tableWidth * .1,
+            color: AppColors.black,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: const Text(
+              'إدخال',
+              style: TextStyle(
+                color: Colors.white,
+                fontFamily: 'Cairo',
+                fontSize: 14,
+              ),
+            ),
+          ),
+          SizedBox(width: widget.tableWidth * .025),
+          MaterialButton(
+            onPressed: (){
+              //edit treatment
+            },
+            minWidth: widget.tableWidth * .1,
+            color: AppColors.black,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: const Text(
+              'تعديل',
+              style: TextStyle(
+                color: Colors.white,
+                fontFamily: 'Cairo',
+                fontSize: 14,
+              ),
+            ),
+          ),
+          SizedBox(width: widget.tableWidth * .025),
+          MaterialButton(
+            onPressed: () async{
+              await ref.read(appointmentsProvider.notifier).deleteMaterial(app.id!);
+              await ref.read(appointmentsProvider.notifier).getAllAppointments(ref.read(selectedDate).toString());
+            },
+            minWidth: widget.tableWidth * .1,
+            color: AppColors.black,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: const Text(
+              'حذف',
+              style: TextStyle(
+                color: Colors.white,
+                fontFamily: 'Cairo',
+                fontSize: 14,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 

@@ -191,7 +191,7 @@ class AppointmentsMainSection extends StatelessWidget {
                             },
                             color: AppColors.black,
                             minWidth: screenWidth * .125,
-                            height: screenHeight * .075,
+                            height: screenHeight * .1,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
