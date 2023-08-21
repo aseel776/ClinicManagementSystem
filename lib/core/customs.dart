@@ -91,3 +91,16 @@ final insertMaterialBorder = OutlineInputBorder(
     color: Colors.white70,
   ),
 );
+
+const notesDecoration = InputDecoration(
+  contentPadding: EdgeInsets.all(10),
+  border: InputBorder.none,
+  focusedBorder: InputBorder.none,
+  enabledBorder: InputBorder.none,
+  hintText: 'أدخل ملاحظاتك',
+  hintStyle: TextStyle(
+    fontFamily: 'Cairo',
+    color: Colors.grey,
+    fontSize: 16,
+  ),
+);

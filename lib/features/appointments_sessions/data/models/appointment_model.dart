@@ -1,11 +1,11 @@
+import 'package:clinic_management_system/features/patients_management/data/models/patient.dart';
 import 'package:equatable/equatable.dart';
 
 class AppointmentModel extends Equatable{
 
   int? id;
   DateTime? time;
-  //convert to patientmodel
-  String? patient;
+  Patient? patient;
   String? place;
   String? nextPhase;
   //either registered/unregistered
@@ -25,7 +25,7 @@ class AppointmentModel extends Equatable{
   AppointmentModel.fromJson(Map<String, dynamic> src){
     id = src['id'];
     time = DateTime.tryParse(src['date']);
-    patient = src['patient']['name'];
+    patient = Patient.fromJson(src['patient']);
     place = src['place'];
     nextPhase = src['phase'];
     type = src['type'];

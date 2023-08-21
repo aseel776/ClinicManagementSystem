@@ -1,3 +1,4 @@
+import 'package:clinic_management_system/features/appointments_sessions/presentation/widgets/main_section.dart';
 import 'package:clinic_management_system/features/diseases_badHabits/presentation/pages/general.dart';
 import 'package:clinic_management_system/features/medicine/data/model/active_materials.dart';
 import 'package:clinic_management_system/features/medicine/presentation/Pages/medicine_page.dart';
@@ -35,7 +36,7 @@ class _SidebarState extends ConsumerState<Sidebar> {
         MedicinePage(),
     NavBarData(
         pageName: "Appointments",
-        svgIconPath: "assets/svgs/appointment.svg"): General(),
+        svgIconPath: "assets/svgs/appointment.svg"): AppointmentsMainSection(),
     NavBarData(pageName: "Patients", svgIconPath: "assets/svgs/patients.svg"):
         CreatePatients(),
     NavBarData(

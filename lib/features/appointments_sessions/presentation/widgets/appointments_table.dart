@@ -1,3 +1,4 @@
+import 'package:clinic_management_system/features/appointments_sessions/presentation/widgets/upsert_appointment.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import './/core/app_colors.dart';
@@ -92,7 +93,7 @@ class _AppointmentsTableState extends ConsumerState<AppointmentsTable> {
       color: MaterialStateProperty.all(rowColor),
       cells: [
         DataCell(createTimeLabel(app.time.toString().substring(11, 16))),
-        DataCell(createPatientLabel(app.patient!)),
+        DataCell(createPatientLabel(app.patient!.name!)),
         DataCell(createPlace(app.place!)),
         DataCell(createPhase(app.nextPhase!)),
         // DataCell(createNotes(app.notes!)),
@@ -169,8 +170,8 @@ class _AppointmentsTableState extends ConsumerState<AppointmentsTable> {
           ),
           SizedBox(width: widget.tableWidth * .025),
           MaterialButton(
-            onPressed: (){
-              //edit treatment
+            onPressed: () async{
+              await showUpsertAppointment(context: context, ref: ref, type: app.type!, app: app);
             },
             minWidth: widget.tableWidth * .1,
             color: AppColors.black,

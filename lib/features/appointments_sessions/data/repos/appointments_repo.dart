@@ -34,7 +34,7 @@ class AppointmentsRepoImp extends AppointmentsRepo{
       print('success from get all');
       List<dynamic> temp = response.data!['patientAppointments'];
       List<AppointmentModel> apps = temp.map((a) => AppointmentModel.fromJson(a)).toList();
-      AppointmentsPage page = AppointmentsPage(date: apps[0].time, appointments: apps);
+      AppointmentsPage page = AppointmentsPage(date: DateTime.tryParse(date), appointments: apps);
       return right(page);
     } else{
       return left(ServerFailure());
@@ -51,8 +51,7 @@ class AppointmentsRepoImp extends AppointmentsRepo{
               ? {
             'date': app.time.toString(),
             'notes': app.notes?? '',
-            // 'patient_id': app.patient.id
-            'patient_id': 1,
+            'patient_id': app.patient!.id,
             'phase': app.nextPhase?? '',
             'place': app.place?? '',
             'type': app.type,
@@ -61,8 +60,7 @@ class AppointmentsRepoImp extends AppointmentsRepo{
           : {
             'date': app.time.toString(),
             'notes': app.notes ?? '',
-            // 'patient_id': app.patient.id
-            'patient_id': 1,
+            'patient_id': app.patient!.id,
             'phase': app.nextPhase ?? '',
             'place': app.place ?? '',
             'type': app.type,
@@ -126,13 +124,12 @@ class AppointmentsRepoImp extends AppointmentsRepo{
       QueryOptions(
         document: gql(AppointmentsMutation.updateAppointment),
         variables: {
-          'updatePatientAppointment': app.reserveId != null
+          'updatePatientAppointmentInput': app.reserveId != null
               ? {
             'id': app.id,
             'date': app.time.toString(),
             'notes': app.notes ?? '',
-            // 'patient_id': app.patient.id
-            'patient_id': 1,
+            'patient_id': app.patient!.id,
             'phase': app.nextPhase ?? '',
             'place': app.place ?? '',
             'type': app.type,
@@ -142,8 +139,7 @@ class AppointmentsRepoImp extends AppointmentsRepo{
             'id': app.id,
             'date': app.time.toString(),
             'notes': app.notes ?? '',
-            // 'patient_id': app.patient.id
-            'patient_id': 1,
+            'patient_id': app.patient!.id,
             'phase': app.nextPhase ?? '',
             'place': app.place ?? '',
             'type': app.type,

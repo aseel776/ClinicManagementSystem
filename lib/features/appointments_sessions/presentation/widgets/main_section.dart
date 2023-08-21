@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import './appointments_table.dart';
+import './upsert_appointment.dart';
 import '../states/control_states.dart';
+import '../states/appointments/appointments_provider.dart';
 import './/core/app_colors.dart';
 
 class AppointmentsMainSection extends StatelessWidget {
@@ -38,7 +40,7 @@ class AppointmentsMainSection extends StatelessWidget {
               width: screenWidth * .4,
               height: screenHeight * .05,
               child: Consumer(
-                builder: (context, ref, child) {
+                builder: (_, ref, __) {
                   final displayedDate = ref.watch(selectedDate);
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -56,9 +58,9 @@ class AppointmentsMainSection extends StatelessWidget {
                             color: Colors.black54,
                           ),
                           child: FloatingActionButton(
-                            onPressed: () {
-                              print('previous');
+                            onPressed: () async{
                               ref.read(selectedDate.notifier).state = displayedDate.subtract(const Duration(days: 1));
+                              ref.read(appointmentsProvider.notifier).getAllAppointments(ref.read(selectedDate).toString());
                             },
                             backgroundColor: AppColors.black,
                             child: const Icon(
@@ -101,9 +103,9 @@ class AppointmentsMainSection extends StatelessWidget {
                             color: Colors.black54,
                           ),
                           child: FloatingActionButton(
-                            onPressed: () {
-                              print('next');
+                            onPressed: () async{
                               ref.read(selectedDate.notifier).state = displayedDate.add(const Duration(days: 1));
+                              ref.read(appointmentsProvider.notifier).getAllAppointments(ref.read(selectedDate).toString());
                             },
                             backgroundColor: AppColors.black,
                             child: const Icon(
@@ -132,105 +134,120 @@ class AppointmentsMainSection extends StatelessWidget {
                   ),
                   SizedBox(
                     width: screenWidth * .125,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SizedBox(
-                          width: screenWidth * .125,
-                          child: MaterialButton(
-                            onPressed: (){
-                              print('add app');
-                            },
-                            color: AppColors.black,
-                            minWidth: screenWidth * .125,
-                            height: screenHeight * .1,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: const Text(
-                              'إضافة موعد',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                                fontFamily: 'Cairo'
+                    child: Consumer(
+                      builder: (context, ref, child) =>
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                width: screenWidth * .125,
+                                child: MaterialButton(
+                                  onPressed: () async {
+                                    await showUpsertAppointment(
+                                      context: context,
+                                      ref: ref,
+                                      type: 'normal',
+                                    );
+                                  },
+                                  color: AppColors.black,
+                                  minWidth: screenWidth * .125,
+                                  height: screenHeight * .075,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: const Text(
+                                    'إضافة موعد',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16,
+                                        fontFamily: 'Cairo'
+                                    ),
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: screenHeight * .05),
-                        SizedBox(
-                          width: screenWidth * .125,
-                          child: MaterialButton(
-                            onPressed: () {
-                              print('add waiting');
-                            },
-                            color: AppColors.black,
-                            minWidth: screenWidth * .125,
-                            height: screenHeight * .1,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: const Text(
-                              'إدخال مريض من الانتظار',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                                fontFamily: 'Cairo',
+                              SizedBox(height: screenHeight * .025),
+                              SizedBox(
+                                width: screenWidth * .125,
+                                child: MaterialButton(
+                                  onPressed: () async{
+                                    await showUpsertAppointment(
+                                      context: context,
+                                      ref: ref,
+                                      type: 'waiting',
+                                    );
+                                  },
+                                  color: AppColors.black,
+                                  minWidth: screenWidth * .125,
+                                  height: screenHeight * .075,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: const Text(
+                                    'إدخال من الانتظار',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                      fontFamily: 'Cairo',
+                                    ),
+                                    overflow: TextOverflow.clip,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
                               ),
-                              overflow: TextOverflow.clip,
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: screenHeight * .05),
-                        SizedBox(
-                          width: screenWidth * .125,
-                          child: MaterialButton(
-                            onPressed: () {
-                              print('add emergency');
-                            },
-                            color: AppColors.black,
-                            minWidth: screenWidth * .125,
-                            height: screenHeight * .1,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: const Text(
-                              'إدخال مريض إسعافي',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                  fontFamily: 'Cairo',
+                              SizedBox(height: screenHeight * .025),
+                              SizedBox(
+                                width: screenWidth * .125,
+                                child: MaterialButton(
+                                  onPressed: () async{
+                                    await showUpsertAppointment(
+                                      context: context,
+                                      ref: ref,
+                                      type: 'emergency',
+                                    );
+                                  },
+                                  color: AppColors.black,
+                                  minWidth: screenWidth * .125,
+                                  height: screenHeight * .075,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: const Text(
+                                    'إدخال إسعافي',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                      fontFamily: 'Cairo',
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
                               ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: screenHeight * .05),
-                        SizedBox(
-                          width: screenWidth * .125,
-                          child: MaterialButton(
-                            onPressed: () {
-                              print('external');
-                            },
-                            color: AppColors.black,
-                            minWidth: screenWidth * .125,
-                            height: screenHeight * .1,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: const Text(
-                              'المواعيد الخارجية',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                  fontFamily: 'Cairo'
+                              SizedBox(height: screenHeight * .025),
+                              SizedBox(
+                                width: screenWidth * .125,
+                                child: MaterialButton(
+                                  onPressed: () {
+                                    print('external');
+                                  },
+                                  color: AppColors.black,
+                                  minWidth: screenWidth * .125,
+                                  height: screenHeight * .075,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: const Text(
+                                    'المواعيد الخارجية',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16,
+                                        fontFamily: 'Cairo'
+                                    ),
+                                  ),
+                                ),
                               ),
-                            ),
+                            ],
                           ),
-                        ),
-                      ],
-                    ),
+                    )
                   ),
                   SizedBox(
                     width: screenWidth * .025 / 2,
@@ -247,13 +264,14 @@ class AppointmentsMainSection extends StatelessWidget {
   Future<void> selectDate(BuildContext context, WidgetRef ref) async{
     final date = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
+      initialDate: ref.read(selectedDate),
       firstDate: DateTime(2000),
       lastDate: DateTime(2100),
     );
     final oldDate = ref.read(selectedDate);
     if(date != null && date != oldDate){
       ref.read(selectedDate.notifier).state = date;
+      ref.read(appointmentsProvider.notifier).getAllAppointments(date.toString());
     }
   }
 }

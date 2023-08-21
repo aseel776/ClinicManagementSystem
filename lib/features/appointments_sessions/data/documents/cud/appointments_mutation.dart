@@ -1,6 +1,6 @@
 class AppointmentsMutation{
 
-  static const createAppointment = ''''
+  static const createAppointment = '''
   mutation CreatePatientAppointment (\$createPatientAppointmentInput: CreatePatientAppointmentInput!){
     createPatientAppointment(createPatientAppointmentInput: \$createPatientAppointmentInput) {
         id
