@@ -74,9 +74,7 @@ class OnGoingTreatment extends StatelessWidget {
       height: height,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(
-          color: AppColors.black
-        ),
+        color: AppColors.lightGreen,
       ),
       padding: EdgeInsets.only(
         right: width * .05,

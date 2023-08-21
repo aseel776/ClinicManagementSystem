@@ -37,6 +37,12 @@ class PatientTreatmentsNotifier extends StateNotifier<PatientTreatmentsState> {
     state = _mapFailureOrTreatmentsToState(response);
   }
 
+  Future<void> createPatientTreatment(PatientTreatmentModel body) async{
+    state = LoadingPatientTreatmentsState();
+    final response = await repo.createPatientTreatment(body);
+    state = _mapFailureOrSuccessToState(response);
+  }
+
   PatientTreatmentsState _mapFailureOrTreatmentsToState(
       Either<Failure, List<PatientTreatmentModel>> either) {
     return either.fold(

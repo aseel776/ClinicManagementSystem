@@ -26,6 +26,23 @@ class PatientTreatmentModel extends Equatable{
     }
   }
 
+  Map<String, dynamic> toJson(){
+    Map<String, dynamic> map = {};
+    if(id != null){
+      map.putIfAbsent('id', () => id);
+    }
+    map.putIfAbsent('patient_id', () => patientId);
+    map.putIfAbsent('treatment_id', () => treatment!.id);
+    map.putIfAbsent('price', () => price);
+    map.putIfAbsent('place', () => place);
+    if(RegExp('r^[th]', caseSensitive:false).hasMatch(place!)){
+      map.putIfAbsent('type', () => 'teethly');
+    }else{
+      map.putIfAbsent('type', () => 'unteethly');
+    }
+    return map;
+  }
+
   @override
   List<Object?> get props => [id, patientId, place, price];
 }

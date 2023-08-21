@@ -2,6 +2,7 @@ import 'package:clinic_management_system/features/appointments_sessions/data/mod
 import 'package:clinic_management_system/features/appointments_sessions/presentation/states/patient_treatments/patient_treatments_provider.dart';
 import 'package:clinic_management_system/features/appointments_sessions/presentation/states/patient_treatments/patient_treatments_state.dart';
 import 'package:clinic_management_system/features/appointments_sessions/presentation/widgets/ongoing_treatment.dart';
+import 'package:clinic_management_system/features/appointments_sessions/presentation/widgets/select_treatment.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import './/core/app_colors.dart';
@@ -110,8 +111,8 @@ class _NewSessionState extends ConsumerState<NewSession> {
                       ),
                     ),
                     MaterialButton(
-                      onPressed: () {
-                        //open pop up
+                      onPressed: () async{
+                        await selectTreatment(context, ref, widget.app.patient!.id!);
                       },
                       color: AppColors.black,
                       shape: RoundedRectangleBorder(
@@ -155,7 +156,7 @@ class _NewSessionState extends ConsumerState<NewSession> {
                             child: SingleChildScrollView(
                               child: Column(
                                 children: [
-                                  ...state.treatments
+                                  ...state.treatments.reversed
                                       .map((e) => Column(
                                             children: [
                                               OnGoingTreatment(e),
