@@ -22,10 +22,6 @@ class PatientTreatmentsQuery{
                     name
                 }
             }
-            treatment_type {
-                id
-                name
-            }
         }
     }
   }

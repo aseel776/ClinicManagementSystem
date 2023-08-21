@@ -1,3 +1,4 @@
+import 'package:clinic_management_system/features/appointments_sessions/presentation/widgets/new_session.dart';
 import 'package:clinic_management_system/features/appointments_sessions/presentation/widgets/upsert_appointment.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -152,7 +153,7 @@ class _AppointmentsTableState extends ConsumerState<AppointmentsTable> {
         children: [
           MaterialButton(
             onPressed: (){
-              //push new session page
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => NewSession(app: app)));
             },
             minWidth: widget.tableWidth * .1,
             color: AppColors.black,

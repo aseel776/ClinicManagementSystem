@@ -1,4 +1,4 @@
-import 'package:clinic_management_system/features/appointments_sessions/presentation/widgets/main_section.dart';
+import 'package:clinic_management_system/features/appointments_sessions/presentation/widgets/apps_main_section.dart';
 import 'package:clinic_management_system/features/diseases_badHabits/presentation/pages/general.dart';
 import 'package:clinic_management_system/sidebar/presentation/pages/sidebar.dart';
 import 'package:flutter/material.dart';
@@ -73,7 +73,7 @@ class MainPage1 extends ConsumerWidget {
           )
         ],
       ),
-      body: AppointmentsMainSection(),
+      body: const AppointmentsMainSection(),
       // body: Stack(
       //   children: [
       //     // WindowTitleBarBox(

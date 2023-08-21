@@ -58,6 +58,7 @@ class AppointmentsMainSection extends StatelessWidget {
                             color: Colors.black54,
                           ),
                           child: FloatingActionButton(
+                            heroTag: Object(),
                             onPressed: () async{
                               ref.read(selectedDate.notifier).state = displayedDate.subtract(const Duration(days: 1));
                               ref.read(appointmentsProvider.notifier).getAllAppointments(ref.read(selectedDate).toString());
@@ -103,6 +104,7 @@ class AppointmentsMainSection extends StatelessWidget {
                             color: Colors.black54,
                           ),
                           child: FloatingActionButton(
+                            heroTag: Object(),
                             onPressed: () async{
                               ref.read(selectedDate.notifier).state = displayedDate.add(const Duration(days: 1));
                               ref.read(appointmentsProvider.notifier).getAllAppointments(ref.read(selectedDate).toString());

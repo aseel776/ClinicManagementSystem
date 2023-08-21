@@ -18,13 +18,19 @@ class TreatmentModel extends Equatable{
   TreatmentModel.fromJson(Map<String, dynamic> source){
     id = source['id'];
     name = source['name'];
-    color = generateColorFromString(source['color']);
-    type = TreatmentTypeModel.fromJson(source['treatment_type']);
+    if(source.containsKey('color')){
+      color = generateColorFromString(source['color']);
+    }
+    if(source.containsKey('treatment_type')){
+      type = TreatmentTypeModel.fromJson(source['treatment_type']);
+    }
     if(source['price'] != null){
       price = source['price'];
+    }
+    if(source.containsKey('steps')){
       final tempSteps = source['steps'] as List<dynamic>;
       steps = tempSteps.map((e) => StepModel.fromJson(e)).toList();
-      channels = steps![0].subSteps?? [];
+      channels = steps![0].subSteps ?? [];
     }
   }
 

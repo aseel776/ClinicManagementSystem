@@ -16,7 +16,7 @@ class PatientTreatmentModel extends Equatable{
     id = src['id'];
     patientId = src['patient_id'];
     place = src['place'];
-    price = src['price'];
+    price = (src['price'] is int) ? src['price'] : src['price'].toInt();
     treatment = TreatmentModel.fromJson(src['treatment']);
     if(src.containsKey('PatientTreatmentDoneStep') && src['PatientTreatmentDoneStep'] != null){
       List<dynamic> temp = src['PatientTreatmentDoneStep'];

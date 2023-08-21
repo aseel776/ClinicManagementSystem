@@ -17,6 +17,7 @@ class PatientTreatmentsRepoImp extends PatientTreatmentsRepo {
 
   @override
   Future<Either<Failure, List<PatientTreatmentModel>>> getOngoingPatientTreatments(int patientId) async {
+    print(1);
     final response = await gqlClient.query(
       QueryOptions(
         document: gql(PatientTreatmentsQuery.getOngoingPatientTreatments),
