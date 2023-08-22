@@ -38,7 +38,7 @@ class Disease {
     return {
       'id': id,
       'diseaseName': name,
-      'chemicalMaterialIds':
+      'chemical_material_id':
           antiMaterials?.map((material) => material.id).toList(),
     };
   }

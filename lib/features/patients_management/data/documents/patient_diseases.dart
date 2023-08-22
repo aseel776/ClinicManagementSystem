@@ -1,16 +1,30 @@
 class PatientDiseasesDocsGql {
   static const String createPatientDiseaseMutation = '''
-  mutation CreatePatientDisease(\$input: CreatePatientDiseaseInput!) {
-    createPatientDisease(createPatientDiseaseInput: \$input) {
-      disease_id
-      id
-      notes
-      patient_id
-      start_date
-      tight
-    }
-  }
-''';
+          mutation CreatePatientDisease(
+           \$diseaseId: Int!,
+            \$notes: String!,
+            \$patientId: Int!,
+            \$startDate: DateTime!,
+            \$tight: Boolean!
+          ) {
+            createPatientDisease(
+              createPatientDiseaseInput: {
+                disease_id:\$diseaseId,
+                notes: \$notes,
+                patient_id: \$patientId,
+                start_date: \$startDate,
+                tight: \$tight
+              }
+            ) {
+              disease_id
+              id
+              notes
+              patient_id
+              start_date
+              tight
+            }
+          }
+        ''';
 
   // final MutationOptions mutationOptions = MutationOptions(
   //   document: gql(createPatientDiseaseMutation),

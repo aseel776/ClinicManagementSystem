@@ -1,17 +1,14 @@
 import 'package:intl/intl.dart';
 
 class PatientCost {
-  final int id;
-  final String date;
+  final int? id;
+  final String? date;
   final String? treatment;
-  final int amount;
+  final int? amount;
+  final int? treatmentId;
 
-  PatientCost({
-    required this.id,
-    required this.date,
-    required this.treatment,
-    required this.amount,
-  });
+  PatientCost(
+      {this.id, this.date, this.treatment, this.amount, this.treatmentId});
 
   factory PatientCost.fromJson(Map<String, dynamic> json) {
     DateTime parsedDate = DateTime.parse(json['date']);

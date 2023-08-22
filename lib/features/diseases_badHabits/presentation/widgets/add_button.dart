@@ -71,6 +71,7 @@ class AddButton extends ConsumerWidget {
 
   Future<void> addDiseases_popup(BuildContext context, WidgetRef ref) async {
     ref.watch(diseaseName.notifier).state.text = "";
+    ref.watch(multiSelect.notifier).state = [];
 
     //active materials
     await ref
@@ -160,6 +161,11 @@ class AddButton extends ConsumerWidget {
                           width: screenWidth! * 0.08,
                           child: ElevatedButton(
                               onPressed: () async {
+                                print("adddddddddddddd");
+                                print(ref
+                                    .watch(multiSelect.notifier)
+                                    .state
+                                    .toString());
                                 List<ActiveMaterialModel>? a = ref
                                     .watch(multiSelect.notifier)
                                     .state
@@ -209,6 +215,7 @@ class AddButton extends ConsumerWidget {
     WidgetRef ref,
   ) async {
     ref.watch(badHabitsName.notifier).state.text = "";
+    ref.watch(multiSelect.notifier).state = [];
     return showDialog(
         context: context,
         builder: (context) => BackdropFilter(
@@ -344,6 +351,7 @@ class AddButton extends ConsumerWidget {
   }
 
   void antiMaterialsSelect(BuildContext context, WidgetRef ref) async {
+    ref.watch(multiSelect);
     await ref
         .watch(activeMaterialsProvider.notifier)
         .getAllMaterials(1, items: 10000);

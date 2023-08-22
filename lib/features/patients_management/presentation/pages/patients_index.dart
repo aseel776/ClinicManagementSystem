@@ -277,7 +277,7 @@ class PatientIndexState extends ConsumerState<PatientIndex> {
       const DataColumn(label: PrimaryText(text: ' رقم التواصل')),
       const DataColumn(label: PrimaryText(text: ' جنس المريض')),
       const DataColumn(label: PrimaryText(text: "تاريخ أول حجز")),
-      const DataColumn(label: PrimaryText(text: ' العمليات')),
+      // const DataColumn(label: PrimaryText(text: ' العمليات')),
     ];
   }
 
@@ -339,7 +339,7 @@ class PatientIndexState extends ConsumerState<PatientIndex> {
         Padding(
           padding: const EdgeInsets.all(0.0),
           child: Text(
-            patient.name!,
+            patient.phone!,
             style: Theme.of(context)
                 .textTheme
                 .bodyText2
@@ -375,9 +375,6 @@ class PatientIndexState extends ConsumerState<PatientIndex> {
             decoration: BoxDecoration(
               shape: BoxShape.rectangle,
               color: Colors.green.withOpacity(.3),
-              //  product.status.name == "active"
-              //     ? Colors.green.withOpacity(.3)
-              //     : Colors.red.withOpacity(.3),
               borderRadius: BorderRadius.circular(50),
             ),
             child: Center(
@@ -392,26 +389,26 @@ class PatientIndexState extends ConsumerState<PatientIndex> {
           ),
         ),
       ),
-      DataCell(
-        Container(
-          padding: const EdgeInsets.symmetric(vertical: defaultSpace + 6),
-          child: Center(
-            child: Container(
-              height: 25,
-              width: 25,
-              decoration: const BoxDecoration(
-                shape: BoxShape.rectangle,
-                color: backgroundColor,
-              ),
-              child: Icon(
-                Icons.more_horiz,
-                size: 17,
-                color: Colors.black.withOpacity(.5),
-              ),
-            ),
-          ),
-        ),
-      ),
+      // DataCell(
+      //   Container(
+      //     padding: const EdgeInsets.symmetric(vertical: defaultSpace + 6),
+      //     child: Center(
+      //       child: Container(
+      //         height: 25,
+      //         width: 25,
+      //         decoration: const BoxDecoration(
+      //           shape: BoxShape.rectangle,
+      //           color: backgroundColor,
+      //         ),
+      //         child: Icon(
+      //           Icons.more_horiz,
+      //           size: 17,
+      //           color: Colors.black.withOpacity(.5),
+      //         ),
+      //       ),
+      //     ),
+      //   ),
+      // ),
     ]);
   }
 }

@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:ui';
 import 'package:clinic_management_system/features/diseases_badHabits/presentation/pages/badHabits.dart';
 import 'package:clinic_management_system/features/diseases_badHabits/presentation/riverpod/badHabits/add_update_delete_provider.dart';
@@ -183,9 +185,13 @@ class BadHabitsTableWidget extends ConsumerWidget {
                                                                 child:
                                                                     GestureDetector(
                                                                   onTap: () {
-                                                                    // antiMaterialsSelect(
-                                                                    //     context,
-                                                                    //     ref);
+                                                                    ref
+                                                                        .watch(multiSelect
+                                                                            .notifier)
+                                                                        .state = row.antiMaterials!;
+                                                                    antiMaterialsSelect(
+                                                                        context,
+                                                                        ref);
                                                                   },
                                                                   child:
                                                                       Container(
@@ -331,6 +337,221 @@ class BadHabitsTableWidget extends ConsumerWidget {
                 ))
             .toList(),
         // source: DataSource(context, badHabits, ref),
+      ),
+    );
+  }
+
+  void antiMaterialsSelect(BuildContext context, WidgetRef ref) async {
+    await ref
+        .watch(activeMaterialsProvider.notifier)
+        .getAllMaterials(1, items: 10000);
+    // ref.watch(mul)/
+    final stateActive = ref.watch(activeMaterialsProvider.notifier).state;
+    // material.antiMaterials ??= [];
+    // List<String>? originalOne = material.antiMaterials!.toList();
+    final materials;
+    if (stateActive is LoadedActiveMaterialsState) {
+      materials = stateActive.page.materials;
+      print("materialllls");
+      print(materials.toString());
+    } else {
+      materials = [];
+    }
+
+    double screenWidth = MediaQuery.of(context).size.width;
+    double containerWidth = screenWidth * .25;
+    double screenHeight = MediaQuery.of(context).size.height;
+    double containerHeight = screenHeight * .5;
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(5),
+        ),
+        child: Directionality(
+          textDirection: TextDirection.rtl,
+          child: StatefulBuilder(
+            builder: (context, setState) {
+              return Container(
+                width: containerWidth,
+                height: containerHeight,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5),
+                  color: Colors.white,
+                ),
+                padding: EdgeInsets.only(
+                  top: containerHeight * .035,
+                  bottom: containerHeight * .025,
+                  left: containerWidth * .05,
+                  right: containerWidth * .05,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      height: containerHeight * .1,
+                      child: const Text(
+                        'التعارضات الدوائية',
+                        style: TextStyle(
+                          fontFamily: 'Cairo',
+                          fontSize: 20,
+                          color: AppColors.black,
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: containerHeight * .025,
+                      child: Divider(
+                        color: Colors.grey[400],
+                      ),
+                    ),
+                    SizedBox(height: containerHeight * .02),
+                    SizedBox(
+                      height: containerHeight * .655,
+                      child: ListView.builder(
+                        itemCount: materials.length,
+                        itemBuilder: (context, index) {
+                          return CheckboxListTile(
+                            value: ref
+                                .watch(multiSelect.notifier)
+                                .state
+                                .any((element) => element == materials[index]),
+                            onChanged: (value) {
+                              setState(() {
+                                if (value!) {
+                                  ActiveMaterialModel selected1 =
+                                      materials[index] as ActiveMaterialModel;
+
+                                  if (selected1.name! != "" &&
+                                      !ref
+                                          .watch(multiSelect.notifier)
+                                          .state!
+                                          .any((element) =>
+                                              element == selected1)) {
+                                    print(value.toString() + "addeddd");
+
+                                    List list =
+                                        ref.watch(multiSelect.notifier).state!;
+                                    // print(list.toString());
+
+                                    list.add(selected1);
+                                    ref.read(multiSelect.notifier).state =
+                                        list.toList();
+                                    print("lengthhhh");
+                                    print(list.length);
+                                  }
+                                  //  else if (ref
+                                  //     .watch(multiSelect.notifier)
+                                  //     .state
+                                  //     .any((element) => element == selected1)) {
+                                  //   List list =
+                                  //       ref.watch(multiSelect.notifier).state;
+
+                                  //   list.remove(selected1);
+                                  //   ref.read(multiSelect.notifier).state =
+                                  //       list.toList();
+                                  // }
+                                } else if (!value &&
+                                    ref.watch(multiSelect.notifier).state.any(
+                                        (element) =>
+                                            element == materials[index])) {
+                                  print(value.toString() + "removed");
+                                  ActiveMaterialModel selected1 =
+                                      materials[index] as ActiveMaterialModel;
+
+                                  List list =
+                                      ref.watch(multiSelect.notifier).state!;
+                                  print("lisssssssssssst");
+                                  print(list.toString());
+
+                                  list.remove(selected1);
+                                  ref.read(multiSelect.notifier).state =
+                                      list.toList();
+                                  print("lengthhhh");
+                                  print(list.length);
+                                }
+                              });
+                            },
+                            title: Text(
+                              materials[index].name!,
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontFamily: 'Cairo',
+                                color: AppColors.black,
+                              ),
+                            ),
+                            controlAffinity: ListTileControlAffinity.leading,
+                            activeColor: AppColors.black,
+                            checkboxShape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    SizedBox(height: containerHeight * .04),
+                    SizedBox(
+                      height: containerHeight * .1,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          MaterialButton(
+                            minWidth: containerWidth * .3,
+                            color: Colors.white,
+                            elevation: 0,
+                            hoverElevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(3),
+                            ),
+                            onPressed: () {
+                              print(ref
+                                  .watch(multiSelect.notifier)
+                                  .state!
+                                  .length);
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text(
+                              'تأكيد',
+                              style: TextStyle(
+                                fontFamily: 'Cairo',
+                                fontSize: 16,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: containerWidth * .05),
+                          MaterialButton(
+                            minWidth: containerWidth * .3,
+                            color: Colors.white,
+                            elevation: 0,
+                            hoverElevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(3),
+                            ),
+                            onPressed: () {
+                              // material.antiMaterials = originalOne;
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text(
+                              'إلغاء',
+                              style: TextStyle(
+                                fontFamily: 'Cairo',
+                                fontSize: 16,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
       ),
     );
   }

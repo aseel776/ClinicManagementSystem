@@ -2,6 +2,9 @@ import 'package:clinic_management_system/core/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../Pages/medicine_page.dart';
+import '../riverpod/medicines/medicines_provider.dart';
+
 class Searchbar extends ConsumerStatefulWidget {
   const Searchbar({super.key});
 
@@ -65,6 +68,13 @@ class _SearchbarState extends ConsumerState<Searchbar>
                   child: TextField(
                     textDirection: TextDirection.ltr,
                     cursorRadius: const Radius.circular(10),
+                    onChanged: (search) {
+                      print("11111111111111111111111");
+                      ref
+                          .watch(medicinesProvider.notifier)
+                          .getSearchMedicines(6, 1, search);
+                      ref.watch(currentPageMedicines.notifier).state = 1;
+                    },
                     cursorWidth: 2.0,
                     cursorColor: Colors.black,
                     decoration: InputDecoration(

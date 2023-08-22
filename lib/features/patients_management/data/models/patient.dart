@@ -1,5 +1,8 @@
 import 'package:clinic_management_system/features/patients_management/data/models/diseases_patient.dart';
 import 'package:clinic_management_system/features/patients_management/data/models/patient_cost.dart';
+import 'package:clinic_management_system/features/patients_management/data/models/patient_costs_table.dart';
+import 'package:clinic_management_system/features/patients_management/data/models/patient_diagnosis.dart';
+import 'package:clinic_management_system/features/patients_management/data/models/patient_medical_images.dart';
 import 'package:clinic_management_system/features/patients_management/data/models/patient_payments.dart';
 import 'package:clinic_management_system/features/patients_management/data/models/patient_payments_table.dart';
 import 'package:equatable/equatable.dart';
@@ -22,7 +25,9 @@ class Patient extends Equatable {
   List<PatientBadHabits> patientBadHabits;
   List<PatientDiseases> patientDiseases;
   PatientPaymentsTable? patientPayments;
-  List<PatientCost>? patientCosts;
+  PatientCostsTable? patientCosts;
+  List<PatientMedicalImage>? patientImages;
+  List<PatientDiagnosis>? patientDiagnosis;
 
   Patient(
       {this.id,
@@ -38,7 +43,9 @@ class Patient extends Equatable {
       this.patientBadHabits = const [],
       this.patientDiseases = const [],
       this.patientPayments,
-      this.patientCosts});
+      this.patientCosts,
+      this.patientImages = const [],
+      this.patientDiagnosis = const []});
 
   factory Patient.fromJson(Map<String, dynamic> json) {
     final patientMedicinesList = (json['patient_medicines'] as List<dynamic>?)
@@ -55,10 +62,18 @@ class Patient extends Equatable {
     final patientPaymentsList = (json['patient_payments'] as dynamic)
         ?.map((payment) => PatientPaymentsTable.fromJson(payment))
         .toList();
-    final patientCostsList = (json['patient_costs'] as List<dynamic>?)
-        ?.map((cost) => PatientCost.fromJson(cost))
+    final patientCostsList = (json['patient_costs'] as dynamic)
+        ?.map((cost) => PatientCostsTable.fromJson(cost))
         .toList();
 
+    final patientMedicalImages =
+        (json['patient_medical_images'] as List<dynamic>?)
+            ?.map((diseaseJson) => PatientMedicalImage.fromJson(diseaseJson))
+            .toList();
+
+    final patientDiagnosis = (json['patientDiagnoses'] as List<dynamic>?)
+        ?.map((diseaseJson) => PatientDiagnosis.fromJson(diseaseJson))
+        .toList();
     return Patient(
         id: json['id'],
         address: json['address'],
@@ -73,7 +88,9 @@ class Patient extends Equatable {
         patientBadHabits: patientBadHabitsList ?? [],
         patientDiseases: patientDiseasesList ?? [],
         patientPayments: patientPaymentsList,
-        patientCosts: patientCostsList ?? []);
+        patientCosts: patientCostsList,
+        patientImages: patientMedicalImages,
+        patientDiagnosis: patientDiagnosis ?? []);
   }
 
   Map<String, dynamic> toJson() {
@@ -110,8 +127,7 @@ class Patient extends Equatable {
       jsonMap['patient_payments'] = patientPayments!.toJson();
     }
     if (patientCosts != null) {
-      jsonMap['patient_costs'] =
-          patientCosts!.map((cost) => cost.toJson()).toList();
+      jsonMap['patient_costs'] = patientCosts!.toJson();
     }
 
     return jsonMap;

@@ -50,6 +50,14 @@ class MedicinesNotifier extends StateNotifier<MedicinesState> {
     state = _mapFailureOrMedicinesToState(response);
   }
 
+  Future<void> getSearchMedicines(
+      double itemPerPage, double page, String search) async {
+    state = LoadingMedicinesState();
+    final response =
+        await respositoryImpl.getSearchMedicines(itemPerPage, page, search);
+    state = _mapFailureOrMedicinesToState(response);
+  }
+
   Future<void> getCategories() async {
     final statebefore = state;
     state = LoadingMedicinesState();

@@ -1,10 +1,16 @@
+import 'dart:io';
+
 import 'package:clinic_management_system/features/patients_management/data/models/badHabits_patient.dart';
 import 'package:clinic_management_system/features/patients_management/data/models/diseases_patient.dart';
 import 'package:clinic_management_system/features/patients_management/data/models/medicines_intake.dart';
 import 'package:clinic_management_system/features/patients_management/data/models/patient_cost.dart';
+import 'package:clinic_management_system/features/patients_management/data/models/patient_costs_table.dart';
+import 'package:clinic_management_system/features/patients_management/data/models/patient_diagnosis.dart';
+import 'package:clinic_management_system/features/patients_management/data/models/patient_medical_images.dart';
 import 'package:clinic_management_system/features/patients_management/data/models/patient_payments.dart';
 import 'package:clinic_management_system/features/patients_management/data/models/patient_payments_table.dart';
 import 'package:clinic_management_system/features/patients_management/data/models/patients_table.dart';
+import 'package:clinic_management_system/features/patients_management/data/models/problem_types.dart';
 import 'package:clinic_management_system/features/patients_management/data/repository/patient_crud_repository.dart';
 import 'package:clinic_management_system/features/patients_management/presentation/riverpod/patient_crud_state.dart';
 import 'package:clinic_management_system/features/patients_management/presentation/riverpod/patients_state.dart';
@@ -156,13 +162,14 @@ class PatientsNotifier extends StateNotifier<PatientsState> {
           sort_field,
           sort_order,
         );
-        List<PatientCost> costsList = [];
+        late PatientCostsTable costsList;
         response.fold(
             (failure) =>
                 ErrorPatientsState(message: _mapFailureToMessage(failure)),
             (costs) => costsList = costs);
 
         // Update the patientPayments for the specific patient
+
         updatedPatients[patientIndex].patientCosts =
             costsList; // Update the patient in the copied list
 
@@ -174,8 +181,6 @@ class PatientsNotifier extends StateNotifier<PatientsState> {
         );
       }
     }
-    print("state afterrrrrrrrCosts");
-    print(state);
   }
 
   Future<void> getPatientBadHabits(
@@ -308,12 +313,114 @@ class PatientsNotifier extends StateNotifier<PatientsState> {
     }
   }
 
+  Future<void> getPatientImages(
+    int medicalImageType,
+    int patientId,
+  ) async {
+    if (state is LoadedPatientsState) {
+      final state1 = state;
+      final totalPages;
+      if (state1 is LoadedPatientsState) {
+        totalPages = state1.totalPages;
+      } else {
+        totalPages = 0;
+      }
+      List<Patient> updatedPatients = [
+        ...state.patients
+      ]; // Make a copy of the list
+
+      int patientIndex =
+          updatedPatients.indexWhere((patient) => patient.id == patientId);
+
+      if (patientIndex != -1) {
+        final response = await repositoryImpl.getPatientMedicalImages(
+          medicalImageType,
+          patientId,
+        );
+        List<PatientMedicalImage> imageList = [];
+        response.fold(
+            (failure) =>
+                ErrorPatientsState(message: _mapFailureToMessage(failure)),
+            (medicines) => imageList = medicines);
+
+        // Update the patientPayments for the specific patient
+        updatedPatients[patientIndex].patientImages =
+            imageList; // Update the patient in the copied list
+
+        // Notify the state that the data has changed
+        // state = LoadingPatientsState();
+        state = LoadedPatientsState(
+          patients: updatedPatients,
+          totalPages: totalPages,
+        );
+      }
+    }
+  }
+
+  Future<void> getPatientDiagnosis(
+    double itemPerPage,
+    double page,
+    int patientId,
+    int problemTypeId,
+  ) async {
+    print("getDiagnosis enter");
+    if (state is LoadedPatientsState) {
+      final state1 = state;
+      final totalPages;
+      if (state1 is LoadedPatientsState) {
+        totalPages = state1.totalPages;
+      } else {
+        totalPages = 0;
+      }
+      List<Patient> updatedPatients = [
+        ...state.patients
+      ]; // Make a copy of the list
+
+      int patientIndex =
+          updatedPatients.indexWhere((patient) => patient.id == patientId);
+
+      if (patientIndex != -1) {
+        final response = await repositoryImpl.getPaginatedPatientDiagnoses(
+            itemPerPage, page, patientId, problemTypeId);
+        List<PatientDiagnosis> diagnosisList = [];
+        response.fold(
+            (failure) =>
+                ErrorPatientsState(message: _mapFailureToMessage(failure)),
+            (diagnosis) => diagnosisList = diagnosis);
+
+        // Update the patientPayments for the specific patient
+        updatedPatients[patientIndex].patientDiagnosis =
+            diagnosisList; // Update the patient in the copied list
+
+        // Notify the state that the data has changed
+        state = LoadingPatientsState();
+        state = LoadedPatientsState(
+          patients: updatedPatients,
+          totalPages: totalPages,
+        );
+      }
+    }
+  }
+
+  Future<List<ProblemTypes>> getProblemTypes() async {
+    final response = await repositoryImpl.getProblemTypes();
+    return response;
+  }
+
   PatientsState _mapFailureOrPatientToState(
       {required Either<Failure, PatientsTable> either, int? totalPages}) {
     return either.fold(
       (failure) => ErrorPatientsState(message: _mapFailureToMessage(failure)),
       (patient) => LoadedPatientsState(
           patients: patient.patients!, totalPages: patient.totalPages),
+    );
+  }
+
+  PatientsState _mapFailureOrSuccessToState(
+      {required Either<Failure, String> either}) {
+    return either.fold(
+      (failure) => ErrorPatientsState(message: _mapFailureToMessage(failure)),
+      (msg) => SuccessPatientState(message: msg),
     );
   }
 

@@ -9,8 +9,6 @@ class ActiveMaterialModel extends Equatable {
   ActiveMaterialModel({this.id, this.name, this.antiMaterials});
 
   ActiveMaterialModel.fromJson(Map<String, dynamic> source) {
-    
-  
     id = source['id'];
     name = source['name'];
     if (source['conflicts'] != null) {

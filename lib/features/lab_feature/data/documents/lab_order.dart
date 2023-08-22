@@ -1,7 +1,7 @@
 class LabOrderDocsGql {
   static const String getLabOrders = '''
-      query LabOrders(\$itemPerPage: Float!, \$page: Float!) {
-        labOrders(item_per_page: \$itemPerPage, page: \$page) {
+      query LabOrders(\$id :Float!, \$itemPerPage: Float!, \$page: Float!) {
+        labOrders(lab_id:\$id,item_per_page: \$itemPerPage, page: \$page) {
           item_per_page
           page
           totalPages
@@ -9,6 +9,7 @@ class LabOrderDocsGql {
             id
             lab_id
             name
+            price
             LabOrderStep {
               id
               name
@@ -28,8 +29,8 @@ class LabOrderDocsGql {
   //  variables: {'itemPerPage': itemPerPage, 'page': page},
 
   static const String getSearchLabsOrders = '''
-      query LabOrders(\$itemPerPage: Float!, \$page: Float!, \$search: String!) {
-        labOrders(item_per_page: \$itemPerPage, page: \$page, search: \$search) {
+      query LabOrders(\$id :Int!,\$itemPerPage: Float!, \$page: Float!, \$search: String!) {
+        labOrders(lab_id:\$id,item_per_page: \$itemPerPage, page: \$page, search: \$search) {
           item_per_page
           page
           totalPages
@@ -60,8 +61,8 @@ class LabOrderDocsGql {
   // },
 
   static const String createLabOrder = '''
-      mutation CreateLabOrder(\$labId: Int!, \$orderName: String!, \$stepNames: [String!]!) {
-        createLabOrder(createLabOrderInput: {lab_id: \$labId, name: \$orderName, steps_names: \$stepNames}) {
+      mutation CreateLabOrder(\$labId: Int!, \$orderName: String!,,\$price1: String!, \$stepNames: [String!]!) {
+        createLabOrder(createLabOrderInput: {lab_id: \$labId, name: \$orderName, price: \$price1, steps_names: \$stepNames}) {
           id
           lab_id
           name
@@ -87,25 +88,24 @@ class LabOrderDocsGql {
         }
       }
     ''';
-  static const String editLabOrder = '''
-      mutation UpdateLabOrder(\$orderId: Int!, \$labId: Int!, \$updatedName: String!, \$stepsNames: [String!]!) {
-        updateLabOrder(
-          id: \$orderId
-          updateLabOrderInput: {
-            lab_id: \$labId
-            name: \$updatedName
-            steps_names: \$stepsNames
-          }
-        ) {
-          name
-          lab_id
-        }
-      }
-    ''';
+  static const String updateLabOrderMutation = '''
+  mutation UpdateLabOrder(\$id: Int!, \$updateLabOrderInput: UpdateLabOrderInput!) {
+    updateLabOrder(id: \$id, updateLabOrderInput: \$updateLabOrderInput) {
+      id
+      lab_id
+      name
+      price
+    }
+  }
+''';
+
   //  variables: {
-  //   'orderId': orderId,
-  //   'labId': labId,
-  //   'updatedName': updatedName,
-  //   'stepsNames': stepsNames,
-  // },
+  //         'id': labOrderId,
+  //         'updateLabOrderInput': {
+  //           'lab_id': 1,
+  //           'name': updatedName,
+  //           'price': updatedPrice,
+  //           'steps_names': updatedStepsNames,
+  //         },
+  //       },
 }

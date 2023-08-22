@@ -30,28 +30,28 @@ class BookInDocsGql {
   // );
 
   static const String createBookInMutation = '''
-  mutation CreateBookIn(\$expirationDate: String!, \$price: Int!, \$productId: Int!, \$quantity: Int!) {
-    createBookIn(
-      createBookInInput: {
-        expiration_date: \$expirationDate
-        price: \$price
-        product_id: \$productId
-        quantity: \$quantity
-      }
-    ) {
-      created_at
-      id
-      price
-      product_id
-      quantity
-      total_price
-      product {
+    mutation CreateBookIn(\$expirationDate: DateTime!, \$price: Int!, \$productId: Int!, \$quantity: Int!) {
+      createBookIn(
+        createBookInInput: {
+          expiration_date: \$expirationDate
+          price: \$price
+          product_id: \$productId
+          quantity: \$quantity
+        }
+      ) {
+        created_at
         id
-        name
+        price
+        product_id
+        quantity
+        total_price
+        product {
+          id
+          name
+        }
       }
     }
-  }
-''';
+  ''';
 
   // final MutationOptions options = MutationOptions(
   //   document: gql(createBookInMutation),

@@ -156,7 +156,7 @@ class _DiseaseListPageState extends ConsumerState<DiseaseListPage>
                             .getAllMaterials(1, items: 10000);
                         final stateActive =
                             ref.watch(activeMaterialsProvider.notifier).state;
-                        ref.watch(multiSelect);
+                        // ref.watch(multiSelect);
                         ref.watch(diseaseName.notifier).state.text =
                             disease.name;
 
@@ -222,6 +222,20 @@ class _DiseaseListPageState extends ConsumerState<DiseaseListPage>
                                                             0.2,
                                                     child: GestureDetector(
                                                       onTap: () {
+                                                        ref
+                                                                .watch(multiSelect
+                                                                    .notifier)
+                                                                .state =
+                                                            disease
+                                                                .antiMaterials!;
+                                                        print("fffffffffffff");
+                                                        print(ref
+                                                            .watch(multiSelect
+                                                                .notifier)
+                                                            .state);
+                                                        print(disease
+                                                            .antiMaterials
+                                                            .toString());
                                                         antiMaterialsSelect(
                                                             context, ref);
                                                       },
@@ -588,13 +602,16 @@ class _DiseaseListPageState extends ConsumerState<DiseaseListPage>
                       child: ListView.builder(
                         itemCount: materials.length,
                         itemBuilder: (context, index) {
+                          // ref.watch(multiSelect);
                           return CheckboxListTile(
                             value: ref
                                 .watch(multiSelect.notifier)
-                                .state!
+                                .state
                                 .any((element) => element == materials[index]),
                             onChanged: (value) {
                               setState(() {
+                                print("valueeeee");
+                                print(value);
                                 if (value!) {
                                   ActiveMaterialModel selected1 =
                                       materials[index] as ActiveMaterialModel;
@@ -602,13 +619,13 @@ class _DiseaseListPageState extends ConsumerState<DiseaseListPage>
                                   if (selected1.name! != "" &&
                                       !ref
                                           .watch(multiSelect.notifier)
-                                          .state!
+                                          .state
                                           .any((element) =>
                                               element == selected1)) {
                                     print(value.toString() + "addeddd");
 
                                     List list =
-                                        ref.watch(multiSelect.notifier).state!;
+                                        ref.watch(multiSelect.notifier).state;
 
                                     list.add(selected1);
                                     ref.read(multiSelect.notifier).state =
@@ -628,7 +645,7 @@ class _DiseaseListPageState extends ConsumerState<DiseaseListPage>
                                   //       list.toList();
                                   // }
                                 } else if (!value &&
-                                    ref.watch(multiSelect.notifier).state!.any(
+                                    ref.watch(multiSelect.notifier).state.any(
                                         (element) =>
                                             element == materials[index])) {
                                   print(value.toString() + "removed");
@@ -636,7 +653,7 @@ class _DiseaseListPageState extends ConsumerState<DiseaseListPage>
                                       materials[index] as ActiveMaterialModel?;
 
                                   List list =
-                                      ref.watch(multiSelect.notifier).state!;
+                                      ref.watch(multiSelect.notifier).state;
 
                                   list.remove(selected1);
                                   ref.read(multiSelect.notifier).state =

@@ -48,6 +48,7 @@ StateProvider diseaseDate = StateProvider<DateTime>((ref) => DateTime(2000));
 StateProvider diseaseDateString = StateProvider((ref) => "");
 StateProvider controlledSelect = StateProvider((ref) => "");
 StateProvider badHabitNotes = StateProvider((ref) => TextEditingController());
+StateProvider diseaseNotes = StateProvider((ref) => TextEditingController());
 // TextEditingController notes = TextEditingController();
 final medicinesProviderF = FutureProvider((ref) async {
   final response =

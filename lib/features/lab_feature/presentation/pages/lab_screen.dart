@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:clinic_management_system/features/lab_feature/presentation/pages/lab_order_screen.dart';
 import 'package:clinic_management_system/features/lab_feature/presentation/rievrpod/lab_provider.dart';
 import 'package:clinic_management_system/features/lab_feature/presentation/rievrpod/lab_state.dart';
 import 'package:flutter/material.dart';
@@ -447,98 +448,105 @@ class _LabsScreenState extends ConsumerState<LabsScreen> {
     }
   }
 
-  Padding _renderProducts(Lab lab) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20.0),
-      child: Container(
-        width: 100,
-        height: 100,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          gradient: LinearGradient(
-            colors: [
-              AppColors.lightGreen,
-              AppColors.lightGreen.withOpacity(.2),
-            ],
-            begin: Alignment.centerLeft,
-            end: Alignment.centerRight,
+  GestureDetector _renderProducts(Lab lab) {
+    return GestureDetector(
+      onTap: () {
+        ref.watch(pageProvider.notifier).state = LabOrderScreen(lab: lab);
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+        child: Container(
+          width: 100,
+          height: 100,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            gradient: LinearGradient(
+              colors: [
+                AppColors.lightGreen,
+                AppColors.lightGreen.withOpacity(.2),
+              ],
+              begin: Alignment.centerLeft,
+              end: Alignment.centerRight,
+            ),
           ),
-        ),
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Container(
-                      width: 30,
-                      height: 30,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          color: AppColors.black.withOpacity(0.3)),
-                      child: TextButton(
-                        onPressed: () {
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(DeleteSnackBar(() async {
-                            await ref
-                                .watch(labCrudProvider.notifier)
-                                .deleteLab(lab)
-                                .then((value) {
-                              ref
-                                  .watch(labsProvider.notifier)
-                                  .getPaginatedLabs(6, 1);
-                              ref.watch(currentPageLabs.notifier).state = 1;
-                            });
-                          }));
-                        },
-                        child: const Icon(
-                          Icons.delete,
-                          color: Colors.white,
-                          size: 16,
-                        ),
-                      )),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Container(
-                      width: 30,
-                      height: 30,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          color: AppColors.black.withOpacity(0.3)),
-                      child: TextButton(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Container(
+                        width: 30,
+                        height: 30,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            color: AppColors.black.withOpacity(0.3)),
+                        child: TextButton(
                           onPressed: () {
-                            ref.watch(labsName.notifier).state.text = lab.name;
-                            ref.watch(labsAddress.notifier).state.text =
-                                lab.address;
-                            ref.watch(labsPhone.notifier).state.text =
-                                lab.phone;
-                            ref.watch(labsEmail.notifier).state.text =
-                                lab.email;
-
-                            add_edit_product_popup(context, ref, false, lab.id);
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(DeleteSnackBar(() async {
+                              await ref
+                                  .watch(labCrudProvider.notifier)
+                                  .deleteLab(lab)
+                                  .then((value) {
+                                ref
+                                    .watch(labsProvider.notifier)
+                                    .getPaginatedLabs(6, 1);
+                                ref.watch(currentPageLabs.notifier).state = 1;
+                              });
+                            }));
                           },
                           child: const Icon(
-                            Icons.edit,
+                            Icons.delete,
                             color: Colors.white,
                             size: 16,
-                          )))
-                ],
-              ),
-            ),
-            Consumer(
-              builder: (context, ref, child) => Container(
-                alignment: Alignment.center,
-                child: PrimaryText(
-                  text: lab.name,
-                  size: 22,
+                          ),
+                        )),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Container(
+                        width: 30,
+                        height: 30,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            color: AppColors.black.withOpacity(0.3)),
+                        child: TextButton(
+                            onPressed: () {
+                              ref.watch(labsName.notifier).state.text =
+                                  lab.name;
+                              ref.watch(labsAddress.notifier).state.text =
+                                  lab.address;
+                              ref.watch(labsPhone.notifier).state.text =
+                                  lab.phone;
+                              ref.watch(labsEmail.notifier).state.text =
+                                  lab.email;
+
+                              add_edit_product_popup(
+                                  context, ref, false, lab.id);
+                            },
+                            child: const Icon(
+                              Icons.edit,
+                              color: Colors.white,
+                              size: 16,
+                            )))
+                  ],
                 ),
               ),
-            ),
-            const Spacer(),
-          ],
+              Consumer(
+                builder: (context, ref, child) => Container(
+                  alignment: Alignment.center,
+                  child: PrimaryText(
+                    text: lab.name,
+                    size: 22,
+                  ),
+                ),
+              ),
+              const Spacer(),
+            ],
+          ),
         ),
       ),
     );

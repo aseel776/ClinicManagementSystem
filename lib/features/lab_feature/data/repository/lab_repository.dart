@@ -107,10 +107,10 @@ class LabRepositoryImpl implements LabRepository {
       variables: {
         'id': body.id, // Replace with the actual lab ID
         // 'updateLabInput': {
-          'address': body.address,
-          'email': body.email,
-          'name': body.name,
-          'phone': body.phone,
+        'address': body.address,
+        'email': body.email,
+        'name': body.name,
+        'phone': body.phone,
         // },
       },
     ));

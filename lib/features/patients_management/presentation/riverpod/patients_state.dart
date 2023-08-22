@@ -22,6 +22,15 @@ class LoadedPatientsState extends PatientsState {
   List<Object?> get props => [patients];
 }
 
+class SuccessPatientState extends PatientsState {
+  final String message;
+
+  SuccessPatientState({required this.message});
+
+  @override
+  List<Object?> get props => [message];
+}
+
 class ErrorPatientsState extends PatientsState {
   final String message;
 

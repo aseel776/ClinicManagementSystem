@@ -1,18 +1,25 @@
-import 'package:clinic_management_system/core/pagination_widget.dart';
-import 'package:clinic_management_system/core/primaryText.dart';
+import 'dart:ui';
+
 import 'package:clinic_management_system/features/repository_feature/data/models/book_in.dart';
 import 'package:clinic_management_system/features/repository_feature/presentation/riverpod/book_in_provider.dart';
 import 'package:clinic_management_system/features/repository_feature/presentation/riverpod/book_in_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../core/app_colors.dart';
-// import '../../../patients_management/presentation/pages/patients_index.dart';
+import '../../../medicine/presentation/widgets/primaryText.dart';
+import '../../../patients_management/presentation/pages/patients_index.dart';
+import '../../../patients_management/presentation/widgets/textField.dart';
 import '../../data/models/product.dart';
 
 StateProvider totalPagesBookIns = StateProvider((ref) => 1);
 StateProvider currentPageBookIns = StateProvider((ref) => 1);
+StateProvider bookInDate = StateProvider<DateTime>((ref) => DateTime(2000));
+StateProvider bookInDateString = StateProvider((ref) => "");
+StateProvider priceBookIn = StateProvider((ref) => TextEditingController());
+StateProvider qunatityBookIn = StateProvider((ref) => TextEditingController());
 
 class ProductBookIn extends ConsumerStatefulWidget {
   Product product;
@@ -48,6 +55,7 @@ class _ProductBookInState extends ConsumerState<ProductBookIn> {
     final state = ref.watch(bookInsProvider.notifier).state;
     ref.watch(currentPageBookIns);
     ref.watch(totalPagesBookIns);
+    ref.watch(bookInsProvider);
 
     return Column(
       children: [
@@ -162,8 +170,7 @@ class _ProductBookInState extends ConsumerState<ProductBookIn> {
                             ),
                             GestureDetector(
                               onTap: () {
-                                // ref.watch(pageProvider.notifier).state =
-                                //     CreatePatients();
+                                create_bookIn_popup(context, ref);
                               },
                               child: Container(
                                 width: 120,
@@ -347,5 +354,176 @@ class _ProductBookInState extends ConsumerState<ProductBookIn> {
       //   ),
       // ),
     ]);
+  }
+
+  Future<dynamic> create_bookIn_popup(
+      BuildContext context, WidgetRef ref) async {
+    // final badHabits = await ref
+    //     .watch(badHabitsProvider.notifier)
+    //     .getPaginatedBadHabits(10, 1);
+    // final state = ref.watch(badHabitsProvider.notifier).state;
+    // print(state);
+
+    return showDialog(
+        context: context,
+        builder: (context) => BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
+              child: Dialog(
+                backgroundColor: AppColors.lightGrey,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: LayoutBuilder(builder: (context, constraints) {
+                  return SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.4,
+                    height: MediaQuery.of(context).size.height * 0.6,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: PrimaryText(
+                            text: "إضافة إدخال جديد",
+                            size: 18,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 0.0),
+                          child: Container(
+                            height: MediaQuery.of(context).size.height * 0.075,
+                            width: MediaQuery.of(context).size.width * 0.2,
+                            decoration: BoxDecoration(
+                                border:
+                                    Border.all(width: 1, color: Colors.grey),
+                                borderRadius: BorderRadius.circular(15)),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                GestureDetector(
+                                    child: const Row(children: [
+                                      Icon(
+                                        Icons.calendar_today,
+                                        color: Colors.black26,
+                                      ),
+                                      PrimaryText(
+                                        text: "تاريخ انتهاء الصلاحية",
+                                        color: Colors.black54,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ]),
+                                    onTap: () async {
+                                      final datePick = await showDatePicker(
+                                          context: context,
+                                          initialDate: DateTime(2000),
+                                          firstDate: DateTime(1900),
+                                          lastDate: DateTime(2100));
+                                      if (datePick != null &&
+                                          datePick != bookInDate) {
+                                        ref.read(bookInDate.notifier).state =
+                                            datePick;
+
+                                        ref
+                                                .read(bookInDateString.notifier)
+                                                .state =
+                                            DateFormat("yyyy-MM-dd").format(ref
+                                                .watch(bookInDate.notifier)
+                                                .state!);
+
+                                        print(ref.watch(bookInDateString));
+                                      }
+                                    }),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                ref.watch(bookInDateString) == null
+                                    ? const Text("DD/MM/YYYY")
+                                    : Text("${ref.watch(bookInDateString)}")
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.2,
+                          child: textfield("السعر",
+                              ref.watch(priceBookIn.notifier).state, "", 1),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.2,
+                          child: textfield("الكمية",
+                              ref.watch(qunatityBookIn.notifier).state, "", 1),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.08,
+                          child: ElevatedButton(
+                              onPressed: () async {
+                                // BookIn bookIn = BookIn(
+                                //     id: ,
+                                //     product: product,
+                                //     price: price,
+                                //     quantity: quantity);
+                                await ref
+                                    .watch(bookInsProvider.notifier)
+                                    .createBookIn(
+                                        ref
+                                            .watch(bookInDateString.notifier)
+                                            .state,
+                                        int.parse(
+                                          ref
+                                              .watch(priceBookIn.notifier)
+                                              .state
+                                              .text,
+                                        ),
+                                        int.parse(
+                                          ref
+                                              .watch(qunatityBookIn.notifier)
+                                              .state
+                                              .text,
+                                        ),
+                                        widget.product.id!)
+                                    .then((value) {
+                                  ref
+                                      .watch(bookInsProvider.notifier)
+                                      .getPaginatedBookIns(
+                                          6, 1, widget.product.id!);
+                                  ref.read(currentPageBookIns.notifier).state =
+                                      1;
+                                });
+                                Navigator.pop(context);
+                              },
+                              style: const ButtonStyle(
+                                backgroundColor: MaterialStatePropertyAll(
+                                    AppColors.lightGreen),
+                                shape: MaterialStatePropertyAll(
+                                    RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.elliptical(50, 70)))),
+                              ),
+                              child: const PrimaryText(
+                                text: "إضافة",
+                                height: 1.7,
+                                color: AppColors.black,
+                              )),
+                        )
+                      ],
+                    ),
+                  );
+                }),
+              ),
+            ));
   }
 }

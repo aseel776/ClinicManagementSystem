@@ -42,19 +42,29 @@ class AddUpdateDeleteMedicinesNotifier
     cache: GraphQLCache(),
   ));
 
-  Future<AddDeleteUpdateMedicinesState> addMedicine(Medicine medicine) async {
+  Future<AddDeleteUpdateMedicinesState> addMedicine(
+      Medicine medicine, int? catId) async {
     state = LoadingAddDeleteUpdateMedicinesState();
-    final response = await respositoryImpl.addNewMedicine(medicine);
+    final response = await respositoryImpl.addNewMedicine(medicine, catId);
     AddDeleteUpdateMedicinesState newState =
         _eitherDoneMessageOrErrorState(response);
     state = newState;
     return state;
   }
 
-  Future<AddDeleteUpdateMedicinesState> deleteMedicine(
-      Medicine medicine) async {
+  Future<AddDeleteUpdateMedicinesState> deleteMedicine(int id) async {
     state = LoadingAddDeleteUpdateMedicinesState();
-    final response = await respositoryImpl.addNewMedicine(medicine);
+    final response = await respositoryImpl.deleteMedicine(id);
+    AddDeleteUpdateMedicinesState newState =
+        _eitherDoneMessageOrErrorState(response);
+    state = newState;
+    return state;
+  }
+
+  Future<AddDeleteUpdateMedicinesState> editMedicine(
+      Medicine medicine, int catId) async {
+    state = LoadingAddDeleteUpdateMedicinesState();
+    final response = await respositoryImpl.editMedicine(medicine, catId);
     AddDeleteUpdateMedicinesState newState =
         _eitherDoneMessageOrErrorState(response);
     state = newState;

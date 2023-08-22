@@ -36,7 +36,7 @@ class _SidebarState extends ConsumerState<Sidebar> {
         MedicinePage(),
     NavBarData(
         pageName: "Appointments",
-        svgIconPath: "assets/svgs/appointment.svg"): General(),
+        svgIconPath: "assets/svgs/appointment.svg"): RepositoryScreen(),
     NavBarData(pageName: "Patients", svgIconPath: "assets/svgs/patients.svg"):
         PatientIndex(),
     NavBarData(

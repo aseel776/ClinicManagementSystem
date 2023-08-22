@@ -1,7 +1,10 @@
 import 'package:clinic_management_system/features/medicine/presentation/widgets/primaryText.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class TypeDropDown extends StatefulWidget {
+StateProvider selectedValueProvider = StateProvider((ref) => "");
+
+class TypeDropDown extends ConsumerStatefulWidget {
   String? hintText;
   List<String> items;
   TypeDropDown({super.key, this.hintText, required this.items});
@@ -10,13 +13,14 @@ class TypeDropDown extends StatefulWidget {
   _MyDropdownFormFieldState createState() => _MyDropdownFormFieldState();
 }
 
-class _MyDropdownFormFieldState extends State<TypeDropDown> {
-  String? selectedValue;
+class _MyDropdownFormFieldState extends ConsumerState<TypeDropDown> {
+  // String? selectedValue;
 
   @override
   Widget build(BuildContext context) {
+    ref.watch(selectedValueProvider);
     return DropdownButtonFormField<String>(
-      value: selectedValue,
+      // value: ref.watch(selectedValueProvider.notifier).state,
       elevation: 2,
       hint: PrimaryText(
         text: widget.hintText,
@@ -35,9 +39,10 @@ class _MyDropdownFormFieldState extends State<TypeDropDown> {
         ),
       ),
       onChanged: (value) {
-        setState(() {
-          selectedValue = value;
-        });
+        ref.watch(selectedValueProvider.notifier).state = value;
+        // setState(() {
+        //   selectedValue = value;
+        // });
       },
       items: widget.items.map<DropdownMenuItem<String>>((item) {
         return DropdownMenuItem<String>(

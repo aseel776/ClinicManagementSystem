@@ -1,7 +1,5 @@
 import 'package:clinic_management_system/features/active_materials_feature/data/models/active_material_model.dart';
 
-import 'active_materials.dart';
-
 class Medicine {
   int? id;
   int? concentration;
@@ -19,12 +17,20 @@ class Medicine {
   });
 
   factory Medicine.fromJson(Map<String, dynamic> json) {
-    final List<dynamic> materialsData = json['medicineChemicalMaterials'];
+    List<ActiveMaterialModel>? materialsList;
+    if (json.containsKey('medicineChemicalMaterials')) {
+      List<dynamic> materialsData = json['medicineChemicalMaterials'];
+      materialsList = materialsData
+          .map((materialData) =>
+              ActiveMaterialModel.fromJson(materialData['chemical_material']))
+          .toList();
+    }
+    // final List<dynamic> materialsData = json['medicineChemicalMaterials'];
 
-    List<ActiveMaterialModel> materialsList = materialsData
-        .map((materialData) =>
-            ActiveMaterialModel.fromJson(materialData['chemical_material']))
-        .toList();
+    // List<ActiveMaterialModel> materialsList = materialsData
+    //     .map((materialData) =>
+    //         ActiveMaterialModel.fromJson(materialData['chemical_material']))
+    //     .toList();
 
     return Medicine(
       id: json['id'],

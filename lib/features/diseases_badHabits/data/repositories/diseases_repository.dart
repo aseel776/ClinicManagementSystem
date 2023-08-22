@@ -108,9 +108,17 @@ class DiseaseRepositoryImpl implements DiseaseRepository {
 
   @override
   Future<Either<Failure, String>> addNewDisease(Disease body) async {
+    print("tooojson");
+    print(body.toJson());
+    // print();
     final response = await gqlClient.mutate(MutationOptions(
         document: gql(DiseasesCrudDocsGql.addDiseases),
-        variables: body.toJson()));
+        variables: {
+          'chemicalMaterialIds':
+              body.antiMaterials?.map((material) => material.id).toList(),
+          'name': body.name,
+        }));
+    print("responseeeeeeeeee");
     print(response);
     if (!response.hasException && response.data != null) {
       return right("");

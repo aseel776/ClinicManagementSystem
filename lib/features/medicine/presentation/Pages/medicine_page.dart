@@ -1,5 +1,6 @@
 import 'package:clinic_management_system/core/app_colors.dart';
 import 'package:clinic_management_system/core/pagination_widget.dart';
+import 'package:clinic_management_system/features/diseases_badHabits/presentation/widgets/add_button.dart';
 import 'package:clinic_management_system/features/medicine/presentation/riverpod/medicines/add_update_delete_provider.dart';
 import 'package:clinic_management_system/features/medicine/presentation/riverpod/medicines/categories_provider.dart';
 import 'package:clinic_management_system/features/medicine/presentation/riverpod/medicines/medicines_provider.dart';
@@ -8,6 +9,7 @@ import 'package:clinic_management_system/features/medicine/presentation/riverpod
 import 'package:flutter/material.dart';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import '../../../diseases_badHabits/presentation/widgets/delete_snack_bar.dart';
 import '../widgets/add_new_medicine.dart';
@@ -63,11 +65,9 @@ class _MedicinePageState extends ConsumerState<MedicinePage> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(medicinesProvider.notifier).state;
-    final stateCat = ref.watch(categoriesProvider.notifier).state;
-    if (stateCat is LoadedCategoriesState) {}
 
-    final totalPages = ref.watch(totalPagesMedicines);
-    final currentPage = ref.watch(currentPageMedicines);
+    ref.watch(totalPagesMedicines);
+    ref.watch(currentPageMedicines);
     ref.watch(medicinesProvider);
 
     final sectionWidth = MediaQuery.of(context).size.width;
@@ -114,6 +114,13 @@ class _MedicinePageState extends ConsumerState<MedicinePage> {
                       child: TextField(
                         controller: controller,
                         scrollPadding: const EdgeInsets.all(0),
+                        onChanged: (search) {
+                          print("11111111111111111111111");
+                          // ref
+                          //     .watch(medicinesProvider.notifier)
+                          //     .getSearchMedicines(6, 1, search);
+                          // ref.watch(currentPageMedicines.notifier).state = 1;
+                        },
                         scrollController: searchController,
                         textAlign: TextAlign.right,
                         cursorColor: AppColors.black,
@@ -261,8 +268,8 @@ class _MedicinePageState extends ConsumerState<MedicinePage> {
                                       .watch(categoriesProvider.notifier)
                                       .state;
                                   if (stateCat is LoadedCategoriesState) {
-                                    AddMedicineDialog().showDialog1(
-                                        context, ref, stateCat.categories);
+                                    AddMedicineDialog().showDialog1(context,
+                                        ref, stateCat.categories, true, null);
                                   }
                                 },
                                 child:
@@ -351,17 +358,20 @@ class _MedicinePageState extends ConsumerState<MedicinePage> {
                                                                   .watch(medicinesCrudProvider
                                                                       .notifier)
                                                                   .deleteMedicine(
-                                                                      row);
-                                                              await ref
-                                                                  .watch(medicinesProvider
-                                                                      .notifier)
-                                                                  .getPaginatedMedicines(
-                                                                      6, 1);
+                                                                      row.id!)
+                                                                  .then(
+                                                                      (value) {
+                                                                ref
+                                                                    .watch(medicinesProvider
+                                                                        .notifier)
+                                                                    .getPaginatedMedicines(
+                                                                        6, 1);
 
-                                                              ref
-                                                                  .watch(currentPageMedicines
-                                                                      .notifier)
-                                                                  .state = 1;
+                                                                ref
+                                                                    .watch(currentPageMedicines
+                                                                        .notifier)
+                                                                    .state = 1;
+                                                              });
 
                                                               // await ref.watch()
                                                             }));
@@ -375,12 +385,56 @@ class _MedicinePageState extends ConsumerState<MedicinePage> {
                                                     SizedBox(
                                                         width: 40,
                                                         child: TextButton(
-                                                            onPressed: () {
-                                                              // ref
-                                                              //     .watch(
-                                                              //         .notifier)
-                                                              //     .state
-                                                              //     .text = row.name;
+                                                            onPressed:
+                                                                () async {
+                                                              await ref
+                                                                  .watch(categoriesProvider
+                                                                      .notifier)
+                                                                  .getCategories();
+                                                              final stateCat = ref
+                                                                  .watch(categoriesProvider
+                                                                      .notifier)
+                                                                  .state;
+                                                              if (stateCat
+                                                                  is LoadedCategoriesState) {
+                                                                ref
+                                                                        .watch(medicineConcentration
+                                                                            .notifier)
+                                                                        .state
+                                                                        .text =
+                                                                    row.concentration
+                                                                        .toString();
+                                                                ref
+                                                                    .watch(medicineName
+                                                                        .notifier)
+                                                                    .state
+                                                                    .text = row.name;
+                                                                print(
+                                                                    "kkkkkkkkkkkkkkkkkkkk");
+                                                                print(row.anti!
+                                                                    .map((e) =>
+                                                                        e.id)
+                                                                    .toList());
+                                                                // print(row.anti!
+                                                                //     .map(
+                                                                //       (e) =>
+                                                                //           ,
+                                                                //     )
+                                                                //     .toList);
+                                                                ref
+                                                                    .watch(multiSelect
+                                                                        .notifier)
+                                                                    .state = row.anti!;
+
+                                                                AddMedicineDialog()
+                                                                    .showDialog1(
+                                                                        context,
+                                                                        ref,
+                                                                        stateCat
+                                                                            .categories,
+                                                                        false,
+                                                                        row.id);
+                                                              }
                                                             },
                                                             child: const Icon(
                                                               Icons.edit,
@@ -406,13 +460,18 @@ class _MedicinePageState extends ConsumerState<MedicinePage> {
                                   child: Align(
                                     alignment: Alignment.center,
                                     child: PaginationWidget(
-                                        totalPages: totalPages,
-                                        currentPage: currentPage,
+                                        totalPages: ref
+                                            .watch(totalPagesMedicines.notifier)
+                                            .state,
+                                        currentPage: ref
+                                            .watch(
+                                                currentPageMedicines.notifier)
+                                            .state,
                                         onPageSelected: (i) async {
                                           await ref
                                               .watch(medicinesProvider.notifier)
                                               .getPaginatedMedicines(
-                                                  8, (i + 1).toDouble());
+                                                  6, (i + 1).toDouble());
                                           ref
                                               .watch(
                                                   currentPageMedicines.notifier)
@@ -422,7 +481,8 @@ class _MedicinePageState extends ConsumerState<MedicinePage> {
                                 )
                               ],
                             )
-                          : CircularProgressIndicator(),
+                          : LoadingAnimationWidget.inkDrop(
+                              color: AppColors.black, size: 35),
                     ),
                   ),
                 ),
