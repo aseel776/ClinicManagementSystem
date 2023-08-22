@@ -294,7 +294,7 @@ class _NewSessionState extends ConsumerState<NewSession> {
                         const Expanded(child: SizedBox()),
                         MaterialButton(
                           onPressed: () {
-                            print(allWork.length);
+                            allWork.map((e) => e).forEach((element) {print(element.toJson());});
                           },
                           color: AppColors.black,
                           shape: RoundedRectangleBorder(

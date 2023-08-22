@@ -36,6 +36,7 @@ class _OnGoingTreatmentState extends ConsumerState<OnGoingTreatment> {
       }
       if(!found){
         inputSteps.add(SessionInputModel(stepId: step.id, treatmentId: widget.ongoingTreatment.id));
+        print(step.id);
         temp.add(Tuple2(step.id!, false));
       }
     }
@@ -97,9 +98,28 @@ class _OnGoingTreatmentState extends ConsumerState<OnGoingTreatment> {
       );
     }
 
-    createCheckBox(int stepId){
-      final inputModel = SessionInputModel(stepId: stepId, treatmentId: widget.ongoingTreatment.id);
+    handleLogic(int stepId, bool value) {
+      final inputModel = inputSteps.singleWhere((element) => element.stepId == stepId);
+      if (value) {
+        setState(() {
+          widget.workDone.add(inputModel);
+          stepsCheck.remove(Tuple2(stepId, false));
+          stepsCheck.add(Tuple2(stepId, true));
+        });
+      } else {
+        setState(() {
+          widget.workDone.removeWhere((element) => element.stepId == stepId);
+          inputSteps
+              .singleWhere((element) => element.stepId == stepId)
+              .notes
+              .clear();
+          stepsCheck.remove(Tuple2(stepId, true));
+          stepsCheck.add(Tuple2(stepId, false));
+        });
+      }
+    }
 
+    createCheckBox(int stepId){
       bool alreadyExists = false;
       for (var element in widget.ongoingTreatment.stepsDone!) {
         if(element.stepId == stepId){
@@ -107,25 +127,11 @@ class _OnGoingTreatmentState extends ConsumerState<OnGoingTreatment> {
           break;
         }
       }
-
       return Checkbox(
         activeColor: AppColors.black,
         value: stepsCheck.singleWhere((element) => element.value1 == stepId).value2,
         onChanged: alreadyExists ? null : (value) {
-          if(value!){
-            setState(() {
-              widget.workDone.add(inputModel);
-              stepsCheck.remove(Tuple2(stepId, false));
-              stepsCheck.add(Tuple2(stepId, true));
-            });
-          } else{
-            setState(() {
-              widget.workDone.removeWhere((element) => element.stepId == stepId);
-              inputSteps.singleWhere((element) => element.stepId == stepId).notes.clear();
-              stepsCheck.remove(Tuple2(stepId, true));
-              stepsCheck.add(Tuple2(stepId, false));
-            });
-          }
+          handleLogic(stepId, value!);
         }
       );
     }
