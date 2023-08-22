@@ -168,6 +168,11 @@ class _PatientProfileState extends ConsumerState<PatientProfile>
                     height: 2.3,
                     color: AppColors.black.withOpacity(0.7),
                   ),
+                  ElevatedButton(
+                      onPressed: () {},
+                      child: PrimaryText(
+                        text: "نموذج ا",
+                      ))
                 ],
               ),
             ),

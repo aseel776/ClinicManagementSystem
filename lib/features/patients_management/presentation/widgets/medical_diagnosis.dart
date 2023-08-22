@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:clinic_management_system/core/pagination_widget.dart';
 import 'package:clinic_management_system/features/patients_management/data/models/patient_diagnosis.dart';
 import 'package:clinic_management_system/features/patients_management/presentation/riverpod/create_patient_provider.dart';
+import 'package:clinic_management_system/features/patients_management/presentation/riverpod/patient_crud_state.dart';
 import 'package:clinic_management_system/features/repository_feature/presentation/riverpod/products_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -73,9 +74,9 @@ class _MedicalImagesScreenState extends ConsumerState<MedicalDiagnosisScreen> {
     return Stack(
       children: [
         Container(
-            color: Colors.transparent,
+            color: Colors.red,
             height: MediaQuery.of(context).size.height * 0.52,
-            width: MediaQuery.of(context).size.width,
+            width: MediaQuery.of(context).size.width * 0.3,
             child: pageView(
                 ref.watch(currentPageViewProvider.notifier).state, ref)),
         Padding(
@@ -112,11 +113,14 @@ class _MedicalImagesScreenState extends ConsumerState<MedicalDiagnosisScreen> {
       case 0:
         {
           print("pageeeeeeeee 0");
+          print(state);
+
           if (state is LoadedPatientsState) {
             print(7);
-            print(state.patients[widget.patient.id!].patientDiagnosis);
+            print(state.patients[widget.patient.id! - 1].patientDiagnosis);
           }
           return PageView.custom(
+            key: GlobalKey(),
             scrollDirection: Axis.horizontal,
             controller: widget.pageController,
             childrenDelegate: SliverChildBuilderDelegate(
@@ -131,97 +135,56 @@ class _MedicalImagesScreenState extends ConsumerState<MedicalDiagnosisScreen> {
                                 color: Colors.black,
                                 width: 200,
                                 height: 400,
-                                child: DataTable(
-                                    clipBehavior: Clip.hardEdge,
-                                    columnSpacing: 11,
-                                    // header: const Text(""),
-                                    // actions: [
-                                    //   IconButton(
-                                    //       onPressed: () {},
-                                    //       icon: const Icon(Icons.refresh))
-                                    // ],
-                                    // rowsPerPage: 5,
-                                    columns: const [
-                                      DataColumn(label: Text('الرقم')),
-                                      DataColumn(label: Text('المكان')),
-                                      DataColumn(label: Text('العلاج المتوقع')),
-                                      DataColumn(label: Text("العمليات"))
-                                    ],
-                                    rows: state.patients[widget.patient.id!]
-                                        .patientDiagnosis!
-                                        .map((row) => DataRow(
-                                              cells: [
-                                                DataCell(
-                                                    Text(row.id.toString() ??
-                                                        ""),
-                                                    onTap: () => null),
-                                                DataCell(Text(
-                                                    row.place.toString() ??
-                                                        "")),
-                                                DataCell(Text(row
-                                                    .expectedTreatment
-                                                    .toString())),
+                                child: ListView.builder(
+                                  itemCount: state.patients[widget.patient.id!]
+                                      .patientDiagnosis!.length,
+                                  itemBuilder: (context, index) {
+                                    final row = state
+                                        .patients[widget.patient.id!]
+                                        .patientDiagnosis![index];
 
-                                                DataCell(
-                                                  Row(
-                                                    children: [
-                                                      SizedBox(
-                                                          width: 40,
-                                                          child: TextButton(
-                                                            onPressed: () {
-                                                              // print(row.id);
-                                                              // ScaffoldMessenger.of(context)
-                                                              //     .showSnackBar(
-                                                              //         DeleteSnackBar(
-                                                              //             () async {
-                                                              //   await ref
-                                                              //       .watch(
-                                                              //           medicinesCrudProvider
-                                                              //               .notifier)
-                                                              //       .deleteMedicine(row.id!)
-                                                              //       .then((value) {
-                                                              //     ref
-                                                              //         .watch(medicinesProvider
-                                                              //             .notifier)
-                                                              //         .getPaginatedMedicines(
-                                                              //             6, 1);
-
-                                                              //     ref
-                                                              //         .watch(
-                                                              //             currentPageMedicines
-                                                              //                 .notifier)
-                                                              //         .state = 1;
-                                                              //   });
-
-                                                              //   // await ref.watch()
-                                                              // }));
-                                                            },
-                                                            child: const Icon(
-                                                              Icons.delete,
-                                                              color: AppColors
-                                                                  .lightGreen,
-                                                            ),
-                                                          )),
-                                                      SizedBox(
-                                                          width: 40,
-                                                          child: TextButton(
-                                                              onPressed: () {},
-                                                              child: const Icon(
-                                                                Icons.edit,
-                                                                color: AppColors
-                                                                    .lightGreen,
-                                                              )))
-                                                    ],
-                                                  ),
-                                                ),
-
-                                                // DataCell(Text(row.category!
-                                                //     .map((e) => e.name)
-                                                //     .toList()
-                                                //     .toString())),
-                                              ],
-                                            ))
-                                        .toList()),
+                                    return ListTile(
+                                      title: Text(
+                                          'الرقم: ${row.id.toString() ?? ""}'),
+                                      subtitle: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                              'المكان: ${row.place.toString() ?? ""}'),
+                                          Text(
+                                              'العلاج المتوقع: ${row.expectedTreatment.toString()}'),
+                                        ],
+                                      ),
+                                      trailing: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          TextButton(
+                                            onPressed: () {
+                                              // Delete action
+                                              // Implement your delete logic here
+                                            },
+                                            child: Icon(
+                                              Icons.delete,
+                                              color: AppColors.lightGreen,
+                                            ),
+                                          ),
+                                          SizedBox(width: 10),
+                                          TextButton(
+                                            onPressed: () {
+                                              // Edit action
+                                              // Implement your edit logic here
+                                            },
+                                            child: Icon(
+                                              Icons.edit,
+                                              color: AppColors.lightGreen,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                ),
                               )
                             : Container()
                         : Container());
@@ -232,7 +195,7 @@ class _MedicalImagesScreenState extends ConsumerState<MedicalDiagnosisScreen> {
         }
       case 1:
         {
-          print("pageeeeeeeee 0");
+          print("pageeeeeeeee 1");
           if (state is LoadedPatientsState) {
             print(7);
             print(state.patients[widget.patient.id!].patientDiagnosis);
@@ -351,7 +314,7 @@ class _MedicalImagesScreenState extends ConsumerState<MedicalDiagnosisScreen> {
         }
       case 2:
         {
-          print("pageeeeeeeee 0");
+          print("pageeeeeeeee 2");
           if (state is LoadedPatientsState) {
             print(7);
             print(state.patients[widget.patient.id!].patientDiagnosis);
@@ -364,7 +327,8 @@ class _MedicalImagesScreenState extends ConsumerState<MedicalDiagnosisScreen> {
                 return Padding(
                     padding:
                         const EdgeInsets.only(left: 25.0, top: 15, right: 10),
-                    child: (state is LoadedPatientsState)
+                    child: (state is LoadedPatientsState ||
+                            state is MessageAddEditDeletePatientState)
                         ? (state.patients[widget.patient.id!].patientDiagnosis!
                                 .isNotEmpty)
                             ? SizedBox(

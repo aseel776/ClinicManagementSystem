@@ -1,4 +1,7 @@
 import 'package:clinic_management_system/features/diseases_badHabits/presentation/pages/general.dart';
+import 'package:clinic_management_system/features/medicine/data/model/medicine_model.dart';
+import 'package:clinic_management_system/features/medicine/presentation/Pages/medicine_page.dart';
+import 'package:clinic_management_system/features/treatments_feature/presentation/sections/main_section.dart';
 import 'package:clinic_management_system/sidebar/presentation/pages/sidebar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -31,7 +34,12 @@ class MainPage extends StatelessWidget {
 }
 
 class MainPage1 extends ConsumerWidget {
-  const MainPage1({super.key});
+  MainPage1({super.key});
+  final List<Page> pages = [
+    Page('الأدوية', MedicinePage()),
+    Page('المعالجات ', TreatmentsMainSection()),
+    Page('الأمراض ومشاكل الأسنان ', General()),
+  ];
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -68,7 +76,28 @@ class MainPage1 extends ConsumerWidget {
           Padding(
             padding: const EdgeInsets.only(left: 8.0),
             child: IconButton(
-                onPressed: () {}, icon: const Icon(Icons.settings_rounded)),
+                onPressed: () {
+                  PopupMenuButton<String>(
+                    itemBuilder: (context) {
+                      return pages.map((page) {
+                        return PopupMenuItem<String>(
+                          value: page.name,
+                          child: Text(page.name),
+                        );
+                      }).toList();
+                    },
+                    onSelected: (selectedPageName) {
+                      final selectedPage = pages.firstWhere(
+                        (page) => page.name == selectedPageName,
+                        orElse: () => pages.first,
+                      );
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (_) => selectedPage.widget),
+                      );
+                    },
+                  );
+                },
+                icon: const Icon(Icons.settings_rounded)),
           )
         ],
       ),
@@ -91,4 +120,11 @@ class MainPage1 extends ConsumerWidget {
       ),
     );
   }
+}
+
+class Page {
+  final String name;
+  final Widget widget;
+
+  Page(this.name, this.widget);
 }

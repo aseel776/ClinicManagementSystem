@@ -364,6 +364,7 @@ class PatientsNotifier extends StateNotifier<PatientsState> {
     int problemTypeId,
   ) async {
     print("getDiagnosis enter");
+    print(state);
     if (state is LoadedPatientsState) {
       final state1 = state;
       final totalPages;
@@ -393,7 +394,7 @@ class PatientsNotifier extends StateNotifier<PatientsState> {
             diagnosisList; // Update the patient in the copied list
 
         // Notify the state that the data has changed
-        state = LoadingPatientsState();
+        // state = LoadingPatientsState();
         state = LoadedPatientsState(
           patients: updatedPatients,
           totalPages: totalPages,

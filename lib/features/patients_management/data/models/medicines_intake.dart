@@ -28,7 +28,8 @@ class PatientMedicine extends Equatable {
     final Map<String, dynamic> json = {
       'medicine_id': id,
       'notes': notes,
-      'tight': controlled,
+      // 'date': date
+      // 'tight': controlled,
     };
 
     // if (medicine != null) {

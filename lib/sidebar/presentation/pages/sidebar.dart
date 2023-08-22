@@ -32,22 +32,22 @@ class NavBarData {
 
 class _SidebarState extends ConsumerState<Sidebar> {
   Map<NavBarData, Widget> nameToRoute = {
-    NavBarData(pageName: "Dashboard", svgIconPath: "assets/svgs/dashboard.svg"):
-        MedicinePage(),
     NavBarData(
-        pageName: "Appointments",
+        pageName: "Appointment",
+        svgIconPath: "assets/svgs/dashboard.svg"): MedicinePage(),
+    NavBarData(
+        pageName: "Repository",
         svgIconPath: "assets/svgs/appointment.svg"): RepositoryScreen(),
     NavBarData(pageName: "Patients", svgIconPath: "assets/svgs/patients.svg"):
         PatientIndex(),
-    NavBarData(
-        pageName: "Repository",
-        svgIconPath: "assets/svgs/repository.svg"): TreatmentsMainSection(),
-    NavBarData(pageName: "Payments", svgIconPath: "assets/svgs/payments.svg"):
-        LabsScreen()
+    NavBarData(pageName: "labs", svgIconPath: "assets/svgs/repository.svg"):
+        LabsScreen(),
+    // NavBarData(pageName: "Payments", svgIconPath: "assets/svgs/payments.svg"):
+    //     LabsScreen()
   };
 
   void select(int n, WidgetRef ref) {
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 4; i++) {
       if (i == n) {
         ref.read(SelectedPageProvider.notifier).state[i] = true;
 
@@ -65,10 +65,10 @@ class _SidebarState extends ConsumerState<Sidebar> {
       children: [
         Padding(
           padding: EdgeInsets.only(
-              top: MediaQuery.of(context).size.height * 0.1, right: 8, left: 8),
+              top: MediaQuery.of(context).size.height * 0.2, right: 8, left: 8),
           child: Container(
             margin: const EdgeInsets.all(8.0),
-            height: MediaQuery.of(context).size.height * 0.6,
+            height: MediaQuery.of(context).size.height * 0.5,
             width: MediaQuery.of(context).size.width * 0.14,
             decoration: BoxDecoration(
               color: const Color(0xff252525),

@@ -360,6 +360,9 @@ class PatientsRepositoryImpl implements PatientsRepository {
 
       List<PatientMedicine> medicinesList =
           items.map((json) => PatientMedicine.fromJson(json)).toList();
+      if (medicinesList.isEmpty) {
+        return left(ServerFailure());
+      }
 
       print(medicinesList.toString());
       return right(medicinesList);

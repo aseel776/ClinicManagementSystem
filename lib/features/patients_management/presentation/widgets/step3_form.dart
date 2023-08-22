@@ -11,6 +11,7 @@ import 'package:clinic_management_system/features/patients_management/data/model
 import 'package:clinic_management_system/features/patients_management/data/models/diseases_patient.dart';
 import 'package:clinic_management_system/features/patients_management/data/models/medicines_intake.dart';
 import 'package:clinic_management_system/features/patients_management/presentation/pages/patients_index.dart';
+import 'package:clinic_management_system/features/patients_management/presentation/riverpod/patients_provider.dart';
 
 import 'package:clinic_management_system/features/patients_management/presentation/widgets/disease_card.dart';
 
@@ -286,6 +287,7 @@ class _Step3FormState extends ConsumerState<Step3Form> {
                     .watch(patientsCrudProvider.notifier)
                     .createNewPatient(newPatient)
                     .then((value) {
+                  // ref.watch(patientsProvider)
                   ref.watch(pageProvider.notifier).state = PatientIndex();
                 });
               },
@@ -396,6 +398,7 @@ class _Step3FormState extends ConsumerState<Step3Form> {
 
                                 PatientMedicine selected1 = PatientMedicine();
                                 selected1.medicine = currentMedicine;
+                                selected1.id = currentMedicine.id;
                                 selected1.notes = notes.text;
 
                                 if (selected1.medicine!.name != "" &&
