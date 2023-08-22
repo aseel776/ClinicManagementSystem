@@ -1,4 +1,5 @@
 import 'package:clinic_management_system/features/appointments_sessions/data/models/appointment_model.dart';
+import 'package:clinic_management_system/features/appointments_sessions/data/models/sessionInputModel.dart';
 import 'package:clinic_management_system/features/appointments_sessions/presentation/states/patient_treatments/patient_treatments_provider.dart';
 import 'package:clinic_management_system/features/appointments_sessions/presentation/states/patient_treatments/patient_treatments_state.dart';
 import 'package:clinic_management_system/features/appointments_sessions/presentation/widgets/ongoing_treatment.dart';
@@ -20,19 +21,29 @@ class NewSession extends ConsumerStatefulWidget {
 }
 
 class _NewSessionState extends ConsumerState<NewSession> {
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      ref.read(patientTreatmentsProvider.notifier).getOngoingTreatments(widget.app.patient!.id!);
+      ref.read(patientTreatmentsProvider.notifier).getOngoingTreatments(
+          widget.app.patient!.id!);
     });
   }
+
+  List<SessionInputModel> allWork = [];
 
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(patientTreatmentsProvider);
-    final screenWidth = MediaQuery.of(context).size.width * .83;
-    final screenHeight = MediaQuery.of(context).size.height * .93;
+    final screenWidth = MediaQuery
+        .of(context)
+        .size
+        .width * .83;
+    final screenHeight = MediaQuery
+        .of(context)
+        .size
+        .height * .93;
 
     return Scaffold(
       body: Directionality(
@@ -104,15 +115,17 @@ class _NewSessionState extends ConsumerState<NewSession> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'تاريخ الجلسة: ${widget.app.time!.toString().substring(0, 10)}',
+                      'تاريخ الجلسة: ${widget.app.time!.toString().substring(
+                          0, 10)}',
                       style: const TextStyle(
                         fontFamily: 'Cairo',
                         fontSize: 20,
                       ),
                     ),
                     MaterialButton(
-                      onPressed: () async{
-                        await selectTreatment(context, ref, widget.app.patient!.id!);
+                      onPressed: () async {
+                        await selectTreatment(context, ref, widget.app.patient!
+                            .id!);
                       },
                       color: AppColors.black,
                       shape: RoundedRectangleBorder(
@@ -135,7 +148,7 @@ class _NewSessionState extends ConsumerState<NewSession> {
               ),
               const SizedBox(height: .025),
               SizedBox(
-                height: screenHeight * .705,
+                height: screenHeight * .7525,
                 width: screenWidth * .8,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -157,40 +170,131 @@ class _NewSessionState extends ConsumerState<NewSession> {
                               child: Column(
                                 children: [
                                   ...state.treatments.reversed
-                                      .map((e) => Column(
-                                            children: [
-                                              OnGoingTreatment(e),
-                                              SizedBox(
-                                                  height: screenHeight * .025),
-                                            ],
-                                          ))
-                                      .toList(),
+                                      .map((e) {
+                                    return Column(
+                                      children: [
+                                        OnGoingTreatment(e, allWork),
+                                        SizedBox(height: screenHeight * .025),
+                                      ],
+                                    );
+                                  },
+                                  ).toList(),
                                 ],
                               ),
                             ),
                           )
-                        else if (state is LoadingPatientTreatmentsState)
-                          Expanded(
-                            child: Container(
-                              alignment: Alignment.center,
-                              color: Colors.yellow,
-                            ),
-                          )
                         else
-                          Expanded(
-                            child: Container(
-                              alignment: Alignment.center,
-                              color: Colors.red,
-                            ),
-                          )
+                          if (state is LoadingPatientTreatmentsState)
+                            Expanded(
+                              child: Container(
+                                alignment: Alignment.center,
+                                color: Colors.yellow,
+                              ),
+                            )
+                          else
+                            Expanded(
+                              child: Container(
+                                alignment: Alignment.center,
+                                color: Colors.red,
+                              ),
+                            )
                       ],
                     ),
                     Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
+                        const Expanded(child: SizedBox()),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            MaterialButton(
+                              onPressed: () {
+                                //open pop up
+                              },
+                              color: AppColors.black,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              height: screenHeight * .075,
+                              minWidth: screenWidth * .15,
+                              child: const Text(
+                                'تصدير وصفة',
+                                style: TextStyle(
+                                  fontFamily: 'Cairo',
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w300,
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: screenHeight * .025),
+                            MaterialButton(
+                              onPressed: () {
+                                //open pop up
+                              },
+                              color: AppColors.black,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              height: screenHeight * .075,
+                              minWidth: screenWidth * .15,
+                              child: const Text(
+                                'طلب مخبر',
+                                style: TextStyle(
+                                  fontFamily: 'Cairo',
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w300,
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: screenHeight * .025),
+                            MaterialButton(
+                              onPressed: () {
+                                //open pop up
+                              },
+                              color: AppColors.black,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              height: screenHeight * .075,
+                              minWidth: screenWidth * .15,
+                              child: const Text(
+                                'إضافة تشخيص',
+                                style: TextStyle(
+                                  fontFamily: 'Cairo',
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w300,
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: screenHeight * .025),
+                            MaterialButton(
+                              onPressed: () {
+                                //open pop up
+                              },
+                              color: AppColors.black,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              height: screenHeight * .075,
+                              minWidth: screenWidth * .15,
+                              child: const Text(
+                                'إضافة دفعة',
+                                style: TextStyle(
+                                  fontFamily: 'Cairo',
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w300,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const Expanded(child: SizedBox()),
                         MaterialButton(
                           onPressed: () {
-                            //open pop up
+                            print(allWork.length);
                           },
                           color: AppColors.black,
                           shape: RoundedRectangleBorder(
@@ -199,7 +303,7 @@ class _NewSessionState extends ConsumerState<NewSession> {
                           height: screenHeight * .075,
                           minWidth: screenWidth * .15,
                           child: const Text(
-                            'تصدير وصفة',
+                            'حفظ',
                             style: TextStyle(
                               fontFamily: 'Cairo',
                               fontSize: 16,
@@ -209,68 +313,6 @@ class _NewSessionState extends ConsumerState<NewSession> {
                           ),
                         ),
                         SizedBox(height: screenHeight * .025),
-                        MaterialButton(
-                          onPressed: () {
-                            //open pop up
-                          },
-                          color: AppColors.black,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          height: screenHeight * .075,
-                          minWidth: screenWidth * .15,
-                          child: const Text(
-                            'طلب مخبر',
-                            style: TextStyle(
-                              fontFamily: 'Cairo',
-                              fontSize: 16,
-                              color: Colors.white,
-                              fontWeight: FontWeight.w300,
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: screenHeight * .025),
-                        MaterialButton(
-                          onPressed: () {
-                            //open pop up
-                          },
-                          color: AppColors.black,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          height: screenHeight * .075,
-                          minWidth: screenWidth * .15,
-                          child: const Text(
-                            'إضافة تشخيص',
-                            style: TextStyle(
-                              fontFamily: 'Cairo',
-                              fontSize: 16,
-                              color: Colors.white,
-                              fontWeight: FontWeight.w300,
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: screenHeight * .025),
-                        MaterialButton(
-                          onPressed: () {
-                            //open pop up
-                          },
-                          color: AppColors.black,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          height: screenHeight * .075,
-                          minWidth: screenWidth * .15,
-                          child: const Text(
-                            'إضافة دفعة',
-                            style: TextStyle(
-                              fontFamily: 'Cairo',
-                              fontSize: 16,
-                              color: Colors.white,
-                              fontWeight: FontWeight.w300,
-                            ),
-                          ),
-                        ),
                       ],
                     ),
                   ],

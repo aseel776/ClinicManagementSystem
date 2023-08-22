@@ -1,14 +1,50 @@
+import 'package:clinic_management_system/core/customs.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import './/core/app_colors.dart';
 import '../../data/models/patient_treatment_model.dart';
 import 'package:clinic_management_system/features/treatments_feature/data/models/step_model.dart';
+import '../../data/models/sessionInputModel.dart';
+import 'package:dartz/dartz.dart';
 
-class OnGoingTreatment extends StatelessWidget {
+class OnGoingTreatment extends ConsumerStatefulWidget {
+
+  const OnGoingTreatment(this.ongoingTreatment, this.workDone, {Key? key,}) : super(key: key);
+
   final PatientTreatmentModel ongoingTreatment;
-  const OnGoingTreatment(this.ongoingTreatment, {Key? key,}) : super(key: key);
+  final List<SessionInputModel> workDone;
+
+  @override
+  ConsumerState<OnGoingTreatment> createState() => _OnGoingTreatmentState();
+}
+
+class _OnGoingTreatmentState extends ConsumerState<OnGoingTreatment> {
+  late List<Tuple2<int, bool>> stepsCheck = createStepsCheck();
+  List<SessionInputModel> inputSteps = [];
+
+
+  createStepsCheck(){
+    List<Tuple2<int, bool>> temp = [];
+    for(var step in widget.ongoingTreatment.treatment!.steps!){
+      bool found = false;
+      for(var stepDone in widget.ongoingTreatment.stepsDone!){
+        if(step.id == stepDone.stepId){
+          temp.add(Tuple2(step.id!, true));
+          found = true;
+          break;
+        }
+      }
+      if(!found){
+        inputSteps.add(SessionInputModel(stepId: step.id, treatmentId: widget.ongoingTreatment.id));
+        temp.add(Tuple2(step.id!, false));
+      }
+    }
+    return temp;
+  }
 
   @override
   Widget build(BuildContext context) {
+
     final width = MediaQuery.of(context).size.width * .83 * .8 * .75;
     final height = MediaQuery.of(context).size.height * .93 * .35;
 
@@ -26,7 +62,7 @@ class OnGoingTreatment extends StatelessWidget {
 
     createStepLabel(String label) {
       return SizedBox(
-        width: width * .3,
+        width: width * .35,
         child: createText(label),
       );
     }
@@ -40,22 +76,57 @@ class OnGoingTreatment extends StatelessWidget {
 
     createNotesLabel(String place) {
       return SizedBox(
-        width: width * .5,
+        width: width * .4,
         child: createText(place),
       );
     }
 
+    createNotesBox(int stepId){
+      bool enabled = stepsCheck.singleWhere((element) => element.value1 == stepId).value2;
+      return SizedBox(
+        width: width * .4,
+        child: TextFormField(
+          controller: inputSteps.singleWhere((element) => element.stepId == stepId).notes,
+          enabled: enabled,
+          decoration: createNotesDecoration(enabled),
+          cursorColor: Colors.black,
+          style: const TextStyle(
+            fontFamily: 'Cairo',
+          ),
+        ),
+      );
+    }
+
     createCheckBox(int stepId){
-      bool checkValue = false;
-      for (var element in ongoingTreatment.stepsDone!) {
+      final inputModel = SessionInputModel(stepId: stepId, treatmentId: widget.ongoingTreatment.id);
+
+      bool alreadyExists = false;
+      for (var element in widget.ongoingTreatment.stepsDone!) {
         if(element.stepId == stepId){
-          checkValue = true;
+          alreadyExists = true;
           break;
         }
       }
+
       return Checkbox(
-        value: checkValue,
-        onChanged: checkValue ? null : (value) => print(value)
+        activeColor: AppColors.black,
+        value: stepsCheck.singleWhere((element) => element.value1 == stepId).value2,
+        onChanged: alreadyExists ? null : (value) {
+          if(value!){
+            setState(() {
+              widget.workDone.add(inputModel);
+              stepsCheck.remove(Tuple2(stepId, false));
+              stepsCheck.add(Tuple2(stepId, true));
+            });
+          } else{
+            setState(() {
+              widget.workDone.removeWhere((element) => element.stepId == stepId);
+              inputSteps.singleWhere((element) => element.stepId == stepId).notes.clear();
+              stepsCheck.remove(Tuple2(stepId, true));
+              stepsCheck.add(Tuple2(stepId, false));
+            });
+          }
+        }
       );
     }
 
@@ -64,7 +135,7 @@ class OnGoingTreatment extends StatelessWidget {
         cells: [
           DataCell(createStepLabel(step.name!)),
           DataCell(createCheckBox(step.id!)),
-          DataCell(createNotesLabel('')),
+          DataCell(createNotesBox(step.id!)),
         ],
       );
     }
@@ -82,21 +153,27 @@ class OnGoingTreatment extends StatelessWidget {
       ),
       child: SingleChildScrollView(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text(
-              'العلاج: ${ongoingTreatment.treatment!.name!}',
-              style: const TextStyle(
-                fontFamily: 'Cairo',
-                fontSize: 18,
+            SizedBox(
+            width: width * .9,
+              child: Text(
+                'العلاج: ${widget.ongoingTreatment.treatment!.name!}',
+                style: const TextStyle(
+                  fontFamily: 'Cairo',
+                  fontSize: 18,
+                ),
               ),
             ),
             SizedBox(height: height * .025),
-            Text(
-              'مكان العلاج: ${ongoingTreatment.place}',
-              style: const TextStyle(
-                fontFamily: 'Cairo',
-                fontSize: 18,
+            SizedBox(
+              width: width * .9,
+              child: Text(
+                'مكان العلاج: ${widget.ongoingTreatment.place}',
+                style: const TextStyle(
+                  fontFamily: 'Cairo',
+                  fontSize: 18,
+                ),
               ),
             ),
             SizedBox(height: height * .025),
@@ -109,7 +186,7 @@ class OnGoingTreatment extends StatelessWidget {
                 DataColumn(label: createNotesLabel('ملاحظات')),
               ],
               rows: [
-                ...ongoingTreatment.treatment!.steps!.map((e) => createRow(e)),
+                ...widget.ongoingTreatment.treatment!.steps!.map((e) => createRow(e)),
               ],
             ),
           ],
@@ -117,5 +194,4 @@ class OnGoingTreatment extends StatelessWidget {
       ),
     );
   }
-
 }

@@ -104,3 +104,18 @@ const notesDecoration = InputDecoration(
     fontSize: 16,
   ),
 );
+
+createNotesDecoration(bool enabled){
+  return InputDecoration(
+    contentPadding: const EdgeInsets.all(10),
+    border: InputBorder.none,
+    focusedBorder: InputBorder.none,
+    enabledBorder: InputBorder.none,
+    hintText: enabled ? 'أدخل ملاحظاتك' : '',
+    hintStyle: const TextStyle(
+      fontFamily: 'Cairo',
+      color: Colors.grey,
+      fontSize: 16,
+    ),
+  );
+}
