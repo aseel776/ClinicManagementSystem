@@ -36,7 +36,6 @@ class _OnGoingTreatmentState extends ConsumerState<OnGoingTreatment> {
       }
       if(!found){
         inputSteps.add(SessionInputModel(stepId: step.id, treatmentId: widget.ongoingTreatment.id));
-        print(step.id);
         temp.add(Tuple2(step.id!, false));
       }
     }

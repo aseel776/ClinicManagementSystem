@@ -1,8 +1,10 @@
 import 'package:clinic_management_system/features/appointments_sessions/data/models/appointment_model.dart';
+import 'package:clinic_management_system/features/appointments_sessions/data/models/pres_input_model.dart';
 import 'package:clinic_management_system/features/appointments_sessions/data/models/sessionInputModel.dart';
 import 'package:clinic_management_system/features/appointments_sessions/presentation/states/patient_treatments/patient_treatments_provider.dart';
 import 'package:clinic_management_system/features/appointments_sessions/presentation/states/patient_treatments/patient_treatments_state.dart';
 import 'package:clinic_management_system/features/appointments_sessions/presentation/widgets/ongoing_treatment.dart';
+import 'package:clinic_management_system/features/appointments_sessions/presentation/widgets/prescription.dart';
 import 'package:clinic_management_system/features/appointments_sessions/presentation/widgets/select_treatment.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -26,24 +28,18 @@ class _NewSessionState extends ConsumerState<NewSession> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      ref.read(patientTreatmentsProvider.notifier).getOngoingTreatments(
-          widget.app.patient!.id!);
+      ref.read(patientTreatmentsProvider.notifier).getOngoingTreatments(widget.app.patient!.id!);
     });
   }
 
   List<SessionInputModel> allWork = [];
+  List<PrescriptionInput> pres = [];
 
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(patientTreatmentsProvider);
-    final screenWidth = MediaQuery
-        .of(context)
-        .size
-        .width * .83;
-    final screenHeight = MediaQuery
-        .of(context)
-        .size
-        .height * .93;
+    final screenWidth = MediaQuery.of(context).size.width * .83;
+    final screenHeight = MediaQuery.of(context).size.height * .93;
 
     return Scaffold(
       body: Directionality(
@@ -124,8 +120,7 @@ class _NewSessionState extends ConsumerState<NewSession> {
                     ),
                     MaterialButton(
                       onPressed: () async {
-                        await selectTreatment(context, ref, widget.app.patient!
-                            .id!);
+                        await selectTreatment(context, ref, widget.app.patient!.id!);
                       },
                       color: AppColors.black,
                       shape: RoundedRectangleBorder(
@@ -169,8 +164,7 @@ class _NewSessionState extends ConsumerState<NewSession> {
                             child: SingleChildScrollView(
                               child: Column(
                                 children: [
-                                  ...state.treatments.reversed
-                                      .map((e) {
+                                  ...state.treatments.reversed.map((e) {
                                     return Column(
                                       children: [
                                         OnGoingTreatment(e, allWork),
@@ -207,8 +201,8 @@ class _NewSessionState extends ConsumerState<NewSession> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             MaterialButton(
-                              onPressed: () {
-                                //open pop up
+                              onPressed: () async{
+                                // pres = await createPres(context, ref);
                               },
                               color: AppColors.black,
                               shape: RoundedRectangleBorder(
@@ -294,7 +288,7 @@ class _NewSessionState extends ConsumerState<NewSession> {
                         const Expanded(child: SizedBox()),
                         MaterialButton(
                           onPressed: () {
-                            allWork.map((e) => e).forEach((element) {print(element.toJson());});
+                            //call create session
                           },
                           color: AppColors.black,
                           shape: RoundedRectangleBorder(

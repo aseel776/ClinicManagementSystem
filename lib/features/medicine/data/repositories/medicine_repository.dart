@@ -44,7 +44,7 @@ class MedicineRespositoryImpl implements MedicineRespository {
     print(response);
 
     if (!response.hasException && response.data != null) {
-      final Map<String, dynamic> data = response.data!['medicine'];
+      final Map<String, dynamic> data = response.data!['medicines'];
       final List<dynamic> items = data['items'];
       final totalPag = data['totalPages'];
 
