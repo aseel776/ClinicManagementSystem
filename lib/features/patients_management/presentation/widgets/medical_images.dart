@@ -4,7 +4,7 @@ import 'package:clinic_management_system/core/app_colors.dart';
 import 'package:clinic_management_system/core/primaryText.dart';
 import 'package:clinic_management_system/features/patients_management/data/models/patient_medical_images.dart';
 import 'package:clinic_management_system/features/patients_management/presentation/riverpod/create_patient_provider.dart';
-import 'package:file_picker/file_picker.dart';
+// import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -20,7 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:graphql/client.dart';
 import 'package:path/path.dart';
-import 'package:file_picker/file_picker.dart'; // Import the file_picker package
+// import 'package:file_picker/file_picker.dart'; // Import the file_picker package
 
 StateProvider selectedImage = StateProvider<File?>((ref) => null);
 StateProvider imageName = StateProvider((ref) => TextEditingController());
@@ -40,22 +40,22 @@ class MedicalImagesScreen extends ConsumerStatefulWidget {
 class _MedicalImagesScreenState extends ConsumerState<MedicalImagesScreen> {
   File? _pickedFile; // Change PlatformFile to File
 
-  Future<void> pickAndUploadFile() async {
-    ref.watch(resultProvider.notifier).state =
-        await FilePicker.platform.pickFiles();
-    // FilePickerResult? result = await FilePicker.platform.pickFiles();
-    // result!.files.single.path;
-
-    if (ref.watch(resultProvider.notifier).state != null) {
-      PlatformFile file = ref.watch(resultProvider.notifier).state.files.first;
-      String filePath = file.path!;
-
-      // uploadFile(filePath);
-    } else {
-      // User canceled the file picker
-      print('File selection canceled.');
-    }
-  }
+  // Future<void> pickAndUploadFile() async {
+  //   ref.watch(resultProvider.notifier).state =
+  //       await FilePicker.platform.pickFiles();
+  //   // FilePickerResult? result = await FilePicker.platform.pickFiles();
+  //   // result!.files.single.path;
+  //
+  //   if (ref.watch(resultProvider.notifier).state != null) {
+  //     PlatformFile file = ref.watch(resultProvider.notifier).state.files.first;
+  //     String filePath = file.path!;
+  //
+  //     // uploadFile(filePath);
+  //   } else {
+  //     // User canceled the file picker
+  //     print('File selection canceled.');
+  //   }
+  // }
 
   // late PageController pagecontroller;
   var currentPage = "صور شعاعية";
@@ -139,7 +139,8 @@ class _MedicalImagesScreenState extends ConsumerState<MedicalImagesScreen> {
                 ),
               const SizedBox(height: 20),
               ElevatedButton(
-                onPressed: pickAndUploadFile,
+                // onPressed: pickAndUploadFile,
+                onPressed: (){},
                 child: const Text('اختر صورة'),
               ),
               ElevatedButton(

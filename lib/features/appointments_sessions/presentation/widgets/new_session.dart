@@ -38,8 +38,8 @@ class _NewSessionState extends ConsumerState<NewSession> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(patientTreatmentsProvider);
-    final screenWidth = MediaQuery.of(context).size.width * .83;
-    final screenHeight = MediaQuery.of(context).size.height * .93;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
       body: Directionality(

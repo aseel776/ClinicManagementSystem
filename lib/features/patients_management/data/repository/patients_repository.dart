@@ -110,6 +110,7 @@ class PatientsRepositoryImpl implements PatientsRepository {
     final response = await gqlClient.query(QueryOptions(
       document: gql(PatientsTableDocsGql.patientsDataTable),
       variables: {'itemPerPage': itemPerPage, 'page': page},
+      fetchPolicy: FetchPolicy.noCache,
     ));
     print(response);
 
@@ -136,6 +137,7 @@ class PatientsRepositoryImpl implements PatientsRepository {
     final response = await gqlClient.query(QueryOptions(
       document: gql(PatientsTableDocsGql.patientsDataTable),
       variables: {'itemPerPage': itemPerPage, 'page': page, 'search': search},
+      fetchPolicy: FetchPolicy.noCache,
     ));
     print(response);
 
@@ -172,6 +174,7 @@ class PatientsRepositoryImpl implements PatientsRepository {
         'sortField': sort_field,
         'sortOrder': sort_order,
       },
+      fetchPolicy: FetchPolicy.noCache,
     ));
     print("pppppppppppppppp");
     print(response);
@@ -215,6 +218,7 @@ class PatientsRepositoryImpl implements PatientsRepository {
         'sortField': sort_field,
         'sortOrder': sort_order,
       },
+      fetchPolicy: FetchPolicy.noCache,
     ));
     print("patieintnenasf costssss");
     print(response);
@@ -249,6 +253,7 @@ class PatientsRepositoryImpl implements PatientsRepository {
       variables: {
         'patient_id': patientId,
       },
+      fetchPolicy: FetchPolicy.noCache,
     ));
     print("responseeeeeeeeee");
     print(response);
@@ -276,6 +281,7 @@ class PatientsRepositoryImpl implements PatientsRepository {
       variables: {
         'patient_id': patientId,
       },
+      fetchPolicy: FetchPolicy.noCache,
     ));
     print(response);
 

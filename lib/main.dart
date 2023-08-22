@@ -44,14 +44,16 @@ class MainPage1 extends ConsumerWidget {
         backgroundColor: AppColors.black.withOpacity(0.9),
         elevation: 10,
         toolbarHeight: MediaQuery.of(context).size.height * 0.07,
-        title: const Padding(
+        title: Padding(
           padding: EdgeInsets.only(right: 20.0),
           child: Row(
             children: [
-              Text(
-                "Logo",
-                style: TextStyle(fontSize: 30),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.05,
+                  // width: MediaQuery.of(context).size.width * .04
+                  child: Image.asset("assets/images/logo2.png", fit: BoxFit.fill,)
               ),
+             // AssetImage("assets/images/logo.png"),
               Padding(
                 padding: EdgeInsets.only(right: 20.0),
                 child: PrimaryText(
@@ -74,24 +76,23 @@ class MainPage1 extends ConsumerWidget {
           )
         ],
       ),
-      body: const MedicinePage(),
-      // body: Stack(
-      //   children: [
-      //     // WindowTitleBarBox(
-      //     //   child: Row(
-      //     //     children: [Expanded(child: Container()), WindowButtons()],
-      //     //   ),
-      //     // ),
-      //     Row(
-      //       mainAxisAlignment: MainAxisAlignment.start,
-      //       crossAxisAlignment: CrossAxisAlignment.start,
-      //       children: [
-      //         const Sidebar(),
-      //         Expanded(child: ref.watch(pageProvider))
-      //       ],
-      //     ),
-      //   ],
-      // ),
+      body: Stack(
+        children: [
+          // WindowTitleBarBox(
+          //   child: Row(
+          //     children: [Expanded(child: Container()), WindowButtons()],
+          //   ),
+          // ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Sidebar(),
+              Expanded(child: ref.watch(pageProvider))
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

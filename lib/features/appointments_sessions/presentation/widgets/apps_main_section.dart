@@ -20,7 +20,7 @@ class AppointmentsMainSection extends StatelessWidget {
 
     return Scaffold(
       body: Container(
-        width: screenWidth,
+        // width: screenWidth,
         height: screenHeight,
         color: AppColors.lightGrey,
         child: Column(

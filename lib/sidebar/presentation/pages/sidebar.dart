@@ -12,9 +12,9 @@ import '../../../features/active_materials_feature/presentation/widgets/main_sec
 import '../widgets/navbar_item.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final pageProvider = StateProvider<Widget>((ref) => General());
+final pageProvider = StateProvider<Widget>((ref) => AppointmentsMainSection());
 final SelectedPageProvider =
-    StateProvider<List<bool>>((ref) => [false, false, false, false, false]);
+    StateProvider<List<bool>>((ref) => [true, false, false, false, false]);
 
 class Sidebar extends ConsumerStatefulWidget {
   const Sidebar({super.key});
@@ -33,18 +33,17 @@ class NavBarData {
 
 class _SidebarState extends ConsumerState<Sidebar> {
   Map<NavBarData, Widget> nameToRoute = {
-    NavBarData(pageName: "Dashboard", svgIconPath: "assets/svgs/dashboard.svg"):
-        MedicinePage(),
+    NavBarData(pageName: "المواعيد", svgIconPath: "assets/svgs/dashboard.svg"):
+        AppointmentsMainSection(),
     NavBarData(
-        pageName: "Appointments",
-        svgIconPath: "assets/svgs/appointment.svg"): RepositoryScreen(),
-    NavBarData(pageName: "Patients", svgIconPath: "assets/svgs/patients.svg"):
-        PatientIndex(),
-    NavBarData(
-        pageName: "Repository",
-        svgIconPath: "assets/svgs/repository.svg"): TreatmentsMainSection(),
-    NavBarData(pageName: "Payments", svgIconPath: "assets/svgs/payments.svg"):
-        LabsScreen()
+        pageName: "المرضى",
+        svgIconPath: "assets/svgs/appointment.svg"): PatientIndex(),
+    NavBarData(pageName: "المخابر", svgIconPath: "assets/svgs/patients.svg"):
+        LabsScreen(),
+    NavBarData(pageName: "المستودع", svgIconPath: "assets/svgs/patients.svg"):
+    RepositoryScreen(),
+    NavBarData(pageName: "المعالجات", svgIconPath: "assets/svgs/patients.svg"):
+    TreatmentsMainSection(),
   };
 
   void select(int n, WidgetRef ref) {
