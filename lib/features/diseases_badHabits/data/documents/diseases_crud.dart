@@ -1,15 +1,24 @@
 class DiseasesCrudDocsGql {
-  static final addDiseases = '''
-  mutation CreateDisease(\$chemicalMaterialIds: [Int!], \$diseaseName: String!) {
+  static const addDiseases = """
+  mutation CreateDisease(\$chemicalMaterialIds: [Int!], \$name: String!) {
     createDisease(
-      createDiseaseInput: { chemical_material_id: \$chemicalMaterialIds, name: \$diseaseName }
+        createDiseaseInput: {chemical_material_id: \$chemicalMaterialIds, name: \$name}
     ) {
-      id
-      name
+        id
+        name
+        diseaseChemicalMaterials {
+            chemical_material_id
+            disease_id
+            id
+            chemical_material {
+                id
+                name
+            }
+        }
     }
   }
-''';
-  static final deleteDiseases = '''mutation RemoveDisease(\$id: Int!) {
+""";
+  static const deleteDiseases = '''mutation RemoveDisease(\$id: Int!) {
     removeDisease(id: \$id) {
         id
         name

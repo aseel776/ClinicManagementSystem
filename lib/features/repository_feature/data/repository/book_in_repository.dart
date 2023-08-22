@@ -11,7 +11,8 @@ abstract class BookInsRepository {
   Future<Either<Failure, BookInTable>> getPaginatedBookIns(
       double itemPerPage, double page, int product_id);
 
-  Future<Either<Failure, String>> createBookIn(BookIn bookIn);
+  Future<Either<Failure, String>> createBookIn(
+      String expirationDate, int price, int quantity, int productId);
 }
 
 class ProductRepositoryImpl implements BookInsRepository {
@@ -44,25 +45,21 @@ class ProductRepositoryImpl implements BookInsRepository {
   }
 
   @override
-  Future<Either<Failure, String>> createBookIn(BookIn bookIn) async {
-    final dateFormat = DateFormat("yyyy-MM-dd'T'HH:mm:ss");
-    if (bookIn.expirationDate != null) {
-      final response = await gqlClient.mutate(MutationOptions(
-          document: gql(BookInDocsGql.createBookInMutation),
-          variables: {
-            'expirationDate': dateFormat.format(
-                bookIn.expirationDate!), // Replace with your dynamic variable
-            'price': bookIn.price, // Replace with your dynamic variable
-            'productId':
-                bookIn.product.id, // Replace with your dynamic variable
-            'quantity': bookIn.quantity,
-          }));
+  Future<Either<Failure, String>> createBookIn(
+      String expirationDate, int price, int quantity, int productId) async {
+    final response = await gqlClient.mutate(MutationOptions(
+        document: gql(BookInDocsGql.createBookInMutation),
+        variables: {
+          'expirationDate':
+              expirationDate, // Replace with your dynamic variable
+          'price': price, // Replace with your dynamic variable
+          'productId': productId, // Replace with your dynamic variable
+          'quantity': quantity,
+        }));
+    print(response);
 
-      if (!response.hasException && response.data != null) {
-        return right(""); // Return a success message or ID if applicable
-      } else {
-        return left(ServerFailure());
-      }
+    if (!response.hasException && response.data != null) {
+      return right(""); // Return a success message or ID if applicable
     } else {
       return left(ServerFailure());
     }

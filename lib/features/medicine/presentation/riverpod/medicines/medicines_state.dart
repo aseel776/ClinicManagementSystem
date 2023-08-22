@@ -1,3 +1,4 @@
+import 'package:clinic_management_system/features/medicine/data/model/category.dart';
 import 'package:clinic_management_system/features/medicine/data/model/medicine_model.dart';
 import 'package:equatable/equatable.dart';
 
@@ -20,6 +21,15 @@ class LoadedMedicinesState extends MedicinesState {
 
   @override
   List<Object> get props => [medicines];
+}
+
+class LoadedCategoriesState extends MedicinesState {
+  final List<Category> categories;
+
+  LoadedCategoriesState({required this.categories});
+
+  @override
+  List<Object> get props => [categories];
 }
 
 class ErrorMedicinesState extends MedicinesState {

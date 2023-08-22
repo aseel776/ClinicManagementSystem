@@ -1,19 +1,41 @@
 class PatientBadHabitsDocsGql {
-  static const String createPatientBadHabitMutation = '''
-  mutation CreatePatientBadHabit(\$input: CreatePatientBadHabitInput!) {
-    createPatientBadHabit(createPatientBadHabitInput: \$input) {
+//   static const String createPatientBadHabitMutation = '''
+//   mutation CreatePatientBadHabit(\$input: CreatePatientBadHabitInput!) {
+//     createPatientBadHabit(createPatientBadHabitInput: \$input) {
+//       id
+//       notes
+//       patient_id
+//       start_date
+//       bad_habit {
+//         name
+//         id
+//       }
+//     }
+//   }
+// ''';
+  static const String createPatientBadHabitMutation = r'''
+  mutation CreatePatientBadHabit(
+    $badHabitId: Int!,
+    $notes: String!,
+    $patientId: Int!,
+    $startDate: DateTime!
+  ) {
+    createPatientBadHabit(
+      createPatientBadHabitInput: {
+        bad_habet_id: $badHabitId,
+        notes: $notes,
+        patient_id: $patientId,
+        start_date: $startDate
+      }
+    ) {
+      bad_habit_id
       id
       notes
       patient_id
       start_date
-      bad_habit {
-        name
-        id
-      }
     }
   }
 ''';
-
 // final Map<String, dynamic> variables = {
 //   'input': {
 //     'bad_habit_id': 12,

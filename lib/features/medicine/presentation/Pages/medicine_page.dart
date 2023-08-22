@@ -1,11 +1,17 @@
 import 'package:clinic_management_system/core/app_colors.dart';
+import 'package:clinic_management_system/core/pagination_widget.dart';
+import 'package:clinic_management_system/features/diseases_badHabits/presentation/widgets/add_button.dart';
+import 'package:clinic_management_system/features/medicine/presentation/riverpod/medicines/add_update_delete_provider.dart';
+import 'package:clinic_management_system/features/medicine/presentation/riverpod/medicines/categories_provider.dart';
 import 'package:clinic_management_system/features/medicine/presentation/riverpod/medicines/medicines_provider.dart';
 import 'package:clinic_management_system/features/medicine/presentation/riverpod/medicines/medicines_state.dart';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
+
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import '../../data/model/medicine_model.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
+
+import '../../../diseases_badHabits/presentation/widgets/delete_snack_bar.dart';
 import '../widgets/add_new_medicine.dart';
 import '../widgets/primaryText.dart';
 import '../widgets/searchbar.dart';
@@ -40,13 +46,10 @@ class _MedicinePageState extends ConsumerState<MedicinePage> {
     searchController = ScrollController();
     controller = TextEditingController();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await ref.watch(medicinesProvider.notifier).getPaginatedMedicines(10, 1);
+      await ref.watch(medicinesProvider.notifier).getPaginatedMedicines(6, 1);
       final state = ref.watch(medicinesProvider.notifier).state;
       if (state is LoadedMedicinesState) {
-        // diseases = state.diseases;
         ref.watch(totalPagesMedicines.notifier).state = state.totalPages!;
-        // print("blablabal");
-        // print(ref.watch(totalPagesMedicines.notifier).state);
       }
     });
   }
@@ -61,22 +64,10 @@ class _MedicinePageState extends ConsumerState<MedicinePage> {
 
   @override
   Widget build(BuildContext context) {
-    // scrollController = useScrollController();
-    // searchController = useScrollController();
-    // controller = useTextEditingController();
-    // useEffect(() {
-    //   final handleScrollCallback = () => handleScroll(scrollController, ref);
-    //   scrollController!.addListener(handleScrollCallback);
-
-    //   return () {
-    //     // scrollController!.removeListener(handleScrollCallback);
-    //     // scrollController!.dispose();
-    //     // controller!.dispose();
-    //   };
-    // }, [scrollController, searchController, controller]);
     final state = ref.watch(medicinesProvider.notifier).state;
-    final totalPages = ref.watch(totalPagesMedicines);
-    final currentPage = ref.watch(currentPageMedicines);
+
+    ref.watch(totalPagesMedicines);
+    ref.watch(currentPageMedicines);
     ref.watch(medicinesProvider);
 
     final sectionWidth = MediaQuery.of(context).size.width;
@@ -123,6 +114,13 @@ class _MedicinePageState extends ConsumerState<MedicinePage> {
                       child: TextField(
                         controller: controller,
                         scrollPadding: const EdgeInsets.all(0),
+                        onChanged: (search) {
+                          print("11111111111111111111111");
+                          // ref
+                          //     .watch(medicinesProvider.notifier)
+                          //     .getSearchMedicines(6, 1, search);
+                          // ref.watch(currentPageMedicines.notifier).state = 1;
+                        },
                         scrollController: searchController,
                         textAlign: TextAlign.right,
                         cursorColor: AppColors.black,
@@ -262,8 +260,17 @@ class _MedicinePageState extends ConsumerState<MedicinePage> {
                                     ),
                                   ),
                                 ),
-                                onPressed: () {
-                                  AddMedicineDialog().showDialog1(context, ref);
+                                onPressed: () async {
+                                  await ref
+                                      .watch(categoriesProvider.notifier)
+                                      .getCategories();
+                                  final stateCat = ref
+                                      .watch(categoriesProvider.notifier)
+                                      .state;
+                                  if (stateCat is LoadedCategoriesState) {
+                                    AddMedicineDialog().showDialog1(context,
+                                        ref, stateCat.categories, true, null);
+                                  }
                                 },
                                 child:
                                     const PrimaryText(text: "إضافة دواء جديد")),
@@ -274,114 +281,9 @@ class _MedicinePageState extends ConsumerState<MedicinePage> {
                   ),
                 ),
               ),
-              // AnimatedPositioned(
-              //     duration: const Duration(milliseconds: 400),
-              //     right: ref.watch(containerProvider(context)),
-              //     top: sectionHeight * 0.17,
-              //     child: Container(
-              //         padding: EdgeInsets.only(left: sectionWidth * 0.01),
-              //         decoration: const BoxDecoration(
-              //             color: Colors.white,
-              //             borderRadius: BorderRadius.vertical(
-              //                 top: Radius.circular(20),
-              //                 bottom: Radius.circular(20))),
-              //         height: sectionHeight * 0.55,
-              //         width: sectionWidth * 0.19,
-              //         child: Stack(
-              //           children: [
-              //             Positioned(
-              //               child: Row(
-              //                 children: [
-              //                   Padding(
-              //                     padding: EdgeInsets.only(
-              //                       right: sectionWidth * 0.042,
-              //                     ),
-              //                     child: Container(
-              //                       height: sectionHeight * 0.05,
-              //                       width: sectionWidth * 0.1,
-              //                       decoration: BoxDecoration(
-              //                           borderRadius: const BorderRadius.all(
-              //                               Radius.circular(20)),
-              //                           border:
-              //                               Border.all(color: AppColors.black)),
-              //                       child: const Center(
-              //                         child: PrimaryText(
-              //                           text: "medicine id   ",
-              //                           size: 16,
-              //                         ),
-              //                       ),
-              //                     ),
-              //                   ),
-              //                   const Spacer(),
-              //                   IconButton(
-              //                       onPressed: () => animatedContainer(
-              //                           context, ref, 0, true),
-              //                       icon: const Icon(Icons.close)),
-              //                 ],
-              //               ),
-              //             ),
-              //             Padding(
-              //               padding: EdgeInsets.only(
-              //                   top: sectionHeight * 0.1, right: 10),
-              //               child: GridView.count(
-              //                 crossAxisCount: 2,
-              //                 childAspectRatio: (1 / .4),
-              //                 crossAxisSpacing: 10,
-              //                 controller:
-              //                     new ScrollController(keepScrollOffset: false),
-              //                 shrinkWrap: true,
-              //                 scrollDirection: Axis.vertical,
-              //                 children: [
-              //                   Container(
-              //                     decoration: BoxDecoration(
-              //                         borderRadius: BorderRadius.circular(10),
-              //                         border:
-              //                             Border.all(color: Colors.black12)),
-              //                     child: const Row(
-              //                       children: [
-              //                         PrimaryText(
-              //                           text: "الاسم :   ",
-              //                         ),
-              //                         Text("سيتامول")
-              //                       ],
-              //                     ),
-              //                   ),
-              //                   Container(
-              //                     decoration: BoxDecoration(
-              //                         borderRadius: BorderRadius.circular(10),
-              //                         border:
-              //                             Border.all(color: Colors.black12)),
-              //                     child: const Row(
-              //                       children: [
-              //                         PrimaryText(
-              //                           text: "التركيز :   ",
-              //                         ),
-              //                         Text("100 mg")
-              //                       ],
-              //                     ),
-              //                   ),
-              //                 ],
-              //               ),
-              //             ),
-              //             Padding(
-              //               padding: EdgeInsets.only(
-              //                   top: sectionHeight * 0.47, right: 0),
-              //               child: Row(
-              //                 mainAxisAlignment: MainAxisAlignment.spaceAround,
-              //                 children: [
-              //                   ElevatedButton(
-              //                       onPressed: () {}, child: const Text("حذف")),
-              //                   ElevatedButton(
-              //                       onPressed: () {}, child: const Text("حذف")),
-              //                 ],
-              //               ),
-              //             )
-              //           ],
-              //         ))),
-
               AnimatedPositioned(
                 duration: const Duration(milliseconds: 400),
-                height: sectionHeight * .8,
+                height: sectionHeight * .7,
                 width: ref.watch(tableProvider(context)),
                 top: MediaQuery.of(context).size.height * 0.1,
                 child: SizedBox(
@@ -404,26 +306,183 @@ class _MedicinePageState extends ConsumerState<MedicinePage> {
                           textTheme: const TextTheme(
                               bodySmall: TextStyle(color: Colors.pink))),
                       child: (state is LoadedMedicinesState)
-                          ? PaginatedDataTable(
-                              header: const Text(""),
-                              actions: [
-                                IconButton(
-                                    onPressed: () {},
-                                    icon: const Icon(Icons.refresh))
+                          ? Column(
+                              children: [
+                                DataTable(
+                                  columnSpacing: 110,
+                                  // header: const Text(""),
+                                  // actions: [
+                                  //   IconButton(
+                                  //       onPressed: () {},
+                                  //       icon: const Icon(Icons.refresh))
+                                  // ],
+                                  // rowsPerPage: 5,
+                                  columns: const [
+                                    DataColumn(label: Text('الرقم')),
+                                    DataColumn(label: Text('الاسم')),
+                                    DataColumn(label: Text('التركيز')),
+                                    DataColumn(label: Text('النوع')),
+                                    DataColumn(label: Text('المواد الفعالة')),
+                                    DataColumn(label: Text("العمليات"))
+                                  ],
+                                  rows: state.medicines
+                                      .map((row) => DataRow(
+                                            cells: [
+                                              DataCell(Text(row.id.toString()),
+                                                  onTap: () => null),
+                                              DataCell(
+                                                  Text(row.name.toString())),
+                                              DataCell(Text(row.concentration
+                                                  .toString())),
+
+                                              DataCell(Text(
+                                                  row.category.toString())),
+                                              DataCell(Text(row.anti!
+                                                  .map((e) => e.name)
+                                                  .toList()
+                                                  .toString())),
+                                              DataCell(
+                                                Row(
+                                                  children: [
+                                                    SizedBox(
+                                                        width: 40,
+                                                        child: TextButton(
+                                                          onPressed: () {
+                                                            print(row.id);
+                                                            ScaffoldMessenger
+                                                                    .of(context)
+                                                                .showSnackBar(
+                                                                    DeleteSnackBar(
+                                                                        () async {
+                                                              await ref
+                                                                  .watch(medicinesCrudProvider
+                                                                      .notifier)
+                                                                  .deleteMedicine(
+                                                                      row.id!)
+                                                                  .then(
+                                                                      (value) {
+                                                                ref
+                                                                    .watch(medicinesProvider
+                                                                        .notifier)
+                                                                    .getPaginatedMedicines(
+                                                                        6, 1);
+
+                                                                ref
+                                                                    .watch(currentPageMedicines
+                                                                        .notifier)
+                                                                    .state = 1;
+                                                              });
+
+                                                              // await ref.watch()
+                                                            }));
+                                                          },
+                                                          child: const Icon(
+                                                            Icons.delete,
+                                                            color: AppColors
+                                                                .lightGreen,
+                                                          ),
+                                                        )),
+                                                    SizedBox(
+                                                        width: 40,
+                                                        child: TextButton(
+                                                            onPressed:
+                                                                () async {
+                                                              await ref
+                                                                  .watch(categoriesProvider
+                                                                      .notifier)
+                                                                  .getCategories();
+                                                              final stateCat = ref
+                                                                  .watch(categoriesProvider
+                                                                      .notifier)
+                                                                  .state;
+                                                              if (stateCat
+                                                                  is LoadedCategoriesState) {
+                                                                ref
+                                                                        .watch(medicineConcentration
+                                                                            .notifier)
+                                                                        .state
+                                                                        .text =
+                                                                    row.concentration
+                                                                        .toString();
+                                                                ref
+                                                                    .watch(medicineName
+                                                                        .notifier)
+                                                                    .state
+                                                                    .text = row.name;
+                                                                print(
+                                                                    "kkkkkkkkkkkkkkkkkkkk");
+                                                                print(row.anti!
+                                                                    .map((e) =>
+                                                                        e.id)
+                                                                    .toList());
+                                                                // print(row.anti!
+                                                                //     .map(
+                                                                //       (e) =>
+                                                                //           ,
+                                                                //     )
+                                                                //     .toList);
+                                                                ref
+                                                                    .watch(multiSelect
+                                                                        .notifier)
+                                                                    .state = row.anti!;
+
+                                                                AddMedicineDialog()
+                                                                    .showDialog1(
+                                                                        context,
+                                                                        ref,
+                                                                        stateCat
+                                                                            .categories,
+                                                                        false,
+                                                                        row.id);
+                                                              }
+                                                            },
+                                                            child: const Icon(
+                                                              Icons.edit,
+                                                              color: AppColors
+                                                                  .lightGreen,
+                                                            )))
+                                                  ],
+                                                ),
+                                              ),
+
+                                              // DataCell(Text(row.category!
+                                              //     .map((e) => e.name)
+                                              //     .toList()
+                                              //     .toString())),
+                                            ],
+                                          ))
+                                      .toList(),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                      right: sectionWidth * 0.35,
+                                      top: sectionHeight * 0.01),
+                                  child: Align(
+                                    alignment: Alignment.center,
+                                    child: PaginationWidget(
+                                        totalPages: ref
+                                            .watch(totalPagesMedicines.notifier)
+                                            .state,
+                                        currentPage: ref
+                                            .watch(
+                                                currentPageMedicines.notifier)
+                                            .state,
+                                        onPageSelected: (i) async {
+                                          await ref
+                                              .watch(medicinesProvider.notifier)
+                                              .getPaginatedMedicines(
+                                                  6, (i + 1).toDouble());
+                                          ref
+                                              .watch(
+                                                  currentPageMedicines.notifier)
+                                              .state = i + 1;
+                                        }),
+                                  ),
+                                )
                               ],
-                              rowsPerPage: 5,
-                              columns: const [
-                                DataColumn(label: Text('الرقم')),
-                                DataColumn(label: Text('الاسم')),
-                                DataColumn(label: Text('التركيز')),
-                                DataColumn(label: Text('المواد الفعالة')),
-                              ],
-                              source: DataSource(
-                                  context: context,
-                                  ref: ref,
-                                  rows: state.medicines),
                             )
-                          : CircularProgressIndicator(),
+                          : LoadingAnimationWidget.inkDrop(
+                              color: AppColors.black, size: 35),
                     ),
                   ),
                 ),

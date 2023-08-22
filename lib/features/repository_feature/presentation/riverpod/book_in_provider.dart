@@ -38,9 +38,11 @@ class BookInsNotifier extends StateNotifier<BookInsState> {
     state = _mapFailureOrBookInsToState(response);
   }
 
-  Future<void> createBookIn(BookIn bookIn) async {
+  Future<void> createBookIn(
+      String expirationDate, int price, int quantity, int productId) async {
     state = LoadingBookInsState();
-    final response = await repositoryImpl.createBookIn(bookIn);
+    final response = await repositoryImpl.createBookIn(
+        expirationDate, price, quantity, productId);
     state = _mapFailureOrMessageToState(response);
   }
 

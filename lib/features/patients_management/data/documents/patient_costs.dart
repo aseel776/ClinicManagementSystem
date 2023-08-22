@@ -1,31 +1,25 @@
 class PatientCostsDocsGql {
   static const String createCosts = '''
-            mutation CreatePatientCost {
-              createPatientCost(
-                createPatientCostInput: {
-                  amount: null,
-                  date: null,
-                  description: null,
-                  patient_id: null,
-                  treatment_id: null
-                }
-              ) {
-                amount
-                date
-                description
-                id
-                patient_id
-                treatment_id
-                treatment {
-                  color
-                  id
-                  name
-                  price
-                  treatment_type_id
-                }
-              }
-            }
-          ''';
+      mutation CreatePatientCost(\$input: CreatePatientCostInput!) {
+        createPatientCost(createPatientCostInput: \$input) {
+          amount
+          date
+          description
+          id
+          patient_id
+          treatment_id
+        }
+      }
+    ''';
+  //   variables: <String, dynamic>{
+  //   'input': {
+  //     'amount': amount,
+  //     'date': date,
+  //     'description': description,
+  //     'patient_id': patientId,
+  //     'treatment_id': treatmentId,
+  //   },
+  // },
 
   //       variables: <String, dynamic>{
   //   'amount': 100,
@@ -52,6 +46,9 @@ class PatientCostsDocsGql {
         item_per_page
         page
         totalPages
+         meta {
+            total
+           }
         items {
           amount
           date

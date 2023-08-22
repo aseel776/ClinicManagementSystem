@@ -1,12 +1,12 @@
 import 'package:intl/intl.dart';
 
 class PatientPayment {
-  final int id;
+   int? id;
   final String date;
   final int amount;
 
   PatientPayment({
-    required this.id,
+    this.id,
     required this.date,
     required this.amount,
   });

@@ -112,10 +112,10 @@ class _DiseaseListPageState extends ConsumerState<DiseaseListPage>
               const Divider(),
               Expanded(
                 child: ListView.builder(
-                  itemCount: disease.name.length,
+                  itemCount: disease.antiMaterials!.length,
                   itemBuilder: (context, index) {
                     return ListTile(
-                      title: Text(disease.name[index]),
+                      title: Text(disease.antiMaterials![index].name!),
                     );
                   },
                 ),
@@ -126,9 +126,14 @@ class _DiseaseListPageState extends ConsumerState<DiseaseListPage>
                   children: [
                     ElevatedButton(
                       onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(DeleteSnackBar(() async {
-                          await ref.watch(diseasesCrudProvider.notifier).deleteDisease(disease);
-                          await ref.watch(diseasesProvider.notifier).getPaginatedDiseases(8, 1);
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(DeleteSnackBar(() async {
+                          await ref
+                              .watch(diseasesCrudProvider.notifier)
+                              .deleteDisease(disease);
+                          await ref
+                              .watch(diseasesProvider.notifier)
+                              .getPaginatedDiseases(8, 1);
                           ref.watch(currentPageDiseases.notifier).state = 1;
                         }));
                       },
@@ -146,11 +151,14 @@ class _DiseaseListPageState extends ConsumerState<DiseaseListPage>
                     ElevatedButton(
                       onPressed: () async {
                         //active materials
-                        await ref.watch(activeMaterialsProvider.notifier)
+                        await ref
+                            .watch(activeMaterialsProvider.notifier)
                             .getAllMaterials(1, items: 10000);
-                        final stateActive = ref.watch(activeMaterialsProvider.notifier).state;
-                        ref.watch(multiSelect);
-                        ref.watch(diseaseName.notifier).state.text = disease.name;
+                        final stateActive =
+                            ref.watch(activeMaterialsProvider.notifier).state;
+                        // ref.watch(multiSelect);
+                        ref.watch(diseaseName.notifier).state.text =
+                            disease.name;
 
                         // TextEditingController notes = TextEditingController();
                         return showDialog(
@@ -164,8 +172,12 @@ class _DiseaseListPageState extends ConsumerState<DiseaseListPage>
                                         borderRadius: BorderRadius.circular(15),
                                       ),
                                       child: SizedBox(
-                                        width: MediaQuery.of(context).size.width * 0.4,
-                                        height: MediaQuery.of(context).size.height * 0.45,
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.4,
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.45,
                                         child: Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.center,
@@ -181,10 +193,16 @@ class _DiseaseListPageState extends ConsumerState<DiseaseListPage>
                                             Directionality(
                                               textDirection: TextDirection.rtl,
                                               child: SizedBox(
-                                                width: MediaQuery.of(context).size.width * 0.2,
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.2,
                                                 child: textfield(
                                                   "اسم المرض",
-                                                  ref.watch(diseaseName.notifier).state,
+                                                  ref
+                                                      .watch(
+                                                          diseaseName.notifier)
+                                                      .state,
                                                   "",
                                                   1,
                                                 ),
@@ -194,30 +212,61 @@ class _DiseaseListPageState extends ConsumerState<DiseaseListPage>
                                             StatefulBuilder(
                                                 builder: (context, setState) {
                                               return Directionality(
-                                                textDirection: TextDirection.rtl,
+                                                textDirection:
+                                                    TextDirection.rtl,
                                                 child: SizedBox(
-                                                    width: MediaQuery.of(context).size.width * 0.2,
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width *
+                                                            0.2,
                                                     child: GestureDetector(
                                                       onTap: () {
+                                                        ref
+                                                                .watch(multiSelect
+                                                                    .notifier)
+                                                                .state =
+                                                            disease
+                                                                .antiMaterials!;
+                                                        print("fffffffffffff");
+                                                        print(ref
+                                                            .watch(multiSelect
+                                                                .notifier)
+                                                            .state);
+                                                        print(disease
+                                                            .antiMaterials
+                                                            .toString());
                                                         antiMaterialsSelect(
                                                             context, ref);
                                                       },
                                                       child: Container(
-                                                        height: MediaQuery.of(context).size.height * 0.08,
-                                                        decoration: BoxDecoration(
+                                                        height: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .height *
+                                                            0.08,
+                                                        decoration:
+                                                            BoxDecoration(
                                                           color: Colors.white,
-                                                          borderRadius: BorderRadius.circular(15),
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(15),
                                                           border: Border.all(
                                                             color: Colors.grey,
                                                             width: 1,
                                                           ),
                                                         ),
-                                                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                                                        padding:
+                                                            const EdgeInsets
+                                                                    .symmetric(
+                                                                horizontal: 12),
                                                         child: const Row(
                                                           children: [
                                                             Icon(
-                                                              Icons.arrow_drop_down_circle_outlined,
-                                                              color: Colors.black54,
+                                                              Icons
+                                                                  .arrow_drop_down_circle_outlined,
+                                                              color: Colors
+                                                                  .black54,
                                                             ),
                                                             SizedBox(width: 8),
                                                             Text(
@@ -225,7 +274,9 @@ class _DiseaseListPageState extends ConsumerState<DiseaseListPage>
                                                               style: TextStyle(
                                                                 color: Colors
                                                                     .black54,
-                                                                fontWeight: FontWeight.w600,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w600,
                                                               ),
                                                             )
                                                           ],
@@ -244,10 +295,20 @@ class _DiseaseListPageState extends ConsumerState<DiseaseListPage>
                                                   0.08,
                                               child: ElevatedButton(
                                                   onPressed: () async {
-                                                    List<ActiveMaterialModel>? a = ref.watch(multiSelect.notifier).state.cast<ActiveMaterialModel>();
+                                                    List<ActiveMaterialModel>?
+                                                        a = ref
+                                                            .watch(multiSelect
+                                                                .notifier)
+                                                            .state
+                                                            .cast<
+                                                                ActiveMaterialModel>();
                                                     Disease diseaseNew = Disease(
                                                         id: disease.id,
-                                                        name: ref.watch(diseaseName.notifier).state.text,
+                                                        name: ref
+                                                            .watch(diseaseName
+                                                                .notifier)
+                                                            .state
+                                                            .text,
                                                         antiMaterials: a);
                                                     await ref
                                                         .watch(
@@ -473,7 +534,9 @@ class _DiseaseListPageState extends ConsumerState<DiseaseListPage>
   }
 
   void antiMaterialsSelect(BuildContext context, WidgetRef ref) async {
-    await ref.watch(activeMaterialsProvider.notifier).getAllMaterials(1, items: 10000);
+    await ref
+        .watch(activeMaterialsProvider.notifier)
+        .getAllMaterials(1, items: 10000);
     final stateActive = ref.watch(activeMaterialsProvider.notifier).state;
     // material.antiMaterials ??= [];
     // List<String>? originalOne = material.antiMaterials!.toList();
@@ -539,13 +602,16 @@ class _DiseaseListPageState extends ConsumerState<DiseaseListPage>
                       child: ListView.builder(
                         itemCount: materials.length,
                         itemBuilder: (context, index) {
+                          // ref.watch(multiSelect);
                           return CheckboxListTile(
                             value: ref
                                 .watch(multiSelect.notifier)
-                                .state!
+                                .state
                                 .any((element) => element == materials[index]),
                             onChanged: (value) {
                               setState(() {
+                                print("valueeeee");
+                                print(value);
                                 if (value!) {
                                   ActiveMaterialModel selected1 =
                                       materials[index] as ActiveMaterialModel;
@@ -553,13 +619,13 @@ class _DiseaseListPageState extends ConsumerState<DiseaseListPage>
                                   if (selected1.name! != "" &&
                                       !ref
                                           .watch(multiSelect.notifier)
-                                          .state!
+                                          .state
                                           .any((element) =>
                                               element == selected1)) {
                                     print(value.toString() + "addeddd");
 
                                     List list =
-                                        ref.watch(multiSelect.notifier).state!;
+                                        ref.watch(multiSelect.notifier).state;
 
                                     list.add(selected1);
                                     ref.read(multiSelect.notifier).state =
@@ -579,7 +645,7 @@ class _DiseaseListPageState extends ConsumerState<DiseaseListPage>
                                   //       list.toList();
                                   // }
                                 } else if (!value &&
-                                    ref.watch(multiSelect.notifier).state!.any(
+                                    ref.watch(multiSelect.notifier).state.any(
                                         (element) =>
                                             element == materials[index])) {
                                   print(value.toString() + "removed");
@@ -587,7 +653,7 @@ class _DiseaseListPageState extends ConsumerState<DiseaseListPage>
                                       materials[index] as ActiveMaterialModel?;
 
                                   List list =
-                                      ref.watch(multiSelect.notifier).state!;
+                                      ref.watch(multiSelect.notifier).state;
 
                                   list.remove(selected1);
                                   ref.read(multiSelect.notifier).state =

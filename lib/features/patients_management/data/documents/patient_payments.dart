@@ -1,17 +1,35 @@
 class PatientPaymentsDocsGql {
   static const String createPaymentmutation = '''
-    mutation CreatePatientPayment(\$amount: Float!, \$date: String!, \$description: String!, \$patient_id: Int!) {
+    mutation CreatePatientPayment(\$amount: Float!, \$date: DateTime!,  \$patient_id: Int!) {
       createPatientPayment(
-          createPatientPaymentInput: {amount: \$amount, date: \$date, description: \$description, patient_id: \$patient_id}
+          createPatientPaymentInput: {amount: \$amount, date: \$date, patient_id: \$patient_id}
       ) {
           amount
           date
-          description
           id
           patient_id
       }
     }
   ''';
+  static const String createPaymentmutation1 = '''
+      mutation CreatePatientPayment(\$input: CreatePatientPaymentInput!) {
+        createPatientPayment(createPatientPaymentInput: \$input) {
+          amount
+          date
+        
+          id
+          patient_id
+        }
+      }
+    ''';
+  //  variables: <String, dynamic>{
+  //   'input': {
+  //     'amount': amount,
+  //     'date': date,
+  //     'description': description,
+  //     'patient_id': patientId,
+  //   },
+  // },
 
   //   final MutationOptions options = MutationOptions(
   //   document: gql(mutation),
@@ -40,6 +58,9 @@ class PatientPaymentsDocsGql {
           item_per_page
           page
           totalPages
+           meta {
+            total
+           }
           items {
             amount
             date

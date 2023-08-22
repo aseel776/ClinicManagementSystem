@@ -6,18 +6,20 @@ class PatientDiseases extends Equatable {
   int? id;
   String? date;
   Disease? disease;
+  String? notes;
   bool? controlled;
 
-  PatientDiseases({this.id, this.date, this.disease, this.controlled});
+  PatientDiseases(
+      {this.id, this.date, this.disease, this.notes, this.controlled});
 
   factory PatientDiseases.fromJson(Map<String, dynamic> json) {
     final diseaseJson = json['disease'];
 
     return PatientDiseases(
-      id: json['disease_id'],
-      date: json['date'],
-      disease: diseaseJson != null ? Disease.fromJson(diseaseJson) : null,
-    );
+        id: json['disease_id'],
+        date: json['start_date'],
+        disease: diseaseJson != null ? Disease.fromJson(diseaseJson) : null,
+        notes: json['notes']);
   }
 
   Map<String, dynamic> toJson() {

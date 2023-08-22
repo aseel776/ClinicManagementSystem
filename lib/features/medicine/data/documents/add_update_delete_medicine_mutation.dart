@@ -1,72 +1,59 @@
 class MedicineMutationDocsGql {
   //this is just exmaple query
   static const addMedicine = '''
-  mutation CreateMedicine(\$categoryId: Int!, \$concentration: Float!, \$name: String!, \$chemicalMaterialIds: [Int!]!) {
-    createMedicine(
-      createMedicineInput: {
-        category_id: \$categoryId
-        concentration: \$concentration
-        name: \$name
-        chemical_material_id: \$chemicalMaterialIds
-      }
-    ) {
-      category_id
-      concentration
-      id
-      name
-      chemical_material_id
-    }
-  }
-''';
-  static const editMedicine = '''
-    query getOrder(\$id: ID!) {
-      order(id: \$id) {
-        id
-        deliveryFee
-        total
-        created_at
-        store {
+      mutation CreateMedicine(\$createMedicineInput: CreateMedicineInput!) {
+        createMedicine(createMedicineInput: \$createMedicineInput) {
+          category_id
+          concentration
           id
           name
         }
-        payment_type {
+      }
+    ''';
+
+  //    variables: {
+  //   'createMedicineInput': {
+  //     'category_id': categoryId,
+  //     'chemical_material_id': chemicalMaterialIds,
+  //     'concentration': concentration,
+  //     'name': name,
+  //   },
+  // },
+
+  static const editMedicine = '''
+      mutation UpdateMedicine(
+        \$id: Float!,
+        \$updateMedicineInput: UpdateMedicineInput!
+      ) {
+        updateMedicine(
+          id: \$id,
+          updateMedicineInput: \$updateMedicineInput
+        ) {
+          category_id
+          concentration
+          id
           name
         }
-        order_items {
-          product {
-            name
-          }
-          quantity
-          price_unit
-          price
-        }
       }
-    }
-  ''';
+    ''';
+  //    variables: {
+  //   'id': medicineId,
+  //   'updateMedicineInput': {
+  //     'category_id': categoryId,
+  //     'chemical_material_id': chemicalMaterialIds,
+  //     'concentration': concentration,
+  //     'name': name,
+  //   },
+  // },
 
   static const deleteMedicine = '''
-    query getOrder(\$id: ID!) {
-      order(id: \$id) {
-        id
-        deliveryFee
-        total
-        created_at
-        store {
+      mutation RemoveMedicine(\$id: Int!) {
+        removeMedicine(id: \$id) {
+          category_id
+          concentration
           id
           name
         }
-        payment_type {
-          name
-        }
-        order_items {
-          product {
-            name
-          }
-          quantity
-          price_unit
-          price
-        }
       }
-    }
-  ''';
+    ''';
 }

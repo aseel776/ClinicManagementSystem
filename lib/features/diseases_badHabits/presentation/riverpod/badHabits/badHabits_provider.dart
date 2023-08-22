@@ -47,6 +47,14 @@ class BadHabitsNotifier extends StateNotifier<BadHabitsState> {
     state = _mapFailureOrBadHabitsToState(response);
   }
 
+  Future<void> getPaginatedSearchBadHabits(
+      double itemPerPage, double page, String search) async {
+    state = LoadingBadHabitsState();
+    final response = await repositoryImpl.getPaginatedSearchBadHabits(
+        itemPerPage, page, search);
+    state = _mapFailureOrBadHabitsToState(response);
+  }
+
   BadHabitsState _mapFailureOrBadHabitsToState(
       Either<Failure, BadHabitsTable> either) {
     return either.fold(

@@ -1,17 +1,17 @@
 class PatientMedicineDocsGql {
-  static const String createPatientMedicineMutation = r'''
+  static const String createPatientMedicineMutation = '''
   mutation CreatePatientMedicine(
-    $medicine_id: Int!,
-    $notes: String!,
-    $patient_id: Int!,
-    $start_date: String!
+    \$medicine_id: Int!,
+    \$notes: String!,
+    \$patient_id: Int!,
+    \$start_date: !
   ) {
     createPatientMedicine(
       createPatientMedicineInput: {
-        medicine_id: $medicine_id,
-        notes: $notes,
-        patient_id: $patient_id,
-        start_date: $start_date
+        medicine_id: \$medicine_id,
+        notes: \$notes,
+        patient_id: \$patient_id,
+        start_date: \$start_date
       }
     ) {
       id
