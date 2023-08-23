@@ -8,20 +8,23 @@ import '../states/types/problem_type_state.dart';
 import '../states/types/problem_type_provider.dart';
 
 class ProblemsMainSection extends StatelessWidget {
-  final double sectionWidth;
-  const ProblemsMainSection({Key? key, required this.sectionWidth}) : super(key: key);
+  // final double sectionWidth;
+  const ProblemsMainSection({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.sizeOf(context).width;
-    double screenHeight = MediaQuery.sizeOf(context).height;
+    double sectionWidth = screenWidth * .73;
+    double screenHeight = MediaQuery.sizeOf(context).height * .93;
 
-    return Scaffold(
-      //row and scaffold to be removed
-      body: SingleChildScrollView(
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: screenWidth * .025,
+      ),
+      child: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: screenHeight * .125),
+            SizedBox(height: screenHeight * .025),
             Consumer(
               builder: (context, ref, child) {
                 return Row(
@@ -88,9 +91,11 @@ class ProblemsMainSection extends StatelessWidget {
                       onPressed: () async {
                         final tempState = ref.watch(problemTypesProvider);
                         if (tempState is LoadedProblemTypesState) {
-                          await showUpsertProblemPopUp(context, tempState.types);
+                          await showUpsertProblemPopUp(
+                              context, tempState.types);
                         } else {
-                          await ref.read(problemTypesProvider.notifier).getAllTypes();
+                          await ref.read(problemTypesProvider.notifier)
+                              .getAllTypes();
                         }
                       },
                       child: Row(
@@ -110,7 +115,7 @@ class ProblemsMainSection extends StatelessWidget {
                         ],
                       ),
                     ),
-                    const Expanded(child: SizedBox()),
+                    SizedBox(width: sectionWidth * .05),
                     MaterialButton(
                       height: screenHeight * .08,
                       minWidth: sectionWidth * .15,

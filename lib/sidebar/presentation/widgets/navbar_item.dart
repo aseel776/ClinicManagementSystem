@@ -163,6 +163,7 @@ class _NavBarItemState extends ConsumerState<NavBarItem>
                           style: TextStyle(
                             color: _color!.value,
                             fontSize: 18.0,
+                            fontFamily: 'Cairo',
                           ),
                         ),
                         const SizedBox(

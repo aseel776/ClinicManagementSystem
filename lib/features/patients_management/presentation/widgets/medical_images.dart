@@ -41,22 +41,22 @@ class MedicalImagesScreen extends ConsumerStatefulWidget {
 class _MedicalImagesScreenState extends ConsumerState<MedicalImagesScreen> {
   File? _pickedFile; // Change PlatformFile to File
 
-  Future<void> pickAndUploadFile() async {
-    ref.watch(resultProvider.notifier).state =
-        await FilePicker.platform.pickFiles();
-    // FilePickerResult? result = await FilePicker.platform.pickFiles();
-    // result!.files.single.path;
-
-    if (ref.watch(resultProvider.notifier).state != null) {
-      PlatformFile file = ref.watch(resultProvider.notifier).state.files.first;
-      String filePath = file.path!;
-
-      // uploadFile(filePath);
-    } else {
-      // User canceled the file picker
-      print('File selection canceled.');
-    }
-  }
+  // Future<void> pickAndUploadFile() async {
+  //   ref.watch(resultProvider.notifier).state =
+  //       await FilePicker.platform.pickFiles();
+  //   // FilePickerResult? result = await FilePicker.platform.pickFiles();
+  //   // result!.files.single.path;
+  //
+  //   if (ref.watch(resultProvider.notifier).state != null) {
+  //     PlatformFile file = ref.watch(resultProvider.notifier).state.files.first;
+  //     String filePath = file.path!;
+  //
+  //     // uploadFile(filePath);
+  //   } else {
+  //     // User canceled the file picker
+  //     print('File selection canceled.');
+  //   }
+  // }
 
   // Future<void> uploadPatientMedicalImage() async {
   //   FilePickerResult? result = await FilePicker.platform.pickFiles();

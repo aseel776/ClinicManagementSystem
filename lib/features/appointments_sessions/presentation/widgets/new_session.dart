@@ -4,7 +4,6 @@ import 'package:clinic_management_system/features/appointments_sessions/data/mod
 import 'package:clinic_management_system/features/appointments_sessions/presentation/states/patient_treatments/patient_treatments_provider.dart';
 import 'package:clinic_management_system/features/appointments_sessions/presentation/states/patient_treatments/patient_treatments_state.dart';
 import 'package:clinic_management_system/features/appointments_sessions/presentation/widgets/ongoing_treatment.dart';
-
 import 'package:clinic_management_system/features/appointments_sessions/presentation/widgets/select_treatment.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -23,13 +22,12 @@ class NewSession extends ConsumerStatefulWidget {
 }
 
 class _NewSessionState extends ConsumerState<NewSession> {
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      ref
-          .read(patientTreatmentsProvider.notifier)
-          .getOngoingTreatments(widget.app.patient!.id!);
+      ref.read(patientTreatmentsProvider.notifier).getOngoingTreatments(widget.app.patient!.id!);
     });
   }
 
@@ -120,8 +118,7 @@ class _NewSessionState extends ConsumerState<NewSession> {
                     ),
                     MaterialButton(
                       onPressed: () async {
-                        await selectTreatment(
-                            context, ref, widget.app.patient!.id!);
+                        await selectTreatment(context, ref, widget.app.patient!.id!);
                       },
                       color: AppColors.black,
                       shape: RoundedRectangleBorder(
@@ -202,7 +199,7 @@ class _NewSessionState extends ConsumerState<NewSession> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             MaterialButton(
-                              onPressed: () async {
+                              onPressed: () async{
                                 // pres = await createPres(context, ref);
                               },
                               color: AppColors.black,

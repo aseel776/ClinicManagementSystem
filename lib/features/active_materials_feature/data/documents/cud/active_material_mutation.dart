@@ -7,10 +7,6 @@ class ActiveMaterialMutation{
     ) {
         id
         name
-        conflicts {
-            id
-            name
-        }
     }
   }
   ''';
@@ -23,10 +19,6 @@ class ActiveMaterialMutation{
     ) {
         id
         name
-        conflicts {
-            id
-            name
-        }
     }
   }
   ''';

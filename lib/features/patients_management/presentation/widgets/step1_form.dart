@@ -69,7 +69,7 @@ class Step1Form extends ConsumerWidget {
                               textFieldController:
                                   ref.watch(phoneNumber.notifier).state,
                               textStyle:
-                                  const TextStyle(color: AppColors.black),
+                                  const TextStyle(color: AppColors.black, fontFamily: 'Cairo'),
                               inputDecoration: const InputDecoration(
                                   hintText: "رقم الهاتف",
                                   hintStyle: TextStyle(height: 0),

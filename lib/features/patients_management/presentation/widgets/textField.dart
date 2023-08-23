@@ -24,7 +24,8 @@ Widget textfield(String hint, TextEditingController controller,
       // hintMaxLines: 7,
       // helperMaxLines: 7,
       hintStyle:
-          const TextStyle(color: Colors.black54, fontWeight: FontWeight.w600),
+          const TextStyle(color: Colors.black54, fontWeight: FontWeight.w600,
+              fontFamily: 'Cairo'),
       enabledBorder: OutlineInputBorder(
         borderSide: const BorderSide(width: 1, color: Colors.grey),
         borderRadius: BorderRadius.circular(15),
