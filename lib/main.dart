@@ -57,7 +57,7 @@ class MainPage1 extends ConsumerWidget {
               Padding(
                 padding: EdgeInsets.only(right: 20.0),
                 child: PrimaryText(
-                  text: "مرحباً د.إحسان",
+                  text: "مرحباً د.حسان",
                 ),
               )
             ],

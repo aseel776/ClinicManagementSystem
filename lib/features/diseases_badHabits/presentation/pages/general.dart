@@ -35,9 +35,7 @@ class _GeneralState extends State<General> with SingleTickerProviderStateMixin {
     ),
     ContentView(
       tab: CustomTab(title: 'مشاكل الأسنان'),
-      content: ProblemsMainSection(
-        sectionWidth: 720,
-      ),
+      content: ProblemsMainSection(),
     )
   ];
 
