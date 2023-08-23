@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import '../../../data/models/pres_input_model.dart';
 
 abstract class PrescriptionState extends Equatable {
   @override
@@ -11,12 +10,17 @@ class InitPrescriptionState extends PrescriptionState {}
 class LoadingPrescriptionState extends PrescriptionState {}
 
 class LoadedPrescriptionState extends PrescriptionState {
-  late final List<PrescriptionInput> meds;
+  // late final List<PrescriptionInput> meds;
+  // late final List<String> conflicts;
+  //
+  // LoadedPrescriptionState({required this.meds, required this.conflicts});
 
-  LoadedPrescriptionState({required this.meds});
+  late final List<String> conflicts;
+
+  LoadedPrescriptionState({required this.conflicts});
 
   @override
-  List<Object> get props => [meds];
+  List<Object> get props => [conflicts];
 }
 
 class ErrorPrescriptionState extends PrescriptionState {

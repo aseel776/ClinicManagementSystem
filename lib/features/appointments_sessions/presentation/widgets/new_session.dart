@@ -6,6 +6,7 @@ import 'package:clinic_management_system/features/appointments_sessions/presenta
 import 'package:clinic_management_system/features/appointments_sessions/presentation/widgets/ongoing_treatment.dart';
 import 'package:clinic_management_system/features/appointments_sessions/presentation/widgets/select_treatment.dart';
 import 'package:flutter/material.dart';
+import '../widgets/prescription.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import './/core/app_colors.dart';
 
@@ -200,7 +201,7 @@ class _NewSessionState extends ConsumerState<NewSession> {
                           children: [
                             MaterialButton(
                               onPressed: () async{
-                                // pres = await createPres(context, ref);
+                                pres = await createPres(context, ref, widget.app.patient!.id!);
                               },
                               color: AppColors.black,
                               shape: RoundedRectangleBorder(

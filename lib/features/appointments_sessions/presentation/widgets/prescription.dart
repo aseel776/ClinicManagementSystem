@@ -3,6 +3,8 @@
 import 'package:clinic_management_system/core/app_colors.dart';
 import 'package:clinic_management_system/core/customs.dart';
 import 'package:clinic_management_system/features/appointments_sessions/data/models/pres_input_model.dart';
+import 'package:clinic_management_system/features/appointments_sessions/presentation/states/pres/pres_provider.dart';
+import 'package:clinic_management_system/features/appointments_sessions/presentation/states/pres/pres_state.dart';
 import 'package:clinic_management_system/features/medicine/data/model/medicine_model.dart';
 import 'package:clinic_management_system/features/medicine/presentation/riverpod/medicines/medicines_provider.dart';
 import 'package:clinic_management_system/features/medicine/presentation/riverpod/medicines/medicines_state.dart';
@@ -145,62 +147,85 @@ Future<List<PrescriptionInput>> createPres(BuildContext context, WidgetRef ref, 
                         ),
                     ),
                     SizedBox(
+                        height: height * .1,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            MaterialButton(
+                              onPressed: () async {
+                                Navigator.of(context).pop();
+                              },
+                              color: AppColors.black,
+                              child: const Text(
+                                'حفظ',
+                                style: TextStyle(
+                                  fontFamily: 'Cairo',
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: width * .025),
+                            MaterialButton(
+                              onPressed: () async {
+                                final temp = await selectMed(context, ref);
+                                if (temp != null) {
+                                  setState(() {
+                                    meds.add(temp);
+                                  },);
+                                }
+                              },
+                              color: AppColors.black,
+                              child: const Text(
+                                'إضافة',
+                                style: TextStyle(
+                                  fontFamily: 'Cairo',
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: width * .025),
+                            MaterialButton(
+                              onPressed: () async {
+                                Navigator.of(context).pop();
+                                meds.clear();
+                              },
+                              color: AppColors.black,
+                              child: const Text(
+                                'إلغاء',
+                                style: TextStyle(
+                                  fontFamily: 'Cairo',
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                          ],
+                        )
+                    ),
+                    SizedBox(height: height * .025),
+                    MaterialButton(
                       height: height * .1,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          MaterialButton(
-                            onPressed: () async {
-
-                            },
-                            color: AppColors.black,
-                            child: const Text(
-                              'تحقق',
-                              style: TextStyle(
-                                fontFamily: 'Cairo',
-                                color: Colors.white,
-                                fontSize: 16,
-                              ),
-                            ),
-                          ),
-                          SizedBox(width: width * .025),
-                          MaterialButton(
-                            onPressed: () async{
-                              final temp = await selectMed(context, ref);
-                              if(temp != null){
-                                setState(() {
-                                  meds.add(temp);
-                                },);
-                              }
-                            },
-                            color: AppColors.black,
-                            child: const Text(
-                              'إضافة',
-                              style: TextStyle(
-                                fontFamily: 'Cairo',
-                                color: Colors.white,
-                                fontSize: 16,
-                              ),
-                            ),
-                          ),
-                          SizedBox(width: width * .025),
-                          MaterialButton(
-                            onPressed: () async {
-                              Navigator.of(context).pop();
-                              meds.clear();
-                            },
-                            color: AppColors.black,
-                            child: const Text(
-                              'إلغاء',
-                              style: TextStyle(
-                                fontFamily: 'Cairo',
-                                color: Colors.white,
-                                fontSize: 16,
-                              ),
-                            ),
-                          ),
-                        ],
-                      )
+                      minWidth: width * .2,
+                      onPressed: () async{
+                        if (meds.isNotEmpty){
+                          List<int> medsIds = meds.map((e) => e.medicineId!).toList();
+                          await ref.read(presProvider.notifier).getConflicts(medsIds, patientId);
+                          showConflicts(context, ref);
+                        }
+                      },
+                      color: AppColors.lightGreen,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: const Text(
+                        'تحقق من التعارضات',
+                        style: TextStyle(
+                          fontFamily: 'Cairo',
+                          fontSize: 16,
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -480,4 +505,78 @@ Future<PrescriptionInput?> selectMed(BuildContext context, WidgetRef ref, {Presc
   }else{
     return null;
   }
+}
+
+Future<void> showConflicts(BuildContext context, WidgetRef ref) async{
+  final state = ref.watch(presProvider);
+
+  await showDialog(
+    context: context,
+    builder: (context) {
+      final screenH = MediaQuery.of(context).size.height;
+      final height = screenH * .3;
+      final screenW = MediaQuery.of(context).size.width;
+      final width = screenW * .4;
+      return Directionality(
+        textDirection: TextDirection.rtl,
+        child: AlertDialog(
+        title: const Text(
+          'التعارضات الدوائية',
+          style: TextStyle(
+            fontFamily: 'Cairo',
+            fontSize: 22,
+          ),
+        ),
+        titlePadding: EdgeInsets.symmetric(
+          horizontal: width * .05,
+          vertical: height * .03,
+        ),
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: width * .075,
+        ),
+        actions: [
+          MaterialButton(
+            onPressed: () => Navigator.of(context).pop(),
+            color: AppColors.black,
+            height: height * .15,
+            minWidth: width * .15,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(5),
+            ),
+            child: const Text(
+              'إغلاق',
+              style: TextStyle(
+                fontSize: 14,
+                fontFamily: 'Cairo',
+                fontWeight: FontWeight.w300,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ],
+        actionsAlignment: MainAxisAlignment.center,
+        content: SizedBox(
+          height: height,
+          width: width,
+          child: state is LoadedPrescriptionState
+              ? ListView.builder(
+            itemCount: state.conflicts.length,
+            itemBuilder: (context, index) {
+            return Text(
+              '${index + 1}- ${state.conflicts[index]}',
+              style: const TextStyle(
+                fontFamily: 'Cairo',
+                fontSize: 18,
+              ),
+            );
+          },
+          )
+              : state is LoadingPrescriptionState
+              ? Container(color: Colors.yellow)
+              : Container(color: Colors.red),
+        ),
+      ),
+      );
+    },
+  );
 }
