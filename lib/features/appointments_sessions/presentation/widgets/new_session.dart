@@ -1,8 +1,10 @@
 import 'package:clinic_management_system/features/appointments_sessions/data/models/appointment_model.dart';
+import 'package:clinic_management_system/features/appointments_sessions/data/models/patient_lab_order.dart';
 import 'package:clinic_management_system/features/appointments_sessions/data/models/pres_input_model.dart';
 import 'package:clinic_management_system/features/appointments_sessions/data/models/sessionInputModel.dart';
 import 'package:clinic_management_system/features/appointments_sessions/presentation/states/patient_treatments/patient_treatments_provider.dart';
 import 'package:clinic_management_system/features/appointments_sessions/presentation/states/patient_treatments/patient_treatments_state.dart';
+import 'package:clinic_management_system/features/appointments_sessions/presentation/widgets/lab_order.dart';
 import 'package:clinic_management_system/features/appointments_sessions/presentation/widgets/ongoing_treatment.dart';
 import 'package:clinic_management_system/features/appointments_sessions/presentation/widgets/select_treatment.dart';
 import 'package:flutter/material.dart';
@@ -34,6 +36,7 @@ class _NewSessionState extends ConsumerState<NewSession> {
 
   List<SessionInputModel> allWork = [];
   List<PrescriptionInput> pres = [];
+  PatientLabOrderModel? order;
 
   @override
   Widget build(BuildContext context) {
@@ -221,8 +224,8 @@ class _NewSessionState extends ConsumerState<NewSession> {
                             ),
                             SizedBox(height: screenHeight * .025),
                             MaterialButton(
-                              onPressed: () {
-                                //open pop up
+                              onPressed: () async{
+                                order = await placeOrder(context, ref, widget.app.patient!.id!);
                               },
                               color: AppColors.black,
                               shape: RoundedRectangleBorder(
