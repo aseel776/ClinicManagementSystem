@@ -2,6 +2,7 @@ import 'package:clinic_management_system/features/appointments_sessions/presenta
 import 'package:clinic_management_system/features/appointments_sessions/presentation/widgets/upsert_appointment.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import './/core/app_colors.dart';
 import '../states/control_states.dart';
 import '../../data/models/appointment_model.dart';
@@ -23,64 +24,67 @@ class AppointmentsTable extends ConsumerStatefulWidget {
 }
 
 class _AppointmentsTableState extends ConsumerState<AppointmentsTable> {
-
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) async{
-      await ref.read(appointmentsProvider.notifier).getAllAppointments(ref.read(selectedDate).toString());
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await ref
+          .read(appointmentsProvider.notifier)
+          .getAllAppointments(ref.read(selectedDate).toString());
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
-
     final state = ref.watch(appointmentsProvider);
 
     return SizedBox(
       width: widget.tableWidth,
       height: widget.tableHeight,
       child: state is LoadedAppointmentsState
-          ? Padding(
-            padding: EdgeInsets.only(
-              top: widget.tableHeight * .05,
-              left: widget.tableWidth * .025,
-              right: widget.tableWidth * .025,
-            ),
-            child: SingleChildScrollView(
-              child: DataTable(
-                columnSpacing: 0,
-                horizontalMargin: widget.tableWidth * .025,
-                columns: [
-                  DataColumn(label: createTimeLabel('التوقيت')),
-                  DataColumn(label: createPatientLabel('المريض')),
-                  DataColumn(label: createPlace('مكان العلاج')),
-                  DataColumn(label: createPhase('المرحلة')),
-                  // DataColumn(label: createText('ملاحظات')),
-                  DataColumn(label: createText('العمليات')),
-                ],
-                rows: [
-                  ...state.page.appointments!.map((e) => createTableRecord(e)).toList()
-                ],
-              ),
-            ),
-          )
+          ? (state is LoadingAppointmentsState)
+              ? LoadingAnimationWidget.inkDrop(color: AppColors.black, size: 35)
+              : Padding(
+                  padding: EdgeInsets.only(
+                    top: widget.tableHeight * .05,
+                    left: widget.tableWidth * .025,
+                    right: widget.tableWidth * .025,
+                  ),
+                  child: SingleChildScrollView(
+                    child: DataTable(
+                      columnSpacing: 0,
+                      horizontalMargin: widget.tableWidth * .025,
+                      columns: [
+                        DataColumn(label: createTimeLabel('التوقيت')),
+                        DataColumn(label: createPatientLabel('المريض')),
+                        DataColumn(label: createPlace('مكان العلاج')),
+                        DataColumn(label: createPhase('المرحلة')),
+                        // DataColumn(label: createText('ملاحظات')),
+                        DataColumn(label: createText('العمليات')),
+                      ],
+                      rows: [
+                        ...state.page.appointments!
+                            .map((e) => createTableRecord(e))
+                            .toList()
+                      ],
+                    ),
+                  ),
+                )
           : state is LoadingAppointmentsState
-          ? Container(color: Colors.yellow)
-          : Container(color: Colors.red),
+              ? Container(color: Colors.yellow)
+              : Container(color: Colors.red),
     );
   }
 
-  createTableRecord(AppointmentModel app){
+  createTableRecord(AppointmentModel app) {
     Color rowColor;
-    switch(app.type){
+    switch (app.type) {
       case "normal":
         rowColor = Colors.lightGreen[200]!.withOpacity(.3);
         break;
       case "emergency":
-         rowColor = Colors.red[200]!.withOpacity(.3);
-         break;
+        rowColor = Colors.red[200]!.withOpacity(.3);
+        break;
       case "waiting":
         rowColor = Colors.orange[200]!.withOpacity(.3);
         break;
@@ -103,34 +107,34 @@ class _AppointmentsTableState extends ConsumerState<AppointmentsTable> {
     );
   }
 
-  createTimeLabel(String date){
+  createTimeLabel(String date) {
     return SizedBox(
       width: widget.tableWidth * .075,
       child: createText(date),
     );
   }
 
-  createPatientLabel(String patient){
+  createPatientLabel(String patient) {
     return SizedBox(
       width: widget.tableWidth * .2,
       child: createText(patient),
     );
   }
 
-  createPlace(String place){
+  createPlace(String place) {
     return SizedBox(
       width: widget.tableWidth * .125,
       child: createText(place),
     );
   }
 
-  createPhase(String phase){
+  createPhase(String phase) {
     return SizedBox(
       width: widget.tableWidth * .1,
       child: createText(phase),
     );
   }
-  
+
   // createNotes(String notes){
   //   return SizedBox(
   //     width: widget.tableWidth * .2,
@@ -146,14 +150,15 @@ class _AppointmentsTableState extends ConsumerState<AppointmentsTable> {
   //   );
   // }
 
-  createButtons(AppointmentModel app){
+  createButtons(AppointmentModel app) {
     return SizedBox(
       width: widget.tableWidth * .35,
       child: Row(
         children: [
           MaterialButton(
-            onPressed: (){
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => NewSession(app: app)));
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => NewSession(app: app)));
             },
             minWidth: widget.tableWidth * .1,
             color: AppColors.black,
@@ -171,8 +176,9 @@ class _AppointmentsTableState extends ConsumerState<AppointmentsTable> {
           ),
           SizedBox(width: widget.tableWidth * .025),
           MaterialButton(
-            onPressed: () async{
-              await showUpsertAppointment(context: context, ref: ref, type: app.type!, app: app);
+            onPressed: () async {
+              await showUpsertAppointment(
+                  context: context, ref: ref, type: app.type!, app: app);
             },
             minWidth: widget.tableWidth * .1,
             color: AppColors.black,
@@ -190,9 +196,13 @@ class _AppointmentsTableState extends ConsumerState<AppointmentsTable> {
           ),
           SizedBox(width: widget.tableWidth * .025),
           MaterialButton(
-            onPressed: () async{
-              await ref.read(appointmentsProvider.notifier).deleteMaterial(app.id!);
-              await ref.read(appointmentsProvider.notifier).getAllAppointments(ref.read(selectedDate).toString());
+            onPressed: () async {
+              await ref
+                  .read(appointmentsProvider.notifier)
+                  .deleteMaterial(app.id!);
+              await ref
+                  .read(appointmentsProvider.notifier)
+                  .getAllAppointments(ref.read(selectedDate).toString());
             },
             minWidth: widget.tableWidth * .1,
             color: AppColors.black,

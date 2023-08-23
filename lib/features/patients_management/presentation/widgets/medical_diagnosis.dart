@@ -1,16 +1,23 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 import 'dart:ui';
 
 import 'package:clinic_management_system/features/patients_management/data/models/patient_diagnosis.dart';
 import 'package:clinic_management_system/features/patients_management/presentation/riverpod/create_patient_provider.dart';
 import 'package:clinic_management_system/features/patients_management/presentation/riverpod/patient_crud_state.dart';
+import 'package:clinic_management_system/features/treatments_feature/data/models/treatment_model.dart';
+import 'package:clinic_management_system/features/treatments_feature/presentation/states/treatments/treatments_provider.dart';
+import 'package:clinic_management_system/features/treatments_feature/presentation/states/treatments/treatments_state.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:searchfield/searchfield.dart';
 
 import '../../../../core/app_colors.dart';
 import '../../../../core/primaryText.dart';
 import '../../../../core/textField.dart';
+
 import '../../data/models/patient.dart';
 import '../pages/patient_profile.dart';
 import '../riverpod/patients_provider.dart';
@@ -424,6 +431,10 @@ class _MedicalDiagnosisScreenState
       bool addOrEdit, int? productIndex) async {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
+    final treatments =
+        await ref.watch(treatmentsProvider.notifier).getAllTreatments();
+    final state = ref.watch(treatmentsProvider.notifier).state;
+    TreatmentModel currentTreatment = TreatmentModel();
 
     return showDialog(
         context: context,
@@ -451,6 +462,40 @@ class _MedicalDiagnosisScreenState
                         const SizedBox(
                           height: 20,
                         ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.2,
+                          child: SearchField(
+                              hint: 'Search',
+                              searchInputDecoration: InputDecoration(
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: const BorderSide(
+                                      width: 2, color: Colors.grey),
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: const BorderSide(
+                                      width: 1, color: Colors.grey),
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                              ),
+                              maxSuggestionsInViewPort: 6,
+                              itemHeight: 50,
+                              onSuggestionTap: (p0) {
+                                currentTreatment = p0.item as TreatmentModel;
+                              },
+                              suggestionsDecoration: SuggestionDecoration(
+                                  color: AppColors.lightGreen,
+                                  borderRadius: BorderRadius.circular(10),
+                                  padding: EdgeInsets.all(10)),
+                              suggestions: (state is LoadedTreatmentsState)
+                                  ? List.generate(
+                                      state.page.treatments!.length,
+                                      (index) => SearchFieldListItem(
+                                          state.page.treatments![index].name!,
+                                          item: state.page.treatments![index]))
+                                  : []),
+                        ),
+                        const SizedBox(height: 20),
                         SizedBox(
                           width: screenWidth * 0.2,
                           child: textfield(
@@ -484,12 +529,7 @@ class _MedicalDiagnosisScreenState
                                       place:
                                           ref.watch(place.notifier).state.text,
                                       patientId: widget.patient.id,
-                                      problemId: ref
-                                              .watch(
-                                                  currentPageViewDiagnosisProvider
-                                                      .notifier)
-                                              .state +
-                                          1);
+                                      problemId: currentTreatment.id);
                                   await ref
                                       .watch(patientsCrudProvider.notifier)
                                       .createPatientDiagnosis(product)

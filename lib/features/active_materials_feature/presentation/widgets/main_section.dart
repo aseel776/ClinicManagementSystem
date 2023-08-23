@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import './insert_material.dart';
 import './/core/app_colors.dart';
 import './material_card.dart';
@@ -183,8 +184,8 @@ class _ActiveMaterialsMainSectionState
                 ),
                 SizedBox(height: screenHeight * .025),
                 Expanded(
-                  child: state is LoadedActiveMaterialsState
-                      ? Stack(
+                  child:( state is LoadedActiveMaterialsState)
+                      ?(state is LoadingActiveMaterialsState)?LoadingAnimationWidget.inkDrop(color: AppColors.black,size: 35): Stack(
                           children: [
                             PageView.builder(
                               physics: NeverScrollableScrollPhysics(),
