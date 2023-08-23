@@ -1,10 +1,10 @@
 import 'dart:io';
 import 'dart:ui';
 
-import 'package:clinic_management_system/core/pagination_widget.dart';
 import 'package:clinic_management_system/features/patients_management/data/models/patient_diagnosis.dart';
 import 'package:clinic_management_system/features/patients_management/presentation/riverpod/create_patient_provider.dart';
-import 'package:clinic_management_system/features/repository_feature/presentation/riverpod/products_provider.dart';
+import 'package:clinic_management_system/features/patients_management/presentation/riverpod/patient_crud_state.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -31,22 +31,24 @@ class MedicalDiagnosisScreen extends ConsumerStatefulWidget {
 
   @override
   ConsumerState<MedicalDiagnosisScreen> createState() =>
-      _MedicalImagesScreenState();
+      _MedicalDiagnosisScreenState();
 }
 
-class _MedicalImagesScreenState extends ConsumerState<MedicalDiagnosisScreen> {
-  // late PageController pagecontroller;
-
+class _MedicalDiagnosisScreenState
+    extends ConsumerState<MedicalDiagnosisScreen> {
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (widget.patient.id != null) {
+        print("start");
         await ref.watch(patientsProvider.notifier).getPatientDiagnosis(
-            6,
-            1,
-            ref.watch(currentPageViewDiagnosisProvider.notifier).state,
-            widget.patient.id!);
+              6,
+              1,
+              widget.patient.id!,
+              ref.watch(currentPageViewDiagnosisProvider.notifier).state + 1,
+            );
+        print("end");
 
         final state = ref.watch(patientsProvider.notifier).state;
         if (state is LoadedPatientsState) {
@@ -73,9 +75,9 @@ class _MedicalImagesScreenState extends ConsumerState<MedicalDiagnosisScreen> {
     return Stack(
       children: [
         Container(
-            color: Colors.transparent,
-            height: MediaQuery.of(context).size.height * 0.52,
-            width: MediaQuery.of(context).size.width,
+            // color: Colors.red,
+            height: MediaQuery.of(context).size.height * 0.5,
+            width: MediaQuery.of(context).size.width * 0.6,
             child: pageView(
                 ref.watch(currentPageViewProvider.notifier).state, ref)),
         Padding(
@@ -94,7 +96,6 @@ class _MedicalImagesScreenState extends ConsumerState<MedicalDiagnosisScreen> {
                   ),
                 ),
                 onPressed: () async {
-                  print("kmfmdldkasjdf");
                   // ref.watch(productName.notifier).state.text = "";
                   await add_edit_product_popup(context, ref, true, null);
                 },
@@ -106,122 +107,82 @@ class _MedicalImagesScreenState extends ConsumerState<MedicalDiagnosisScreen> {
   }
 
   Widget pageView(int currentPage, WidgetRef ref) {
-    ref.watch(patientsProvider);
     final state = ref.watch(patientsProvider.notifier).state;
-    switch (ref.watch(currentPageViewDiagnosisProvider.notifier).state) {
+    ref.watch(patientsProvider);
+    switch (ref.watch(currentPageViewDiagnosisProvider.notifier).state - 1) {
       case 0:
         {
-          print("pageeeeeeeee 0");
-          if (state is LoadedPatientsState) {
-            print(7);
-            print(state.patients[widget.patient.id!].patientDiagnosis);
-          }
+          if (state is LoadedPatientsState) {}
           return PageView.custom(
+            key: GlobalKey(),
             scrollDirection: Axis.horizontal,
             controller: widget.pageController,
             childrenDelegate: SliverChildBuilderDelegate(
               ((context, index) {
+                int patientIndex = state.patients
+                    .indexWhere((patient) => patient.id == widget.patient.id);
+                (state is LoadedPatientsState)
+                    ? print(state.patients[patientIndex].patientDiagnosis!)
+                    : print(state.patients[patientIndex]);
                 return Padding(
                     padding:
                         const EdgeInsets.only(left: 25.0, top: 15, right: 10),
                     child: (state is LoadedPatientsState)
-                        ? (state.patients[widget.patient.id!].patientDiagnosis!
+                        ? (state.patients[patientIndex].patientDiagnosis!
                                 .isNotEmpty)
                             ? Container(
-                                color: Colors.black,
-                                width: 200,
+                                // color: Colors.black,
+                                width: 600,
                                 height: 400,
-                                child: DataTable(
-                                    clipBehavior: Clip.hardEdge,
-                                    columnSpacing: 11,
-                                    // header: const Text(""),
-                                    // actions: [
-                                    //   IconButton(
-                                    //       onPressed: () {},
-                                    //       icon: const Icon(Icons.refresh))
-                                    // ],
-                                    // rowsPerPage: 5,
-                                    columns: const [
-                                      DataColumn(label: Text('الرقم')),
-                                      DataColumn(label: Text('المكان')),
-                                      DataColumn(label: Text('العلاج المتوقع')),
-                                      DataColumn(label: Text("العمليات"))
-                                    ],
-                                    rows: state.patients[widget.patient.id!]
-                                        .patientDiagnosis!
-                                        .map((row) => DataRow(
-                                              cells: [
-                                                DataCell(
-                                                    Text(row.id.toString() ??
-                                                        ""),
-                                                    onTap: () => null),
-                                                DataCell(Text(
-                                                    row.place.toString() ??
-                                                        "")),
-                                                DataCell(Text(row
-                                                    .expectedTreatment
-                                                    .toString())),
+                                child: ListView.builder(
+                                  itemCount: state.patients[patientIndex]
+                                      .patientDiagnosis!.length,
+                                  itemBuilder: (context, index) {
+                                    final row = state.patients[patientIndex]
+                                        .patientDiagnosis![index];
 
-                                                DataCell(
-                                                  Row(
-                                                    children: [
-                                                      SizedBox(
-                                                          width: 40,
-                                                          child: TextButton(
-                                                            onPressed: () {
-                                                              // print(row.id);
-                                                              // ScaffoldMessenger.of(context)
-                                                              //     .showSnackBar(
-                                                              //         DeleteSnackBar(
-                                                              //             () async {
-                                                              //   await ref
-                                                              //       .watch(
-                                                              //           medicinesCrudProvider
-                                                              //               .notifier)
-                                                              //       .deleteMedicine(row.id!)
-                                                              //       .then((value) {
-                                                              //     ref
-                                                              //         .watch(medicinesProvider
-                                                              //             .notifier)
-                                                              //         .getPaginatedMedicines(
-                                                              //             6, 1);
-
-                                                              //     ref
-                                                              //         .watch(
-                                                              //             currentPageMedicines
-                                                              //                 .notifier)
-                                                              //         .state = 1;
-                                                              //   });
-
-                                                              //   // await ref.watch()
-                                                              // }));
-                                                            },
-                                                            child: const Icon(
-                                                              Icons.delete,
-                                                              color: AppColors
-                                                                  .lightGreen,
-                                                            ),
-                                                          )),
-                                                      SizedBox(
-                                                          width: 40,
-                                                          child: TextButton(
-                                                              onPressed: () {},
-                                                              child: const Icon(
-                                                                Icons.edit,
-                                                                color: AppColors
-                                                                    .lightGreen,
-                                                              )))
-                                                    ],
-                                                  ),
-                                                ),
-
-                                                // DataCell(Text(row.category!
-                                                //     .map((e) => e.name)
-                                                //     .toList()
-                                                //     .toString())),
-                                              ],
-                                            ))
-                                        .toList()),
+                                    return ListTile(
+                                      title: Text(
+                                          'الرقم: ${row.id.toString() ?? ""}'),
+                                      subtitle: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                              'المكان: ${row.place.toString() ?? ""}'),
+                                          Text(
+                                              'العلاج المتوقع: ${row.expectedTreatment.toString()}'),
+                                        ],
+                                      ),
+                                      trailing: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          TextButton(
+                                            onPressed: () {
+                                              // Delete action
+                                              // Implement your delete logic here
+                                            },
+                                            child: const Icon(
+                                              Icons.delete,
+                                              color: AppColors.lightGreen,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 10),
+                                          TextButton(
+                                            onPressed: () {
+                                              // Edit action
+                                              // Implement your edit logic here
+                                            },
+                                            child: const Icon(
+                                              Icons.edit,
+                                              color: AppColors.lightGreen,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                ),
                               )
                             : Container()
                         : Container());
@@ -232,41 +193,31 @@ class _MedicalImagesScreenState extends ConsumerState<MedicalDiagnosisScreen> {
         }
       case 1:
         {
-          print("pageeeeeeeee 0");
-          if (state is LoadedPatientsState) {
-            print(7);
-            print(state.patients[widget.patient.id!].patientDiagnosis);
-          }
           return PageView.custom(
             scrollDirection: Axis.horizontal,
             controller: widget.pageController,
             childrenDelegate: SliverChildBuilderDelegate(
               ((context, index) {
+                int patientIndex = state.patients
+                    .indexWhere((patient) => patient.id == widget.patient.id);
                 return Padding(
                     padding:
                         const EdgeInsets.only(left: 25.0, top: 15, right: 10),
                     child: (state is LoadedPatientsState)
-                        ? (state.patients[widget.patient.id!].patientDiagnosis!
+                        ? (state.patients[patientIndex].patientDiagnosis!
                                 .isNotEmpty)
                             ? SizedBox(
-                                width: 200,
+                                width: 600,
                                 height: 400,
                                 child: DataTable(
                                     columnSpacing: 110,
-                                    // header: const Text(""),
-                                    // actions: [
-                                    //   IconButton(
-                                    //       onPressed: () {},
-                                    //       icon: const Icon(Icons.refresh))
-                                    // ],
-                                    // rowsPerPage: 5,
                                     columns: const [
                                       DataColumn(label: Text('الرقم')),
                                       DataColumn(label: Text('المكان')),
                                       DataColumn(label: Text('العلاج المتوقع')),
                                       DataColumn(label: Text("العمليات"))
                                     ],
-                                    rows: state.patients[widget.patient.id!]
+                                    rows: state.patients[patientIndex]
                                         .patientDiagnosis!
                                         .map((row) => DataRow(
                                               cells: [
@@ -351,21 +302,20 @@ class _MedicalImagesScreenState extends ConsumerState<MedicalDiagnosisScreen> {
         }
       case 2:
         {
-          print("pageeeeeeeee 0");
-          if (state is LoadedPatientsState) {
-            print(7);
-            print(state.patients[widget.patient.id!].patientDiagnosis);
-          }
           return PageView.custom(
             scrollDirection: Axis.horizontal,
             controller: widget.pageController,
             childrenDelegate: SliverChildBuilderDelegate(
               ((context, index) {
+                int patientIndex = state.patients
+                    .indexWhere((patient) => patient.id == widget.patient.id);
+
                 return Padding(
                     padding:
                         const EdgeInsets.only(left: 25.0, top: 15, right: 10),
-                    child: (state is LoadedPatientsState)
-                        ? (state.patients[widget.patient.id!].patientDiagnosis!
+                    child: (state is LoadedPatientsState ||
+                            state is MessageAddEditDeletePatientState)
+                        ? (state.patients[patientIndex].patientDiagnosis!
                                 .isNotEmpty)
                             ? SizedBox(
                                 width: 200,
@@ -385,7 +335,7 @@ class _MedicalImagesScreenState extends ConsumerState<MedicalDiagnosisScreen> {
                                       DataColumn(label: Text('العلاج المتوقع')),
                                       DataColumn(label: Text("العمليات"))
                                     ],
-                                    rows: state.patients[widget.patient.id!]
+                                    rows: state.patients[patientIndex]
                                         .patientDiagnosis!
                                         .map((row) => DataRow(
                                               cells: [
@@ -459,7 +409,7 @@ class _MedicalImagesScreenState extends ConsumerState<MedicalDiagnosisScreen> {
                                                 //     .toString())),
                                               ],
                                             ))
-                                        .toList()),
+                                        .toList() as List<DataRow>),
                               )
                             : Container()
                         : Container());
@@ -543,22 +493,25 @@ class _MedicalImagesScreenState extends ConsumerState<MedicalDiagnosisScreen> {
                                           ref.watch(place.notifier).state.text,
                                       patientId: widget.patient.id,
                                       problemId: ref
-                                          .watch(currentPageDiagnosis.notifier)
+                                          .watch(
+                                              currentPageViewDiagnosisProvider
+                                                  .notifier)
                                           .state);
                                   await ref
                                       .watch(patientsCrudProvider.notifier)
                                       .createPatientDiagnosis(product)
                                       .then((value) {
-                                    // ref
-                                    //     .watch(patientsProvider.notifier)
-                                    //     .getPatientDiagnosis(
-                                    //         6,
-                                    //         1,
-                                    //         widget.patient.id!,
-                                    //         ref
-                                    //             .watch(currentPageDiagnosis
-                                    //                 .notifier)
-                                    //             .state);
+                                    ref
+                                        .watch(patientsProvider.notifier)
+                                        .getPatientDiagnosis(
+                                            6,
+                                            1,
+                                            widget.patient.id!,
+                                            ref
+                                                .watch(
+                                                    currentPageViewDiagnosisProvider
+                                                        .notifier)
+                                                .state);
                                   });
                                   ref
                                       .watch(currentPageDiagnosis.notifier)

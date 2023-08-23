@@ -12,10 +12,12 @@ Widget textfield(String hint, TextEditingController controller,
       return null;
     },
     controller: controller,
+    // initialValue: (controller != null) ? controller.text : "",
     cursorColor: AppColors.lightGreen,
     /*onChanged: (value) => controller.email = value,*/
     keyboardType: TextInputType.emailAddress,
     maxLines: maxLines,
+    
     decoration: InputDecoration(
       fillColor: Colors.transparent,
       filled: true,
@@ -24,7 +26,7 @@ Widget textfield(String hint, TextEditingController controller,
       // hintMaxLines: 7,
       // helperMaxLines: 7,
       hintStyle:
-      const TextStyle(color: Colors.black54, fontWeight: FontWeight.w600),
+          const TextStyle(color: Colors.black54, fontWeight: FontWeight.w600),
       enabledBorder: OutlineInputBorder(
         borderSide: const BorderSide(width: 1, color: Colors.grey),
         borderRadius: BorderRadius.circular(15),

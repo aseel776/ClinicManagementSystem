@@ -89,13 +89,16 @@ class LabOrderRepositoryImpl implements LabOrderRepository {
   Future<Either<Failure, String>> addLabOrder(
       LabOrder body, List<String> steps) async {
     final response = await gqlClient.mutate(MutationOptions(
+      fetchPolicy: FetchPolicy.noCache,
       document: gql(LabOrderDocsGql.createLabOrder),
       variables: {
-        'lab_id': body.labId,
-        'name': body.name,
-        'steps_names': steps,
+        'labId': body.labId,
+        'orderName': body.name,
+        'price1': body.price.toString(),
+        'stepNames': steps,
       },
     ));
+    print(response);
 
     if (!response.hasException && response.data != null) {
       return right("Lab order added successfully");

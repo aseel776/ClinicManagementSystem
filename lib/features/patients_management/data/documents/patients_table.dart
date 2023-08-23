@@ -6,10 +6,15 @@ class PatientsTableDocsGql {
                 page
                 totalPages
                 items {
-                    gender
-                    id
-                    name
-                    phone
+                     address
+            birth_date
+            gender
+            id
+            job
+            main_complaint
+            maintal_status
+            name
+            phone
                 }
               }
             }

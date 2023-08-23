@@ -1,14 +1,9 @@
 import 'package:clinic_management_system/features/appointments_sessions/presentation/widgets/apps_main_section.dart';
-import 'package:clinic_management_system/features/diseases_badHabits/presentation/pages/general.dart';
 import 'package:clinic_management_system/features/lab_feature/presentation/pages/lab_screen.dart';
-import 'package:clinic_management_system/features/medicine/data/model/active_materials.dart';
-import 'package:clinic_management_system/features/medicine/presentation/Pages/medicine_page.dart';
-import 'package:clinic_management_system/features/patients_management/presentation/pages/patients.dart';
 import 'package:clinic_management_system/features/patients_management/presentation/pages/patients_index.dart';
 import 'package:clinic_management_system/features/repository_feature/presentation/pages/repository.dart';
 import 'package:clinic_management_system/features/treatments_feature/presentation/sections/main_section.dart';
 import 'package:flutter/material.dart';
-import '../../../features/active_materials_feature/presentation/widgets/main_section.dart';
 import '../widgets/navbar_item.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -35,15 +30,14 @@ class _SidebarState extends ConsumerState<Sidebar> {
   Map<NavBarData, Widget> nameToRoute = {
     NavBarData(pageName: "المواعيد", svgIconPath: "assets/svgs/dashboard.svg"):
         AppointmentsMainSection(),
-    NavBarData(
-        pageName: "المرضى",
-        svgIconPath: "assets/svgs/appointment.svg"): PatientIndex(),
+    NavBarData(pageName: "المرضى", svgIconPath: "assets/svgs/appointment.svg"):
+        PatientIndex(),
     NavBarData(pageName: "المخابر", svgIconPath: "assets/svgs/patients.svg"):
         LabsScreen(),
     NavBarData(pageName: "المستودع", svgIconPath: "assets/svgs/patients.svg"):
-    RepositoryScreen(),
+        RepositoryScreen(),
     NavBarData(pageName: "المعالجات", svgIconPath: "assets/svgs/patients.svg"):
-    TreatmentsMainSection(),
+        TreatmentsMainSection(),
   };
 
   void select(int n, WidgetRef ref) {

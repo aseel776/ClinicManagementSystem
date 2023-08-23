@@ -1,4 +1,5 @@
 import 'package:clinic_management_system/core/app_colors.dart';
+import 'package:clinic_management_system/core/primaryText.dart';
 import 'package:clinic_management_system/core/textField.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -23,39 +24,41 @@ class _StepInputScreenState extends ConsumerState<StepInputScreen> {
   @override
   Widget build(BuildContext context) {
     ref.watch(stepControllers);
-    return Padding(
-      padding: EdgeInsets.all(16.0),
-      child: Column(
-        children: [
-          Container(
-            height: 100,
-            width: 400, // Set the specific height you want
-            child: ListView.builder(
-              shrinkWrap: true,
-              controller: controller,
-              itemCount: ref.watch(stepControllers.notifier).state.length,
-              itemBuilder: (context, index) {
-                return textfield("الخطوة ${index}",
-                    ref.watch(stepControllers.notifier).state[index], "", 1);
-              },
-            ),
-          ),
-          SizedBox(height: 16),
-          ElevatedButton(
-            style: ButtonStyle(
-                backgroundColor: MaterialStatePropertyAll(AppColors.black)),
-            onPressed: () {
-              setState(() {
-                List<TextEditingController> list =
-                    ref.watch(stepControllers.notifier).state;
-                list.add(TextEditingController());
-                ref.read(stepControllers.notifier).state = list;
-              });
+    return Column(
+      children: [
+        SizedBox(
+          height: MediaQuery.of(context).size.width * 0.05,
+          width: MediaQuery.of(context).size.width * 0.2,
+          child: ListView.builder(
+            shrinkWrap: true,
+            controller: controller,
+            itemCount: ref.watch(stepControllers.notifier).state.length,
+            itemBuilder: (context, index) {
+              return Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: textfield("الخطوة $index",
+                    ref.watch(stepControllers.notifier).state[index], "", 1),
+              );
             },
-            child: Text('Add Step'),
           ),
-        ],
-      ),
+        ),
+        const SizedBox(height: 16),
+        ElevatedButton(
+          style: const ButtonStyle(
+              backgroundColor: MaterialStatePropertyAll(AppColors.black)),
+          onPressed: () {
+            setState(() {
+              List<TextEditingController> list =
+                  ref.watch(stepControllers.notifier).state;
+              list.add(TextEditingController());
+              ref.watch(stepControllers.notifier).state = list;
+            });
+          },
+          child: const PrimaryText(
+            text: "إضافة خطوة",
+          ),
+        ),
+      ],
     );
   }
 }

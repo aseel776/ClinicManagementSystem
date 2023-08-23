@@ -4,7 +4,6 @@ import 'package:clinic_management_system/features/appointments_sessions/data/mod
 import 'package:clinic_management_system/features/appointments_sessions/presentation/states/patient_treatments/patient_treatments_provider.dart';
 import 'package:clinic_management_system/features/appointments_sessions/presentation/states/patient_treatments/patient_treatments_state.dart';
 import 'package:clinic_management_system/features/appointments_sessions/presentation/widgets/ongoing_treatment.dart';
-import 'package:clinic_management_system/features/appointments_sessions/presentation/widgets/prescription.dart';
 import 'package:clinic_management_system/features/appointments_sessions/presentation/widgets/select_treatment.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -111,8 +110,7 @@ class _NewSessionState extends ConsumerState<NewSession> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'تاريخ الجلسة: ${widget.app.time!.toString().substring(
-                          0, 10)}',
+                      'تاريخ الجلسة: ${widget.app.time!.toString().substring(0, 10)}',
                       style: const TextStyle(
                         fontFamily: 'Cairo',
                         fontSize: 20,
@@ -164,34 +162,34 @@ class _NewSessionState extends ConsumerState<NewSession> {
                             child: SingleChildScrollView(
                               child: Column(
                                 children: [
-                                  ...state.treatments.reversed.map((e) {
-                                    return Column(
-                                      children: [
-                                        OnGoingTreatment(e, allWork),
-                                        SizedBox(height: screenHeight * .025),
-                                      ],
-                                    );
-                                  },
+                                  ...state.treatments.reversed.map(
+                                    (e) {
+                                      return Column(
+                                        children: [
+                                          OnGoingTreatment(e, allWork),
+                                          SizedBox(height: screenHeight * .025),
+                                        ],
+                                      );
+                                    },
                                   ).toList(),
                                 ],
                               ),
                             ),
                           )
+                        else if (state is LoadingPatientTreatmentsState)
+                          Expanded(
+                            child: Container(
+                              alignment: Alignment.center,
+                              color: Colors.yellow,
+                            ),
+                          )
                         else
-                          if (state is LoadingPatientTreatmentsState)
-                            Expanded(
-                              child: Container(
-                                alignment: Alignment.center,
-                                color: Colors.yellow,
-                              ),
-                            )
-                          else
-                            Expanded(
-                              child: Container(
-                                alignment: Alignment.center,
-                                color: Colors.red,
-                              ),
-                            )
+                          Expanded(
+                            child: Container(
+                              alignment: Alignment.center,
+                              color: Colors.red,
+                            ),
+                          )
                       ],
                     ),
                     Column(

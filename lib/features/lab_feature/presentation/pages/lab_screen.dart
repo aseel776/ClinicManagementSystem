@@ -44,6 +44,8 @@ class _LabsScreenState extends ConsumerState<LabsScreen> {
       final state = ref.watch(labsProvider.notifier).state;
       if (state is LoadedLabsState) {
         ref.watch(totalPagesLabs.notifier).state = state.totalPages;
+        print("total");
+        print(state.totalPages);
       }
     });
   }
@@ -52,7 +54,7 @@ class _LabsScreenState extends ConsumerState<LabsScreen> {
   Widget build(BuildContext context) {
     ref.watch(currentPageLabs);
     ref.watch(totalPagesLabs);
-    final state = ref.watch(labsProvider.notifier).state;
+    final state = ref.watch(labsProvider);
     ref.watch(labsProvider);
     double sectionWidth = MediaQuery.of(context).size.width;
     double sectionHeight = MediaQuery.of(context).size.height;
@@ -161,7 +163,7 @@ class _LabsScreenState extends ConsumerState<LabsScreen> {
 
                           add_edit_product_popup(context, ref, true, null);
                         },
-                        child: const PrimaryText(text: "إضافة منتج جديد")),
+                        child: const PrimaryText(text: "إضافة مخبر")),
                   ),
                 )
               ],
@@ -257,6 +259,7 @@ class _LabsScreenState extends ConsumerState<LabsScreen> {
       BuildContext context, WidgetRef ref, bool addOrEdit, int? id) async {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
+    final _formKey = GlobalKey<FormState>();
 
     return showDialog(
         context: context,
@@ -271,145 +274,165 @@ class _LabsScreenState extends ConsumerState<LabsScreen> {
                   return SizedBox(
                     width: screenWidth * 0.4,
                     height: screenHeight * 0.7,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: PrimaryText(
-                            text:
-                                addOrEdit ? "إضافة منتج جديد " : "تعديل منتج ",
-                            size: 18,
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: PrimaryText(
+                              text: addOrEdit
+                                  ? "إضافة منتج جديد "
+                                  : "تعديل منتج ",
+                              size: 18,
+                            ),
                           ),
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        SizedBox(
-                          width: screenWidth * 0.2,
-                          child: Directionality(
-                            textDirection: TextDirection.rtl,
-                            child: textfield("اسم المخبر",
-                                ref.watch(labsName.notifier).state, "", 1),
+                          const SizedBox(
+                            height: 20,
                           ),
-                        ),
-                        SizedBox(
-                          height: screenHeight * 0.03,
-                        ),
-                        SizedBox(
-                          width: screenWidth * 0.2,
-                          child: Directionality(
-                            textDirection: TextDirection.rtl,
-                            child: textfield("عنوان المخبر ",
-                                ref.watch(labsAddress.notifier).state, "", 1),
+                          SizedBox(
+                            width: screenWidth * 0.2,
+                            child: Directionality(
+                              textDirection: TextDirection.rtl,
+                              child: textfield(
+                                  "اسم المخبر",
+                                  ref.watch(labsName.notifier).state,
+                                  "قم بإضافة اسم ",
+                                  1),
+                            ),
                           ),
-                        ),
-                        SizedBox(
-                          height: screenHeight * 0.03,
-                        ),
-                        SizedBox(
-                          width: screenWidth * 0.2,
-                          child: Directionality(
-                            textDirection: TextDirection.rtl,
-                            child: textfield("رقم المخبر ",
-                                ref.watch(labsPhone.notifier).state, "", 1),
+                          SizedBox(
+                            height: screenHeight * 0.03,
                           ),
-                        ),
-                        SizedBox(
-                          height: screenHeight * 0.03,
-                        ),
-                        SizedBox(
-                          width: screenWidth * 0.2,
-                          child: Directionality(
-                            textDirection: TextDirection.rtl,
-                            child: textfield("ايميل المخبر",
-                                ref.watch(labsEmail.notifier).state, "", 1),
+                          SizedBox(
+                            width: screenWidth * 0.2,
+                            child: Directionality(
+                              textDirection: TextDirection.rtl,
+                              child: textfield(
+                                  "عنوان المخبر ",
+                                  ref.watch(labsAddress.notifier).state,
+                                  "ادخل عنوان المخبر",
+                                  1),
+                            ),
                           ),
-                        ),
-                        SizedBox(
-                          height: screenHeight * 0.03,
-                        ),
-                        SizedBox(
-                          width: screenWidth * 0.08,
-                          child: ElevatedButton(
-                              onPressed: () async {
-                                // ref.watch(labsProvider.notifier);
-                                if (addOrEdit) {
-                                  Lab lab = Lab(
-                                      name: ref
-                                          .watch(labsName.notifier)
-                                          .state
-                                          .text,
-                                      address: ref
-                                          .watch(labsAddress.notifier)
-                                          .state
-                                          .text,
-                                      phone: ref
-                                          .watch(labsPhone.notifier)
-                                          .state
-                                          .text,
-                                      email: ref
-                                          .watch(labsEmail.notifier)
-                                          .state
-                                          .text);
-                                  await ref
-                                      .watch(labCrudProvider.notifier)
-                                      .addLab(lab)
-                                      .then((value) {
-                                    ref
-                                        .watch(labsProvider.notifier)
-                                        .getPaginatedLabs(6, 1);
-                                  });
-                                  ref.watch(currentPageLabs.notifier).state = 1;
+                          SizedBox(
+                            height: screenHeight * 0.03,
+                          ),
+                          SizedBox(
+                            width: screenWidth * 0.2,
+                            child: Directionality(
+                              textDirection: TextDirection.rtl,
+                              child: textfield(
+                                  "رقم المخبر ",
+                                  ref.watch(labsPhone.notifier).state,
+                                  "ادخل رقم المخبر",
+                                  1),
+                            ),
+                          ),
+                          SizedBox(
+                            height: screenHeight * 0.03,
+                          ),
+                          SizedBox(
+                            width: screenWidth * 0.2,
+                            child: Directionality(
+                              textDirection: TextDirection.rtl,
+                              child: textfield("ايميل المخبر",
+                                  ref.watch(labsEmail.notifier).state, "", 1),
+                            ),
+                          ),
+                          SizedBox(
+                            height: screenHeight * 0.03,
+                          ),
+                          SizedBox(
+                            width: screenWidth * 0.08,
+                            child: ElevatedButton(
+                                onPressed: () async {
+                                  if (_formKey.currentState!.validate()) {
+                                    // Validation passed, perform your submit logic here
+                                    // ref.watch(labsProvider.notifier);
+                                    if (addOrEdit) {
+                                      Lab lab = Lab(
+                                          name: ref
+                                              .watch(labsName.notifier)
+                                              .state
+                                              .text,
+                                          address: ref
+                                              .watch(labsAddress.notifier)
+                                              .state
+                                              .text,
+                                          phone: ref
+                                              .watch(labsPhone.notifier)
+                                              .state
+                                              .text,
+                                          email: ref
+                                              .watch(labsEmail.notifier)
+                                              .state
+                                              .text);
+                                      await ref
+                                          .watch(labCrudProvider.notifier)
+                                          .addLab(lab)
+                                          .then((value) {
+                                        ref
+                                            .watch(labsProvider.notifier)
+                                            .getPaginatedLabs(6, 1);
+                                      });
+                                      ref
+                                          .watch(currentPageLabs.notifier)
+                                          .state = 1;
 
-                                  Navigator.pop(context);
-                                } else {
-                                  Lab lab = Lab(
-                                      id: id,
-                                      name: ref
-                                          .watch(labsName.notifier)
-                                          .state
-                                          .text,
-                                      address: ref
-                                          .watch(labsAddress.notifier)
-                                          .state
-                                          .text,
-                                      phone: ref
-                                          .watch(labsPhone.notifier)
-                                          .state
-                                          .text,
-                                      email: ref
-                                          .watch(labsEmail.notifier)
-                                          .state
-                                          .text);
-                                  await ref
-                                      .watch(labCrudProvider.notifier)
-                                      .editLab(lab)
-                                      .then((value) {
-                                    ref
-                                        .watch(labsProvider.notifier)
-                                        .getPaginatedLabs(6, 1);
-                                  });
-                                  ref.watch(currentPageLabs.notifier).state = 1;
+                                      Navigator.pop(context);
+                                    } else {
+                                      Lab lab = Lab(
+                                          id: id,
+                                          name: ref
+                                              .watch(labsName.notifier)
+                                              .state
+                                              .text,
+                                          address: ref
+                                              .watch(labsAddress.notifier)
+                                              .state
+                                              .text,
+                                          phone: ref
+                                              .watch(labsPhone.notifier)
+                                              .state
+                                              .text,
+                                          email: ref
+                                              .watch(labsEmail.notifier)
+                                              .state
+                                              .text);
+                                      await ref
+                                          .watch(labCrudProvider.notifier)
+                                          .editLab(lab)
+                                          .then((value) {
+                                        ref
+                                            .watch(labsProvider.notifier)
+                                            .getPaginatedLabs(6, 1);
+                                      });
+                                      ref
+                                          .watch(currentPageLabs.notifier)
+                                          .state = 1;
 
-                                  Navigator.pop(context);
-                                }
-                              },
-                              style: const ButtonStyle(
-                                backgroundColor: MaterialStatePropertyAll(
-                                    AppColors.lightGreen),
-                                shape: MaterialStatePropertyAll(
-                                    RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.elliptical(50, 70)))),
-                              ),
-                              child: PrimaryText(
-                                text: addOrEdit ? "إضافة" : "تعديل",
-                                height: 1.7,
-                                color: AppColors.black,
-                              )),
-                        )
-                      ],
+                                      Navigator.pop(context);
+                                    }
+                                  }
+                                },
+                                style: const ButtonStyle(
+                                  backgroundColor: MaterialStatePropertyAll(
+                                      AppColors.lightGreen),
+                                  shape: MaterialStatePropertyAll(
+                                      RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.elliptical(50, 70)))),
+                                ),
+                                child: PrimaryText(
+                                  text: addOrEdit ? "إضافة" : "تعديل",
+                                  height: 1.7,
+                                  color: AppColors.black,
+                                )),
+                          )
+                        ],
+                      ),
                     ),
                   );
                 }),

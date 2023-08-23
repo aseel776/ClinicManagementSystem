@@ -57,7 +57,6 @@ class _PatientProfileState extends ConsumerState<PatientProfile>
     animationController = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 450));
     super.initState();
-    // ref.watch(patientsProvider).getPaginatedBadHabits(10, 1);
 
     controller = ScrollController();
     _tabController = TabController(length: 3, vsync: this);
@@ -69,9 +68,12 @@ class _PatientProfileState extends ConsumerState<PatientProfile>
           100000000.toDouble(), 1.toDouble(), 1, "amount", "asc");
       await ref.watch(patientsProvider.notifier).getPatientCosts(
           1000000.toDouble(), 1.toDouble(), 1, "amount", "asc");
+      print("starrrrrrrrrrrt");
       navBarDiagnosis =
           await ref.watch(patientsProvider.notifier).getProblemTypes();
+      print("starrrrrrrrrrrt");
       currentPageDiagnosis = navBarDiagnosis[0].name!;
+
       final state = ref.watch(patientsProvider.notifier).state;
       if (state is LoadedPatientsState) {
         int patientIndex = state.patients
@@ -80,41 +82,6 @@ class _PatientProfileState extends ConsumerState<PatientProfile>
         // print(widget.patient.patientPayments![1].date);
       }
     });
-  }
-
-  List<Map<String, dynamic>> payments = [
-    {'date': '2023-08-01', 'amount': 100.0},
-    {'date': '2023-08-15', 'amount': 150.0},
-    {'date': '2023-08-30', 'amount': 200.0},
-    {'date': '2023-08-30', 'amount': 200.0},
-    {'date': '2023-08-30', 'amount': 200.0},
-    {'date': '2023-08-30', 'amount': 200.0},
-    {'date': '2023-08-30', 'amount': 200.0},
-    {'date': '2023-08-30', 'amount': 200.0},
-  ];
-  List<Map<String, dynamic>> costs = [
-    {
-      'treatment': 'علاج أول',
-      'date': '2023-08-01',
-      'cost': 150.0,
-    },
-    {
-      'treatment': 'علاج ثاني',
-      'date': '2023-08-05',
-      'cost': 200.0,
-    },
-    {
-      'treatment': 'علاج ثالث',
-      'date': '2023-08-10',
-      'cost': 180.0,
-    },
-  ];
-  double calculateTotalCost(List<Map<String, dynamic>> costs) {
-    double totalCost = 0.0;
-    for (var cost in costs) {
-      totalCost += cost['cost'];
-    }
-    return totalCost;
   }
 
   var currentPageImages = "صور شعاعية";
@@ -168,6 +135,11 @@ class _PatientProfileState extends ConsumerState<PatientProfile>
                     height: 2.3,
                     color: AppColors.black.withOpacity(0.7),
                   ),
+                  ElevatedButton(
+                      onPressed: () {},
+                      child: PrimaryText(
+                        text: "نموذج ا",
+                      ))
                 ],
               ),
             ),
@@ -265,63 +237,63 @@ class _PatientProfileState extends ConsumerState<PatientProfile>
                 SizedBox(
                   width: sectionWidth * 0.015,
                 ),
-                Container(
-                  width: sectionWidth * 0.315,
-                  height: sectionHeight * 0.35,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: PrimaryText(
-                          text: 'المدفوعات',
-                          size: 14,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.black,
-                        ),
-                      ),
-                      // (state)
-                      Expanded(
-                        child: ListView.builder(
-                          itemCount: payments.length,
-                          itemBuilder: (context, index) {
-                            final payment = payments[index];
-                            return ListTile(
-                              title: Row(
-                                // Create a Row for horizontal alignment
-                                children: [
-                                  Text(payment['date']),
-                                  const SizedBox(
-                                    width: 20,
-                                  ),
-                                  const Icon(Icons.arrow_forward),
-                                  const SizedBox(
-                                    width: 20,
-                                  ),
-                                  Text('${payment['amount']} ريال'),
-                                ],
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: PrimaryText(
-                          text:
-                              'إجمالي المدفوعات: ${widget.patient.patientCosts.toString()} ريال',
-                          size: 16,
-                          fontWeight: FontWeight.w300,
-                          color: AppColors.black,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                // Container(
+                //   width: sectionWidth * 0.315,
+                //   height: sectionHeight * 0.35,
+                //   decoration: BoxDecoration(
+                //     color: Colors.white,
+                //     borderRadius: BorderRadius.circular(10),
+                //   ),
+                //   child: Column(
+                //     crossAxisAlignment: CrossAxisAlignment.start,
+                //     children: [
+                //       const Padding(
+                //         padding: EdgeInsets.all(8.0),
+                //         child: PrimaryText(
+                //           text: 'المدفوعات',
+                //           size: 14,
+                //           fontWeight: FontWeight.bold,
+                //           color: AppColors.black,
+                //         ),
+                //       ),
+                //       // (state)
+                //       Expanded(
+                //         child: ListView.builder(
+                //           itemCount: payments.length,
+                //           itemBuilder: (context, index) {
+                //             final payment = payments[index];
+                //             return ListTile(
+                //               title: Row(
+                //                 // Create a Row for horizontal alignment
+                //                 children: [
+                //                   Text(payment['date']),
+                //                   const SizedBox(
+                //                     width: 20,
+                //                   ),
+                //                   const Icon(Icons.arrow_forward),
+                //                   const SizedBox(
+                //                     width: 20,
+                //                   ),
+                //                   Text('${payment['amount']} ريال'),
+                //                 ],
+                //               ),
+                //             );
+                //           },
+                //         ),
+                //       ),
+                //       Padding(
+                //         padding: const EdgeInsets.all(8.0),
+                //         child: PrimaryText(
+                //           text:
+                //               'إجمالي المدفوعات: ${widget.patient.patientCosts.toString()} ريال',
+                //           size: 16,
+                //           fontWeight: FontWeight.w300,
+                //           color: AppColors.black,
+                //         ),
+                //       ),
+                //     ],
+                //   ),
+                // ),
                 SizedBox(
                   width: sectionWidth * 0.03,
                 ),
@@ -366,11 +338,6 @@ class _PatientProfileState extends ConsumerState<PatientProfile>
                             ? widget.patient.patientCosts!.costs!.length
                             : 0,
                         itemBuilder: (context, index) {
-                          print("asdaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-                          print((widget.patient.patientCosts != null)
-                              ? widget.patient.patientCosts!.costs!.length
-                              : "");
-
                           // final payment =
                           //     widget.patient.patientPayments!.payments![index];
                           final cost = widget.patient.patientCosts!;
@@ -868,7 +835,7 @@ class _PatientProfileState extends ConsumerState<PatientProfile>
                                                   borderRadius:
                                                       BorderRadius.circular(20),
                                                   color: Colors.black45),
-                                              width: 160,
+                                              width: 200,
                                               child: SingleChildScrollView(
                                                 physics:
                                                     const NeverScrollableScrollPhysics(),
@@ -887,7 +854,7 @@ class _PatientProfileState extends ConsumerState<PatientProfile>
                                                                 sectionHeight,
                                                             screenWidth:
                                                                 sectionWidth,
-                                                            onTap: () {
+                                                            onTap: () async {
                                                               setState(() {
                                                                 final index = navBarDiagnosis.indexWhere(
                                                                     (element) =>
@@ -914,13 +881,18 @@ class _PatientProfileState extends ConsumerState<PatientProfile>
                                                                   currentPageDiagnosis =
                                                                       e.name!;
                                                                 });
-
-                                                                print(
-                                                                    "aaaaaaaq1111111111111qqqqaaa");
-                                                                print(ref
-                                                                    .watch(currentPageViewDiagnosisProvider
+                                                                ref
+                                                                    .watch(patientsProvider
                                                                         .notifier)
-                                                                    .state);
+                                                                    .getPatientDiagnosis(
+                                                                      6,
+                                                                      1,
+                                                                      widget
+                                                                          .patient
+                                                                          .id!,
+                                                                      ref.watch(currentPageViewDiagnosisProvider.notifier).state +
+                                                                          1,
+                                                                    );
 
                                                                 pageControllerDiagnosis!.animateToPage(
                                                                     ref
@@ -963,7 +935,7 @@ class _PatientProfileState extends ConsumerState<PatientProfile>
                                                             },
                                                             selected:
                                                                 (currentPageDiagnosis ==
-                                                                        e)
+                                                                        e.name)
                                                                     ? true
                                                                     : false);
                                                       }).toList(),

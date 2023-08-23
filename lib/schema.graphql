@@ -1,0 +1,1481 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+enum AppointmentStates {
+  registerd
+  unregisterd
+}
+
+enum AppointmentTypes {
+  emergency
+  external
+  normal
+  waiting
+}
+
+type Auth {
+  accessToken: String!
+  patient: Patient!
+  refreshToken: String!
+  status: CheckPhone
+  user: User!
+}
+
+type AuthResponse {
+  data: Auth
+  message: String
+  status: Int
+}
+
+type BadHabit {
+  badHabitChemicalMaterials: [BadHabitChemicalMaterials!]
+  id: Int!
+  name: String!
+}
+
+type BadHabitChemicalMaterials {
+  """chemical_material_id field """
+  bad_habit_id: Int!
+
+  """chemical_material"""
+  chemical_material: ChemicalMaterial
+
+  """concentration field """
+  chemical_material_id: Int!
+
+  """id field """
+  id: Int!
+}
+
+type BookIn {
+  created_at: DateTime!
+  id: Int!
+  price: Int!
+  product: Product!
+  product_id: Int!
+  quantity: Int!
+  total_price: Int!
+}
+
+type BookOut {
+  created_at: DateTime!
+  id: Int!
+  product: Product!
+  product_id: Int!
+  quantity: Int!
+  total_price: Int!
+}
+
+type Category {
+  """id field (placeholder)"""
+  id: Int!
+
+  """name field (placeholder)"""
+  name: String!
+}
+
+type CheckPhone {
+  code: Float!
+  message: String!
+  phoneHavePatient: Boolean!
+  phoneHaveUserAccount: Boolean!
+}
+
+type CheckPhoneResponse {
+  data: CheckPhone
+  message: String
+  status: Int
+}
+
+type ChemicalMaterial {
+  """Example field (placeholder)"""
+  id: Int!
+
+  """Example field (placeholder)"""
+  name: String!
+}
+
+type Conflict {
+  """name field """
+  bad_habit_medicine: [badHabitConflict!]
+  bool: Boolean!
+
+  """name field """
+  disease_medicine: [badHabitConflict!]
+
+  """name field """
+  prescription_medicines: [medicineConflicts!]
+
+  """name field """
+  prescription_patient_medicine: [[medicineConflicts!]!]
+}
+
+input CreateBadHabitInput {
+  chemical_material_id: [Int!]
+  name: String!
+}
+
+input CreateBookInInput {
+  created_at: DateTime
+  expiration_date: DateTime!
+  price: Int!
+  product_id: Int!
+  quantity: Int!
+}
+
+input CreateBookOutInput {
+  created_at: DateTime
+  product_id: Int!
+  quantity: Int!
+  stored_product_id: [Int!]!
+}
+
+input CreateCategoryInput {
+  """name field (placeholder)"""
+  name: String!
+}
+
+input CreateChemicalMaterialInput {
+  """chemical_material_id field """
+  chemical_material_id: [Int!]
+
+  """Chemical Material Name """
+  name: String!
+}
+
+input CreateDiseaseInput {
+  chemical_material_id: [Int!]
+  name: String!
+}
+
+input CreateLabInput {
+  address: String!
+  email: String!
+  name: String!
+  phone: String!
+}
+
+input CreateLabOrderInput {
+  lab_id: Int!
+  name: String!
+  price: String!
+  steps_names: [String!]!
+}
+
+input CreateMedicineInput {
+  category_id: Int!
+
+  """chemical_material_id field """
+  chemical_material_id: [Int!]!
+
+  """concentration field """
+  concentration: Float!
+
+  """name field """
+  name: String!
+}
+
+input CreateNotificationInput {
+  msg: String!
+  patient_id: Int!
+  title: String!
+}
+
+input CreatePatientAppointmentInput {
+  """appointment date"""
+  date: DateTime!
+
+  """notes"""
+  notes: String
+
+  """Patient id"""
+  patient_id: Int!
+
+  """phase"""
+  phase: String
+
+  """treatment place"""
+  place: String
+
+  """reservation"""
+  reservation_id: Int
+
+  """AppointmentTypes"""
+  type: AppointmentTypes!
+}
+
+input CreatePatientBadHabitForExistingPatientInput {
+  bad_habet_id: Int!
+  notes: String
+  patient_id: Int!
+  start_date: DateTime
+}
+
+input CreatePatientBadHabitInput {
+  bad_habet_id: Int!
+  notes: String
+  start_date: DateTime
+}
+
+input CreatePatientCostInput {
+  amount: Float!
+  date: DateTime!
+  description: String
+  patient_id: Int!
+  treatment_id: Int
+}
+
+input CreatePatientDiagnosisInput {
+  expected_treatment: String
+  patient_id: Int!
+  place: String!
+  problem_id: Int!
+}
+
+input CreatePatientDiseaseForExistingPatientInput {
+  disease_id: Int!
+  notes: String
+  patient_id: Int!
+  start_date: DateTime
+  tight: Boolean!
+}
+
+input CreatePatientDiseaseInput {
+  disease_id: Int!
+  notes: String
+  start_date: DateTime
+  tight: Boolean!
+}
+
+input CreatePatientInput {
+  address: String
+  birth_date: String
+  gender: String!
+  job: String
+  main_complaint: String
+  maintal_status: String
+  name: String!
+  patient_badHabits: [CreatePatientBadHabitInput!]
+  patient_diseases: [CreatePatientDiseaseInput!]
+  patient_medicines: [CreatePatientMedicineInput!]
+  phone: String!
+}
+
+input CreatePatientLabOrderFromSessionInput {
+  created_at: DateTime!
+  degree: String!
+  deliver_at: DateTime!
+  directions: String!
+  lab_order_id: Int!
+  notation: [String!]!
+  patient_id: Int!
+  type: String!
+}
+
+input CreatePatientLabOrderInput {
+  created_at: DateTime!
+  degree: String!
+  deliver_at: DateTime!
+  directions: String!
+  lab_order_id: Int!
+  notation: [String!]!
+  patient_id: Int!
+  patient_session_id: Int!
+  type: String!
+}
+
+input CreatePatientMedicalImageInput {
+  image: Upload!
+  medical_image_type_id: Int!
+  patient_id: Int!
+  title: String!
+}
+
+input CreatePatientMedicalImagesTypeInput {
+  name: String!
+}
+
+input CreatePatientMedicineForExistingPatientInput {
+  medicine_id: Int!
+  notes: String
+  patient_id: Int!
+  start_date: DateTime
+}
+
+input CreatePatientMedicineInput {
+  medicine_id: Int!
+  notes: String
+  start_date: DateTime
+}
+
+input CreatePatientPaymentInput {
+  amount: Float!
+  date: DateTime!
+  description: String
+  patient_id: Int!
+}
+
+input CreatePatientPerscrptionFromSessionInput {
+  createPatientPerscrptionsMedicienInput: [CreatePatientPerscrptionsMedicienFromSessionInput!]!
+}
+
+input CreatePatientPerscrptionInput {
+  createPatientPerscrptionsMedicienInput: [CreatePatientPerscrptionsMedicienInput!]!
+  patient_session_id: Int!
+}
+
+input CreatePatientPerscrptionsMedicienFromSessionInput {
+  description: String
+  medicince_id: Int!
+  qantity: String!
+  repetition: String!
+}
+
+input CreatePatientPerscrptionsMedicienInput {
+  description: String
+  medicince_id: Int!
+  patient_perscrption_id: Int!
+  qantity: String!
+  repetition: String!
+}
+
+input CreatePatientReservationInput {
+  date: DateTime!
+  notes: String
+  patient_id: Int!
+}
+
+input CreatePatientSessionInput {
+  CreatePatientTreatmentDoneStepFromSessionInput: [CreatePatientTreatmentDoneStepFromSessionInput!]!
+  createPatientLabOrderFromSessionInput: CreatePatientLabOrderFromSessionInput
+  createPatientPerscrptionFromSessionInput: CreatePatientPerscrptionFromSessionInput
+  patient_id: Int!
+  patiient_appointment_id: Int!
+}
+
+input CreatePatientTeethTreatmentInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input CreatePatientTreatmentDoneStepFromSessionInput {
+  note: String
+  patient_treatment_id: Int!
+  step_id: Int!
+}
+
+input CreatePatientTreatmentDoneStepInput {
+  note: String
+  patient_session_id: Int!
+  patient_treatment_id: Int!
+  step_id: Int!
+}
+
+input CreatePatientTreatmentInput {
+  patient_id: Int!
+  place: String!
+  price: Float!
+  treatment_id: Int!
+  type: PatientTreatmentTypes!
+}
+
+input CreateProblemInput {
+  name: String!
+  problem_type_id: Int!
+}
+
+input CreateProblemTypeInput {
+  """The Name of the problem type"""
+  name: String!
+}
+
+input CreateProductInput {
+  name: String!
+}
+
+input CreateStepInput {
+  name: String!
+  subSteps: [CreateSubStepInput!]
+}
+
+input CreateSubStepInput {
+  name: String!
+}
+
+input CreateTreatmentInput {
+  color: String!
+  name: String!
+  price: Float!
+  steps: [CreateStepInput!]
+  treatment_type_id: Int!
+}
+
+input CreateTreatmentTypeInput {
+  name: String!
+}
+
+type CreateUserAccount {
+  accessToken: String!
+  refreshToken: String!
+  user: User!
+}
+
+input CreateUserAccountInput {
+  c_password: String!
+  otp: String!
+  password: String!
+  phone: String!
+}
+
+type CreateUserAccountResponse {
+  data: CreateUserAccount
+  message: String
+  status: Int
+}
+
+type CreateUserPatient {
+  patient: Patient!
+  user: User!
+}
+
+input CreateUserPatientInput {
+  address: String
+  birth_date: String!
+  gender: String!
+  job: String
+  main_complaint: String
+  maintal_status: String
+  name: String!
+  patient_badHabits: [CreatePatientBadHabitInput!]
+  patient_diseases: [CreatePatientDiseaseInput!]
+  patient_medicines: [CreatePatientMedicineInput!]
+}
+
+type CreateUserPatientResponse {
+  data: CreateUserPatient
+  message: String
+  status: Int
+}
+
+input CreateWorkingHourInput {
+  """Sun, Mon, Tue, Wed, Thu, Fri, Sat"""
+  day: Days!
+  from: DateTime!
+  open: Boolean!
+  to: DateTime!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+enum Days {
+  Fri
+  Mon
+  Sat
+  Sun
+  Thu
+  Tue
+  Wed
+}
+
+type Disease {
+  diseaseChemicalMaterials: [DiseaseChemicalMaterials!]
+  id: Int!
+  name: String!
+}
+
+type DiseaseChemicalMaterials {
+  """chemical_material"""
+  chemical_material: ChemicalMaterial
+
+  """concentration field """
+  chemical_material_id: Int!
+
+  """chemical_material_id field """
+  disease_id: Int!
+
+  """id field """
+  id: Int!
+}
+
+enum Gender {
+  female
+  male
+}
+
+type GetProducts {
+  name: String!
+  product_id: Int!
+  totalQuantity: Int!
+}
+
+type Lab {
+  address: String!
+  email: String!
+
+  """Example field (placeholder)"""
+  id: Int!
+  name: String!
+  phone: String!
+}
+
+type LabOrder {
+  LabOrderStep: [LabOrderStep!]
+  id: Int!
+  lab: Lab
+  lab_id: Int!
+  name: String!
+  price: String!
+}
+
+type LabOrderStep {
+  id: Int!
+  name: String!
+}
+
+input LoginInput {
+  password: String!
+  phone: String!
+}
+
+type LogoutResponse {
+  loggedOut: Boolean!
+}
+
+type Medicine {
+  """category"""
+  category: Category
+
+  """chemical_material_id field """
+  category_id: Int!
+
+  """concentration field """
+  concentration: Float!
+
+  """id field """
+  id: Int!
+
+  """Problem_type"""
+  medicineChemicalMaterials: [MedicineChemicalMaterials!]
+
+  """name field """
+  name: String!
+}
+
+type MedicineChemicalMaterials {
+  """chemical_material"""
+  chemical_material: ChemicalMaterial
+
+  """concentration field """
+  chemical_material_id: Int!
+
+  """id field """
+  id: Int!
+
+  """chemical_material_id field """
+  medicine_id: Int!
+}
+
+type Meta {
+  total: Float
+}
+
+type Mutation {
+  CheckPhone(checkPhoneInput: PhoneInput!): CheckPhoneResponse!
+  SendOtp(checkPhoneInput: PhoneInput!): SendOtpResponse!
+  createBadHabit(createBadHabitInput: CreateBadHabitInput!): BadHabit!
+  createBookIn(createBookInInput: CreateBookInInput!): BookIn!
+  createBookOut(createBookOutInput: CreateBookOutInput!): BookOut!
+  createCategory(createCategoryInput: CreateCategoryInput!): Category!
+  createChemicalMaterial(createChemicalMaterialInput: CreateChemicalMaterialInput!): ChemicalMaterial!
+  createDisease(createDiseaseInput: CreateDiseaseInput!): Disease!
+  createLab(createLabInput: CreateLabInput!): Lab!
+  createLabOrder(createLabOrderInput: CreateLabOrderInput!): LabOrder!
+  createMedicine(createMedicineInput: CreateMedicineInput!): Medicine!
+  createNotification(createNotificationInput: CreateNotificationInput!): Boolean!
+  createPatient(createPatientInput: CreatePatientInput!): Patient!
+  createPatientAppointment(createPatientAppointmentInput: CreatePatientAppointmentInput!): PatientAppointment!
+  createPatientBadHabit(createPatientBadHabitInput: CreatePatientBadHabitForExistingPatientInput!): PatientBadHabit!
+  createPatientCost(createPatientCostInput: CreatePatientCostInput!): PatientCost!
+  createPatientDiagnosis(createPatientDiagnosisInput: CreatePatientDiagnosisInput!): PatientDiagnosis!
+  createPatientDisease(createPatientDiseaseInput: CreatePatientDiseaseForExistingPatientInput!): PatientDisease!
+  createPatientLabOrder(createPatientLabOrderInput: CreatePatientLabOrderInput!): PatientLabOrder!
+  createPatientMedicalImage(createPatientMedicalImageInput: CreatePatientMedicalImageInput!): PatientMedicalImage!
+  createPatientMedicalImagesType(createPatientMedicalImagesTypeInput: CreatePatientMedicalImagesTypeInput!): PatientMedicalImagesType!
+  createPatientMedicine(createPatientMedicineInput: CreatePatientMedicineForExistingPatientInput!): PatientMedicine!
+  createPatientPayment(createPatientPaymentInput: CreatePatientPaymentInput!): PatientPayment!
+  createPatientPerscrption(createPatientPerscrptionInput: CreatePatientPerscrptionInput!): PatientPerscrption!
+  createPatientPerscrptionsMedicien(createPatientPerscrptionsMedicienInput: CreatePatientPerscrptionsMedicienInput!): PatientPerscrptionsMedicien!
+  createPatientReservation(createPatientReservationInput: CreatePatientReservationInput!): PatientReservation!
+  createPatientSession(createPatientSessionInput: CreatePatientSessionInput!): PatientSession!
+  createPatientTeethTreatment(createPatientTeethTreatmentInput: CreatePatientTeethTreatmentInput!): PatientTeethTreatment!
+  createPatientToUser(CreatePatientInput: CreateUserPatientInput!): CreateUserPatientResponse!
+  createPatientTreatment(createPatientTreatmentInput: CreatePatientTreatmentInput!): PatientTreatment!
+  createPatientTreatmentDoneStep(createPatientTreatmentDoneStepInput: CreatePatientTreatmentDoneStepInput!): PatientTreatmentDoneStep!
+  createProblem(createProblemInput: CreateProblemInput!): Problem!
+  createProblemType(createProblemTypeInput: CreateProblemTypeInput!): ProblemType!
+  createProduct(createProductInput: CreateProductInput!): Product!
+  createTreatment(createTreatmentInput: CreateTreatmentInput!): Treatment!
+  createTreatmentType(createTreatmentTypeInput: CreateTreatmentTypeInput!): TreatmentType!
+  createUserAccount(createUserAccountInput: CreateUserAccountInput!): CreateUserAccountResponse!
+  createWorkingHour(createWorkingHourInput: CreateWorkingHourInput!): WorkingHour!
+  linkPatientToUser: CreateUserPatientResponse!
+  login(loginInput: LoginInput!): AuthResponse!
+  loginDoctor(loginInput: LoginInput!): AuthResponse!
+  logout: LogoutResponse!
+  readMyNotifications(user_id: Float!): Boolean!
+  readNotification(notification_id: Float!): Boolean!
+  removeBadHabit(id: Int!): BadHabit!
+  removeCategory(id: Int!): Category!
+  removeChemicalMaterial(id: Int!): ChemicalMaterial!
+  removeDisease(id: Int!): Disease!
+  removeLab(id: Int!): Lab!
+  removeLabOrder(id: Int!): LabOrder!
+  removeMedicine(id: Int!): Medicine!
+  removePatient(id: Int!): Patient!
+  removePatientAppointment(id: Int!): PatientAppointment!
+  removePatientBadHabit(id: Int!): PatientBadHabit!
+  removePatientCost(id: Int!): PatientCost!
+  removePatientDiagnosis(id: Int!): PatientDiagnosis!
+  removePatientDisease(id: Int!): PatientDisease!
+  removePatientLabOrder(id: Int!): PatientLabOrder!
+  removePatientMedicalImage(id: Int!): PatientMedicalImage!
+  removePatientMedicalImagesType(id: Int!): PatientMedicalImagesType!
+  removePatientMedicine(id: Int!): PatientMedicine!
+  removePatientPayment(id: Int!): PatientPayment!
+  removePatientPerscrption(id: Int!): PatientPerscrption!
+  removePatientPerscrptionsMedicien(id: Int!): PatientPerscrptionsMedicien!
+  removePatientReservation(id: Int!): PatientReservation!
+  removePatientSession(id: Int!): PatientSession!
+  removePatientTeethTreatment(id: Int!): PatientTeethTreatment!
+  removePatientTreatment(id: Int!): PatientTreatment!
+  removeProblem(id: Int!): Problem!
+  removeProblemType(id: Int!): ProblemType!
+  removeProduct(id: Int!): Product!
+  removeStoredProduct(id: Int!): StoredProduct!
+  removeTreatment(id: Int!): Treatment!
+  removeTreatmentType(id: Int!): TreatmentType!
+  removeWorkingHour(id: Int!): WorkingHour!
+  updateAllWorkingHour(updateAllWorkingHour: UpdateAllWorkingHourInput!): [WorkingHour!]!
+  updateBadHabit(id: Int!, updateBadHabitInput: UpdateBadHabitInput!): BadHabit!
+  updateChemicalMaterial(id: Int!, updateChemicalMaterialInput: UpdateChemicalMaterialInput!): ChemicalMaterial!
+  updateDisease(id: Int!, updateDiseaseInput: UpdateDiseaseInput!): Disease!
+  updateLab(id: Int!, updateLabInput: UpdateLabInput!): Lab!
+  updateLabOrder(id: Int!, updateLabOrderInput: UpdateLabOrderInput!): LabOrder!
+  updateMedicine(id: Float!, updateMedicineInput: UpdateMedicineInput!): Medicine!
+  updateOneWorkingHour(updateOneWorkingHour: UpdateWorkingHourInput!): WorkingHour!
+  updatePatient(updatePatientInput: UpdatePatientInput!): Patient!
+  updatePatientAppointment(updatePatientAppointmentInput: UpdatePatientAppointmentInput!): PatientAppointment!
+  updatePatientBadHabit(updatePatientBadHabitInput: UpdatePatientBadHabitInput!): PatientBadHabit!
+  updatePatientCost(updatePatientCostInput: UpdatePatientCostInput!): PatientCost!
+  updatePatientDiagnosis(updatePatientDiagnoseInput: UpdatePatientDiagnosisInput!): PatientDiagnosis!
+  updatePatientDisease(updatePatientDiseaseInput: UpdatePatientDiseaseInput!): PatientDisease!
+  updatePatientLabOrder(updatePatientLabOrderInput: UpdatePatientLabOrderInput!): PatientLabOrder!
+  updatePatientMedicalImage(updatePatientMedicalImageInput: UpdatePatientMedicalImageInput!): PatientMedicalImage!
+  updatePatientMedicalImagesType(updatePatientMedicalImagesTypeInput: UpdatePatientMedicalImagesTypeInput!): PatientMedicalImagesType!
+  updatePatientMedicine(updatePatientMedicineInput: UpdatePatientMedicineInput!): PatientMedicine!
+  updatePatientPayment(updatePatientPaymentInput: UpdatePatientPaymentInput!): PatientPayment!
+  updatePatientPerscrptionsMedicien(updatePatientPerscrptionsMedicienInput: UpdatePatientPerscrptionsMedicienInput!): PatientPerscrptionsMedicien!
+  updatePatientSession(updatePatientSessionInput: UpdatePatientSessionInput!): PatientSession!
+  updatePatientTeethTreatment(updatePatientTeethTreatmentInput: UpdatePatientTeethTreatmentInput!): PatientTeethTreatment!
+  updatePatientTreatment(updatePatientTreatmentInput: UpdatePatientTreatmentInput!): PatientTreatment!
+  updatePatientTreatmentDoneStep(updatePatientTreatmentDoneStepInput: UpdatePatientTreatmentDoneStepInput!): PatientTreatmentDoneStep!
+  updateProblem(id: Int!, updateProblemInput: UpdateProblemInput!): Problem!
+  updateProblemType(id: Int!, updateProblemTypeInput: UpdateProblemTypeInput!): ProblemType!
+  updateProduct(id: Int!, updateProductInput: UpdateProductInput!): Product!
+  updateTreatment(id: Int!, updateTreatmentInput: UpdateTreatmentInput!): Treatment!
+  updateTreatmentType(id: Int!, updateTreatmentTypeInput: UpdateTreatmentTypeInput!): TreatmentType!
+}
+
+type Notification {
+  date: DateTime!
+  id: Int!
+  msg: String!
+  seen: Boolean!
+  title: String!
+  user_id: Int!
+}
+
+type PaginateChemicalMaterial {
+  item_per_page: Int!
+  items: [ChemicalMaterial!]
+  meta: Meta
+  page: Int!
+  totalPages: Int!
+}
+
+type PaginateGetProducts {
+  item_per_page: Int!
+  items: [GetProducts!]
+  meta: Meta
+  page: Int!
+  totalPages: Int!
+}
+
+type PaginateLab {
+  item_per_page: Int!
+  items: [Lab!]
+  meta: Meta
+  page: Int!
+  totalPages: Int!
+}
+
+type PaginateLabOrder {
+  item_per_page: Int!
+  items: [LabOrder!]
+  meta: Meta
+  page: Int!
+  totalPages: Int!
+}
+
+type PaginateNotification {
+  item_per_page: Int!
+  items: [Notification!]
+  meta: Meta
+  page: Int!
+  totalPages: Int!
+}
+
+type PaginateProblem {
+  item_per_page: Int!
+  items: [Problem!]
+  meta: Meta
+  page: Int!
+  totalPages: Int!
+}
+
+type PaginateStoredProduct {
+  item_per_page: Int!
+  items: [StoredProduct!]
+  meta: Meta
+  page: Int!
+  totalPages: Int!
+}
+
+type Paginatebadhabit {
+  item_per_page: Int!
+  items: [BadHabit!]
+  meta: Meta
+  page: Int!
+  totalPages: Int!
+}
+
+type Paginatebookin {
+  item_per_page: Int!
+  items: [BookIn!]
+  meta: Meta
+  page: Int!
+  totalPages: Int!
+}
+
+type PaginatedPatient {
+  item_per_page: Int!
+  items: [Patient!]
+  meta: Meta
+  page: Int!
+  totalPages: Int!
+}
+
+type PaginatedPatientCost {
+  item_per_page: Int!
+  items: [PatientCost!]
+  meta: Meta
+  page: Int!
+  totalPages: Int!
+}
+
+type PaginatedPatientDiagnosis {
+  item_per_page: Int!
+  items: [PatientDiagnosis!]
+  meta: Meta
+  page: Int!
+  totalPages: Int!
+}
+
+type PaginatedPatientPayment {
+  item_per_page: Int!
+  items: [PatientPayment!]
+  meta: Meta
+  page: Int!
+  totalPages: Int!
+}
+
+type Paginatedisease {
+  item_per_page: Int!
+  items: [Disease!]
+  meta: Meta
+  page: Int!
+  totalPages: Int!
+}
+
+type Paginateproduct {
+  item_per_page: Int!
+  items: [Product!]
+  meta: Meta
+  page: Int!
+  totalPages: Int!
+}
+
+input PateintPaymentSortInput {
+  field: String!
+  order: String!
+}
+
+type Patient {
+  PatientBadHabet: [PatientBadHabit!]
+  PatientCost: [PatientCost!]
+  PatientDiagnose: [PatientDiagnosis!]
+  PatientDisease: [PatientDisease!]
+  PatientMedicine: [PatientMedicine!]
+  PatientPayment: [PatientPayment!]
+  PatientTeethTreatment: [PatientTeethTreatment!]
+  address: String
+  birth_date: String
+  gender: Gender!
+  id: Int!
+  job: String
+  main_complaint: String
+  maintal_status: String
+  name: String!
+  phone: String!
+}
+
+type PatientAppointment {
+  """notes"""
+  PatientSession: [PatientSession!]
+
+  """appointment date"""
+  date: DateTime!
+
+  """id"""
+  id: Int!
+
+  """notes"""
+  notes: String
+
+  """patient"""
+  patient: Patient!
+
+  """Patient id"""
+  patient_id: Int!
+
+  """phase"""
+  phase: String
+
+  """treatment place"""
+  place: String
+
+  """AppointmentStates"""
+  state: AppointmentStates!
+
+  """AppointmentTypes"""
+  type: AppointmentTypes!
+}
+
+type PatientBadHabit {
+  bad_habet: BadHabit!
+  bad_habet_id: Int!
+  id: Int!
+  notes: String
+  patient_id: Int!
+  start_date: DateTime
+}
+
+type PatientCost {
+  amount: Float!
+  date: DateTime!
+  description: String
+  id: Int!
+  patient: Patient!
+  patient_id: Int!
+  treatment: Treatment
+  treatment_id: Int
+}
+
+input PatientCostSortInput {
+  field: String!
+  order: String!
+}
+
+type PatientDiagnosis {
+  expected_treatment: String
+  id: Int!
+  patient_id: Int!
+  place: String!
+  problem: Problem!
+  problem_id: Int!
+}
+
+type PatientDisease {
+  disease: Disease!
+  disease_id: Int!
+  id: Int!
+  notes: String
+  patient_id: Int!
+  start_date: DateTime
+  tight: Boolean!
+}
+
+type PatientLabOrder {
+  id: Int!
+  lab_order: LabOrder!
+  lab_order_id: Int!
+  patient_session_id: Int!
+  session: PatientSession!
+}
+
+type PatientMedicalImage {
+  created_at: DateTime!
+  id: Int
+  imageType: PatientMedicalImagesType
+  medical_image_type_id: Int!
+  patient: Patient!
+  patient_id: Int!
+  src: String!
+  title: String!
+}
+
+type PatientMedicalImagesType {
+  PatientMedicalImage: [PatientMedicalImage!]
+  id: Int!
+  name: String!
+}
+
+type PatientMedicine {
+  id: Int!
+  medicine: Medicine!
+  medicine_id: Int!
+  notes: String
+  patient_id: Int!
+  start_date: DateTime
+}
+
+type PatientPayment {
+  Patient: Patient!
+  amount: Float!
+  date: DateTime!
+  description: String
+  id: Int!
+  patient_id: Int!
+}
+
+type PatientPerscrption {
+  Medicine: [Medicine!]!
+  PatientPerscrptionsMedicince: [PatientPerscrptionsMedicien!]!
+  id: Int!
+  patient_perscrption_id: Int!
+  patient_session_id: Int!
+}
+
+type PatientPerscrptionsMedicien {
+  description: String
+  id: Int!
+  medicince: Medicine!
+  medicince_id: Int!
+  patient_perscrption_id: Int!
+  perscrption: PatientPerscrption!
+  qantity: String!
+  repetition: String!
+}
+
+type PatientReservation {
+  date: DateTime!
+  id: Int!
+  notes: String
+  patient: Patient!
+  patient_id: Int!
+}
+
+type PatientSession {
+  PatientLabOrder: [PatientLabOrder!]
+  PatientPerscrptions: [PatientPerscrption!]
+  PatientTreatmentDoneStep: [PatientTreatmentDoneStep!]
+  Treatment: Treatment
+  patient: Patient!
+  patient_appointment: PatientAppointment!
+  patient_id: Int!
+  patiient_appointment_id: Int!
+}
+
+type PatientTeethTreatment {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+type PatientTreatment {
+  PatientTreatmentDoneStep: [PatientTreatmentDoneStep!]
+  id: Int!
+  patient: Patient!
+  patient_id: Int!
+  place: String!
+  price: Float!
+  status: PatientTreatmentStatuses!
+  treatment: Treatment!
+  treatment_id: Int!
+  type: PatientTreatmentTypes!
+}
+
+type PatientTreatmentDoneStep {
+  id: Int!
+  note: String
+  patient_session_id: Int!
+  patient_treatment: PatientTreatment!
+  patient_treatment_id: Int!
+  session: PatientSession!
+  step: Steps!
+  step_id: Int!
+}
+
+enum PatientTreatmentStatuses {
+  done
+  ongoing
+}
+
+enum PatientTreatmentTypes {
+  teethly
+  unteethly
+}
+
+input PhoneInput {
+  phone: String!
+}
+
+type Problem {
+  """Problem_type"""
+  Problem_type: ProblemType!
+
+  """problem id"""
+  id: Int!
+
+  """problem name"""
+  name: String!
+
+  """problem_type_id id"""
+  problem_type_id: Int!
+}
+
+type ProblemType {
+  """Example field (placeholder)"""
+  id: Int!
+  name: String!
+}
+
+type Product {
+  id: Int!
+  name: String!
+}
+
+type Query {
+  badHabit(id: Int!): BadHabit!
+  badHabits(item_per_page: Float, page: Float, search: String): Paginatebadhabit!
+  bookIn(id: Int!): BookIn!
+  bookIns(item_per_page: Float, page: Float, product_id: Int, search: String): Paginatebookin!
+  bookOut(id: Int!): BookOut!
+  bookOuts(item_per_page: Float, page: Float, search: String): [BookOut!]!
+  categories: [Category!]!
+  checkConflictsForPerscriptionMedicines(medicine_ids: [Int!]!, profile_id: Int!): Conflict!
+  chemicalMaterial(id: Int!): ChemicalMaterial!
+  chemicalMaterials(item_per_page: Float, page: Float, search: String): PaginateChemicalMaterial!
+  disease(id: Int!): Disease!
+  diseases(item_per_page: Float, page: Float, search: String): Paginatedisease!
+  getProducts(item_per_page: Float, page: Float, search: String): PaginateGetProducts!
+  lab(id: Int!): Lab!
+  labOrder(id: Int!): LabOrder!
+  labOrders(item_per_page: Float, lab_id: Float, page: Float, search: String): PaginateLabOrder!
+  labs(item_per_page: Float, page: Float, search: String): PaginateLab!
+  medicine(id: Int!): Medicine!
+  medicineConflicts: Conflict!
+  medicines(item_per_page: Float, page: Float, search: String): paginateMedicine!
+  notifications(item_per_page: Float, page: Float, search: String, user_id: Float): PaginateNotification!
+  patient(id: Int!): Patient!
+  patientAppointment(id: Int!): PatientAppointment!
+  patientAppointments(date: DateTime): [PatientAppointment!]!
+  patientBadHabits(patient_id: Int!): [PatientBadHabit!]!
+  patientCosts(item_per_page: Float, page: Float, patient_id: Int, sort: PatientCostSortInput): PaginatedPatientCost!
+  patientDiagnose(id: Int!): PatientDiagnosis!
+  patientDiagnoses(item_per_page: Float, page: Float, patient_id: Float, problem_type_id: Float): PaginatedPatientDiagnosis!
+  patientDiseases(patient_id: Int!): [PatientDisease!]!
+  patientLabOrder(id: Int!): PatientLabOrder!
+  patientLabOrders(lab_order_id: Int, patient_id: Int, patient_session_id: Int): [PatientLabOrder!]!
+  patientMedicalImages(medical_image_type_id: Int, patient_id: Int): [PatientMedicalImage!]!
+  patientMedicalImagesType(id: Int!): PatientMedicalImagesType!
+  patientMedicalImagesTypes: [PatientMedicalImagesType!]!
+  patientMedicines(patient_id: Int!): [PatientMedicine!]!
+  patientPayments(item_per_page: Float, page: Float, patient_id: Int, sort: PateintPaymentSortInput): PaginatedPatientPayment!
+  patientPerscrption(id: Int!): PatientPerscrption!
+  patientPerscrptions(patient_id: Int, patient_session_id: Int): [PatientPerscrption!]!
+  patientPerscrptionsMedicien(id: Int!): PatientPerscrptionsMedicien!
+  patientPerscrptionsMediciens(patient_perscrption_id: Int): [PatientPerscrptionsMedicien!]!
+  patientReservations(patient_id: Int): [PatientReservation!]!
+  patientSession(id: Int!): PatientSession!
+  patientSessions(patient_id: Int): [PatientSession!]!
+  patientTeethTreatment(id: Int!): PatientTeethTreatment!
+  patientTeethTreatments: [PatientTeethTreatment!]!
+  patientTreatment(id: Int!): PatientTreatment!
+  patientTreatmentDoneStep(id: Int!): PatientTreatmentDoneStep!
+  patientTreatmentDoneSteps(patient_session_id: Int, patient_treatment_id: Int): [PatientTreatmentDoneStep!]!
+  patientTreatments(patient_id: Int, status: PatientTreatmentStatuses, type: PatientTreatmentTypes): [PatientTreatment!]!
+  patients(item_per_page: Float, page: Float, search: String): PaginatedPatient!
+  problem(id: Int!): Problem!
+  problemType(id: Int!): ProblemType!
+  problemTypes: [ProblemType!]!
+  problems(item_per_page: Float, page: Float, search: String): PaginateProblem!
+  product(id: Int!): Product!
+  productbookedIn(id: Int!): [BookIn!]!
+  productbookedOut(id: Int!): [BookOut!]!
+  products(item_per_page: Int, page: Int, search: String): Paginateproduct!
+  storedProducts(item_per_page: Int, page: Int, product_id: Int, search: String): PaginateStoredProduct!
+  treatment(id: Int!): Treatment!
+  treatmentType(id: Int!): TreatmentType!
+  treatmentTypes: [TreatmentType!]!
+  treatments(item_per_page: Float, page: Float, search: String): paginateTreatment!
+  workingHour(day: Days!, id: Int!): WorkingHour!
+  workingHours: [WorkingHour!]!
+}
+
+type SendOtp {
+  """Example field (placeholder)"""
+  otp: Int!
+}
+
+type SendOtpResponse {
+  data: SendOtp
+  message: String
+  status: Int
+}
+
+type Steps {
+  id: Int!
+  name: String!
+  subSteps: [SubStep!]
+  treatment_id: Int!
+}
+
+type StoredProduct {
+  expiration_date: DateTime!
+  id: Int!
+  price: Int!
+  product: Product!
+  product_id: Int!
+  quantity: Int!
+  total_quantity: Int!
+}
+
+type SubStep {
+  name: String!
+  step_id: Int!
+}
+
+type Treatment {
+  color: String!
+  id: Int!
+  name: String!
+  price: Float!
+  steps: [Steps!]
+  treatment_type: TreatmentType!
+  treatment_type_id: Int!
+}
+
+type TreatmentType {
+  id: Int!
+  name: String!
+}
+
+input UpdateAllWorkingHourInput {
+  from: DateTime
+  open: Boolean
+  to: DateTime
+}
+
+input UpdateBadHabitInput {
+  chemical_material_id: [Int!]
+  name: String!
+}
+
+input UpdateChemicalMaterialInput {
+  """chemical_material_id field """
+  chemical_material_id: [Int!]
+
+  """Chemical Material"""
+  name: String
+}
+
+input UpdateDiseaseInput {
+  chemical_material_id: [Int!]
+  name: String!
+}
+
+input UpdateLabInput {
+  address: String
+  email: String
+  name: String
+  phone: String
+}
+
+input UpdateLabOrderInput {
+  lab_id: Int
+  name: String
+  price: String
+  steps_names: [String!]
+}
+
+input UpdateMedicineInput {
+  """chemical_material_id field """
+  category_id: Int!
+
+  """chemical_material_id field """
+  chemical_material_id: [Int!]!
+
+  """concentration field """
+  concentration: Int!
+
+  """name field """
+  name: String!
+}
+
+input UpdatePatientAppointmentInput {
+  """appointment date"""
+  date: DateTime
+  id: Int!
+
+  """notes"""
+  notes: String
+
+  """Patient id"""
+  patient_id: Int
+
+  """phase"""
+  phase: String
+
+  """treatment place"""
+  place: String
+
+  """reservation"""
+  reservation_id: Int
+
+  """AppointmentTypes"""
+  type: AppointmentTypes
+}
+
+input UpdatePatientBadHabitInput {
+  bad_habet_id: Int
+  id: Int!
+  notes: String
+  start_date: DateTime
+}
+
+input UpdatePatientCostInput {
+  amount: Float
+  date: DateTime
+  description: String
+  id: Int!
+  patient_id: Int
+  treatment_id: Int
+}
+
+input UpdatePatientDiagnosisInput {
+  expected_treatment: String
+  id: Int!
+  patient_id: Int
+  place: String
+  problem_id: Int
+}
+
+input UpdatePatientDiseaseInput {
+  disease_id: Int
+  id: Int!
+  notes: String
+  patient_id: Int
+  start_date: DateTime
+  tight: Boolean
+}
+
+input UpdatePatientInput {
+  address: String
+  birth_date: String
+  gender: String
+  id: Int!
+  job: String
+  main_complaint: String
+  maintal_status: String
+  name: String
+}
+
+input UpdatePatientLabOrderInput {
+  created_at: DateTime
+  degree: String
+  deliver_at: DateTime
+  directions: String
+  id: Int!
+  lab_order_id: Int
+  notation: [String!]
+  patient_id: Int
+  patient_session_id: Int
+  type: String
+}
+
+input UpdatePatientMedicalImageInput {
+  id: Int!
+  image: Upload
+  medical_image_type_id: Int
+  patient_id: Int
+  title: String
+}
+
+input UpdatePatientMedicalImagesTypeInput {
+  id: Int!
+  name: String
+}
+
+input UpdatePatientMedicineInput {
+  id: Int!
+  medicine_id: Int
+  notes: String
+  patient_id: Int
+  start_date: DateTime
+}
+
+input UpdatePatientPaymentInput {
+  amount: Float
+  date: DateTime
+  description: String
+  id: Int!
+  patient_id: Int
+}
+
+input UpdatePatientPerscrptionsMedicienInput {
+  description: String
+  id: Int!
+  medicince_id: Int
+  patient_perscrption_id: Int
+  qantity: String
+  repetition: String
+}
+
+input UpdatePatientSessionInput {
+  CreatePatientTreatmentDoneStepFromSessionInput: [CreatePatientTreatmentDoneStepFromSessionInput!]
+  createPatientLabOrderFromSessionInput: CreatePatientLabOrderFromSessionInput
+  createPatientPerscrptionFromSessionInput: CreatePatientPerscrptionFromSessionInput
+  id: Int!
+  patient_id: Int
+  patiient_appointment_id: Int
+}
+
+input UpdatePatientTeethTreatmentInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
+input UpdatePatientTreatmentDoneStepInput {
+  id: Int!
+  note: String
+  patient_session_id: Int
+  patient_treatment_id: Int
+  step_id: Int
+}
+
+input UpdatePatientTreatmentInput {
+  id: Int!
+  patient_id: Int
+  place: String
+  price: Float
+  treatment_id: Int
+  type: PatientTreatmentTypes
+}
+
+input UpdateProblemInput {
+  name: String!
+  problem_type_id: Int!
+}
+
+input UpdateProblemTypeInput {
+  name: String!
+}
+
+input UpdateProductInput {
+  name: String!
+}
+
+input UpdateStepInput {
+  name: String!
+  subSteps: [UpdateSubStepInput!]
+}
+
+input UpdateSubStepInput {
+  name: String!
+}
+
+input UpdateTreatmentInput {
+  color: String
+  name: String!
+  price: Float!
+  steps: [UpdateStepInput!]
+  treatment_type_id: Int!
+}
+
+input UpdateTreatmentTypeInput {
+  name: String!
+}
+
+input UpdateWorkingHourInput {
+  """Sun, Mon, Tue, Wed, Thu, Fri, Sat"""
+  day: Days
+  from: DateTime
+  id: Int!
+  open: Boolean
+  to: DateTime
+}
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
+
+type User {
+  id: Int!
+  isVerified: Boolean!
+  phone: String!
+}
+
+type WorkingHour {
+  """Sun Mon ..."""
+  day: Days!
+  from: DateTime!
+  id: Int!
+  open: Boolean!
+  to: DateTime!
+}
+
+type badHabitConflict {
+  """id field """
+  conflict_in_chemicals: [String!]!
+
+  """name field """
+  medicant_name: String!
+}
+
+type medicineConflicts {
+  """id field """
+  message: [String!]!
+
+  """name field """
+  pair_of_medicine: String!
+}
+
+type paginateMedicine {
+  item_per_page: Int!
+  items: [Medicine!]
+  meta: Meta
+  page: Int!
+  totalPages: Int!
+}
+
+type paginateTreatment {
+  item_per_page: Int!
+  items: [Treatment!]
+  meta: Meta
+  page: Int!
+  totalPages: Int!
+}

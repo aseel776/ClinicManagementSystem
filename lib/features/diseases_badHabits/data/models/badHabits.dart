@@ -11,12 +11,16 @@ class BadHabit {
       });
 
   factory BadHabit.fromJson(Map<String, dynamic> json) {
-    final List<dynamic> materialsData = json['badHabitChemicalMaterials'];
+    List<ActiveMaterialModel>? materialsList;
+    if (json.containsKey('badHabitChemicalMaterials')) {
+      final List<dynamic> materialsData = json['badHabitChemicalMaterials'];
 
-    List<ActiveMaterialModel> materialsList = materialsData
-        .map((materialData) =>
-            ActiveMaterialModel.fromJson(materialData['chemical_material']))
-        .toList();
+      materialsList = materialsData
+          .map((materialData) =>
+              ActiveMaterialModel.fromJson(materialData['chemical_material']))
+          .toList();
+    }
+
     return BadHabit(
         id: json['id'], name: json['name'], antiMaterials: materialsList);
   }

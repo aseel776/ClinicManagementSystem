@@ -1,8 +1,10 @@
 import 'package:clinic_management_system/core/app_colors.dart';
 import 'package:clinic_management_system/features/medicine/presentation/widgets/primaryText.dart';
+import 'package:clinic_management_system/features/patients_management/presentation/pages/patients_index.dart';
 import 'package:clinic_management_system/features/patients_management/presentation/widgets/custom_stepper.dart';
 import 'package:clinic_management_system/features/patients_management/presentation/widgets/step2_form.dart';
 import 'package:clinic_management_system/features/patients_management/presentation/widgets/step3_form.dart';
+import 'package:clinic_management_system/sidebar/presentation/pages/sidebar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -21,7 +23,6 @@ StateProvider currentStep = StateProvider((ref) => 0);
 class CreatePatients extends ConsumerWidget {
   double? screenHeight;
   double? screenWidth;
-  int _currentStep = 0;
   CreatePatients({super.key});
 
   @override
@@ -33,16 +34,28 @@ class CreatePatients extends ConsumerWidget {
       body: Align(
         alignment: Alignment.topRight,
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-
-          // mainAxisAlignment: MainAxisAlignment.center,
           children: [
             //banner
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Padding(
+                  padding: EdgeInsets.only(top: screenHeight! * 0.07),
+                  child: TextButton(
+                      style: const ButtonStyle(
+                          backgroundColor:
+                              MaterialStatePropertyAll(Colors.transparent)),
+                      onPressed: () {
+                        ref.watch(pageProvider.notifier).state =
+                            const PatientIndex();
+                      },
+                      child: const Icon(
+                        Icons.arrow_back_outlined,
+                        color: AppColors.black,
+                      )),
+                ),
                 const Padding(
-                  padding: EdgeInsets.only(top: 30.0, right: 20),
+                  padding: EdgeInsets.only(top: 30.0, right: 5),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -73,12 +86,7 @@ class CreatePatients extends ConsumerWidget {
                         transform: Matrix4.diagonal3Values(-1, 1, 1),
                         child: SvgPicture.asset(
                           "assets/svgs/patient_form.svg",
-
                           alignment: Alignment.bottomRight,
-                          // matchTextDirection: true,
-                          // colorFilter: ColorFilter.linearToSrgbGamma(),
-                          // colorBlendMode: BlendMode.hue,
-                          // cacheColorFilter: false,
                         ),
                       )),
                 )
@@ -101,11 +109,7 @@ class CreatePatients extends ConsumerWidget {
                       activeStep: ref.watch(currentStep.notifier).state,
                       children: ref.watch(stepperWidgets.notifier).state,
                       onStepReached: (index) {
-                        print('sasaaaaaa');
-                        print(index);
                         ref.read(currentStep.notifier).state = index;
-                        print(ref.watch(currentStep));
-                        print('sasaaaaaa');
                       },
                       title: const [
                         PrimaryText(
@@ -129,9 +133,6 @@ class CreatePatients extends ConsumerWidget {
                       stepColor: Colors.grey,
                       lineColor: AppColors.black,
                       activeStepColor: AppColors.lightGreen,
-                      // lineLength: 80,
-
-                      // lineLength: 300,
                     ),
                   ),
                 ),

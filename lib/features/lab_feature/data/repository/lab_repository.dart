@@ -83,6 +83,7 @@ class LabRepositoryImpl implements LabRepository {
   @override
   Future<Either<Failure, String>> addNewLab(Lab body) async {
     final response = await gqlClient.mutate(MutationOptions(
+      fetchPolicy: FetchPolicy.noCache,
       document: gql(LabDocsGql.createLab),
       variables: {
         'address': body.address,
@@ -93,7 +94,6 @@ class LabRepositoryImpl implements LabRepository {
     ));
 
     if (!response.hasException && response.data != null) {
-      // Note: Replace "" with the response message
       return right("");
     } else {
       return left(ServerFailure());

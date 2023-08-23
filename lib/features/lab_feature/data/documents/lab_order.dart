@@ -61,7 +61,7 @@ class LabOrderDocsGql {
   // },
 
   static const String createLabOrder = '''
-      mutation CreateLabOrder(\$labId: Int!, \$orderName: String!,,\$price1: String!, \$stepNames: [String!]!) {
+      mutation CreateLabOrder(\$labId: Int!, \$orderName: String!,\$price1: String!, \$stepNames: [String!]!) {
         createLabOrder(createLabOrderInput: {lab_id: \$labId, name: \$orderName, price: \$price1, steps_names: \$stepNames}) {
           id
           lab_id

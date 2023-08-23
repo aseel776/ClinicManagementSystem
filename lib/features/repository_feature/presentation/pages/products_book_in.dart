@@ -42,9 +42,6 @@ class _ProductBookInState extends ConsumerState<ProductBookIn> {
       final state = ref.watch(bookInsProvider.notifier).state;
 
       if (state is LoadedBookInsState) {
-        print("llllll");
-        print(state.totalPages);
-
         ref.watch(totalPagesBookIns.notifier).state = state.totalPages;
       }
     });
@@ -170,7 +167,7 @@ class _ProductBookInState extends ConsumerState<ProductBookIn> {
                             ),
                             GestureDetector(
                               onTap: () {
-                                create_bookIn_popup(context, ref);
+                                createBookInPopup(context, ref);
                               },
                               child: Container(
                                 width: 120,
@@ -197,7 +194,9 @@ class _ProductBookInState extends ConsumerState<ProductBookIn> {
                     ),
                   ),
                   DataTable(
-                    columnSpacing: 120,
+                    columnSpacing: MediaQuery.of(context).size.height * 0.23,
+                    headingRowColor:
+                        MaterialStatePropertyAll(AppColors.lightGreen),
 
                     columns: _buildProductColumns(),
                     rows: (state is LoadedBookInsState)
@@ -303,7 +302,7 @@ class _ProductBookInState extends ConsumerState<ProductBookIn> {
                 bookIn.quantity.toString(),
                 style: Theme.of(context)
                     .textTheme
-                    .bodyText2
+                    .bodyMedium
                     ?.copyWith(color: Colors.black87.withOpacity(.7)),
               ),
             ],
@@ -356,8 +355,7 @@ class _ProductBookInState extends ConsumerState<ProductBookIn> {
     ]);
   }
 
-  Future<dynamic> create_bookIn_popup(
-      BuildContext context, WidgetRef ref) async {
+  Future<dynamic> createBookInPopup(BuildContext context, WidgetRef ref) async {
     // final badHabits = await ref
     //     .watch(badHabitsProvider.notifier)
     //     .getPaginatedBadHabits(10, 1);
@@ -424,7 +422,7 @@ class _ProductBookInState extends ConsumerState<ProductBookIn> {
                                           firstDate: DateTime(1900),
                                           lastDate: DateTime(2100));
                                       if (datePick != null &&
-                                          datePick != bookInDate) {
+                                          datePick != ref.watch(bookInDate)) {
                                         ref.read(bookInDate.notifier).state =
                                             datePick;
 
@@ -434,8 +432,6 @@ class _ProductBookInState extends ConsumerState<ProductBookIn> {
                                             DateFormat("yyyy-MM-dd").format(ref
                                                 .watch(bookInDate.notifier)
                                                 .state!);
-
-                                        print(ref.watch(bookInDateString));
                                       }
                                     }),
                                 const SizedBox(
@@ -471,11 +467,6 @@ class _ProductBookInState extends ConsumerState<ProductBookIn> {
                           width: MediaQuery.of(context).size.width * 0.08,
                           child: ElevatedButton(
                               onPressed: () async {
-                                // BookIn bookIn = BookIn(
-                                //     id: ,
-                                //     product: product,
-                                //     price: price,
-                                //     quantity: quantity);
                                 await ref
                                     .watch(bookInsProvider.notifier)
                                     .createBookIn(

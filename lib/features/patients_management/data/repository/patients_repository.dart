@@ -135,7 +135,7 @@ class PatientsRepositoryImpl implements PatientsRepository {
   Future<Either<Failure, PatientsTable>> getPaginatedSearchPatients(
       double itemPerPage, double page, String search) async {
     final response = await gqlClient.query(QueryOptions(
-      document: gql(PatientsTableDocsGql.patientsDataTable),
+      document: gql(PatientsTableDocsGql.getPatientSearch),
       variables: {'itemPerPage': itemPerPage, 'page': page, 'search': search},
       fetchPolicy: FetchPolicy.noCache,
     ));
@@ -220,8 +220,6 @@ class PatientsRepositoryImpl implements PatientsRepository {
       },
       fetchPolicy: FetchPolicy.noCache,
     ));
-    print("patieintnenasf costssss");
-    print(response);
 
     if (!response.hasException && response.data != null) {
       final Map<String, dynamic> data = response.data!['patientCosts'];
@@ -229,8 +227,6 @@ class PatientsRepositoryImpl implements PatientsRepository {
       final totalPages = data['totalPages'];
 
       final totalAmount = data['meta']['total'];
-
-      print(totalPages);
 
       List<PatientCost> costsList =
           items.map((json) => PatientCost.fromJson(json)).toList();
@@ -255,7 +251,6 @@ class PatientsRepositoryImpl implements PatientsRepository {
       },
       fetchPolicy: FetchPolicy.noCache,
     ));
-    print("responseeeeeeeeee");
     print(response);
 
     if (!response.hasException && response.data != null) {
@@ -265,7 +260,6 @@ class PatientsRepositoryImpl implements PatientsRepository {
       List<PatientBadHabits> badHabitssList =
           items.map((json) => PatientBadHabits.fromJson(json)).toList();
 
-      print(badHabitssList.toString());
       return right(badHabitssList);
     } else {
       return left(ServerFailure());
@@ -364,8 +358,15 @@ class PatientsRepositoryImpl implements PatientsRepository {
       final Map<String, dynamic> data = response.data!;
       final List<dynamic> items = data['patientMedicines'];
 
+      if (items.isEmpty) {
+        return left(ServerFailure());
+      }
+
       List<PatientMedicine> medicinesList =
           items.map((json) => PatientMedicine.fromJson(json)).toList();
+      if (medicinesList.isEmpty) {
+        return left(ServerFailure());
+      }
 
       print(medicinesList.toString());
       return right(medicinesList);

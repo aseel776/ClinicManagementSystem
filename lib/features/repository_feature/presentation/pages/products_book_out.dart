@@ -406,8 +406,8 @@ class _ProductsBookOutState extends ConsumerState<ProductsBookOut> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
+                        const Padding(
+                          padding: EdgeInsets.all(8.0),
                           child: PrimaryText(
                             text: "إخراج كمية",
                             size: 18,
@@ -462,7 +462,7 @@ class _ProductsBookOutState extends ConsumerState<ProductsBookOut> {
                                         borderRadius: BorderRadius.all(
                                             Radius.elliptical(50, 70)))),
                               ),
-                              child: PrimaryText(
+                              child: const PrimaryText(
                                 text: "إخراج",
                                 height: 1.7,
                                 color: AppColors.black,

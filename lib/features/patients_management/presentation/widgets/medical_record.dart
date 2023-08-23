@@ -54,12 +54,12 @@ class _MedicalRecordState extends ConsumerState<MedicalRecord> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (widget.patient.id != null) {
-        // await ref
-        //     .watch(patientsProvider.notifier)
-        //     .getPatientBadHabits(widget.patient.id!);
-        // await ref
-        //     .watch(patientsProvider.notifier)
-        //     .getPatientDiseases(widget.patient.id!);
+        await ref
+            .watch(patientsProvider.notifier)
+            .getPatientBadHabits(widget.patient.id!);
+        await ref
+            .watch(patientsProvider.notifier)
+            .getPatientDiseases(widget.patient.id!);
 
         await ref
             .watch(patientsProvider.notifier)
@@ -120,11 +120,11 @@ class _MedicalRecordState extends ConsumerState<MedicalRecord> {
               width: screenWidth * 0.5,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
-                itemCount: widget.patient.patientDiseases.length,
+                itemCount: widget.patient.patientDiseases!.length,
                 itemBuilder: (context, index) {
                   return Padding(
                       padding: const EdgeInsets.only(right: 8.0),
-                      child: (widget.patient.patientDiseases.isNotEmpty)
+                      child: (widget.patient.patientDiseases!.isNotEmpty)
                           ? SizedBox(
                               width: screenWidth * 0.08,
                               height: screenHeight * 0.18,

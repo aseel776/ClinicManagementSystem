@@ -40,6 +40,8 @@ abstract class PatientsCrudRespository {
   Future<Either<Failure, String>> deletePatientDiagnosis(int? id);
   Future<Either<Failure, String>> editPatientDiagnosis(
       PatientDiagnosis patientDiagnosis);
+  Future<Either<Failure, String>> createNewPatientDiagnosis(
+      PatientDiagnosis patientDiagnosis);
 }
 
 class PatientsCrudRepositoryImpl implements PatientsCrudRespository {

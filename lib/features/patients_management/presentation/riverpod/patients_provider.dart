@@ -357,6 +357,62 @@ class PatientsNotifier extends StateNotifier<PatientsState> {
     }
   }
 
+  //  Future<void> (
+  //   double itemPerPage,
+  //   double page,
+  //   double patientId,
+  //   String sort_field,
+  //   String sort_order,
+  // ) async {
+  //   print("patientPaymentsState");
+  //   print(state);
+  //   if (state is LoadedPatientsState) {
+  //     final state1 = state;
+  //     final totalPages;
+
+  //     if (state1 is LoadedPatientsState) {
+  //       totalPages = state1.totalPages;
+  //     } else {
+  //       totalPages = 0;
+  //     }
+  //     List<Patient> updatedPatients = [
+  //       ...state.patients
+  //     ]; // Make a copy of the list
+
+  //     int patientIndex =
+  //         updatedPatients.indexWhere((patient) => patient.id == patientId);
+  //     // state = LoadingPatientsState();
+
+  //     if (patientIndex != -1) {
+  //       final response = await repositoryImpl.getPatientPayments(
+  //         itemPerPage,
+  //         page,
+  //         patientId,
+  //         sort_field,
+  //         sort_order,
+  //       );
+  //       late PatientPaymentsTable paymentsList;
+  //       response.fold((failure) {
+  //         ErrorPatientsState(message: _mapFailureToMessage(failure));
+  //       }, (payments) {
+  //         paymentsList = payments;
+  //       });
+
+  //       // Update the patientPayments for the specific patient
+  //       updatedPatients[patientIndex].patientPayments =
+  //           paymentsList; // Update the patient in the copied list
+
+  //       // Notify the state that the data has changed
+  //       state = LoadedPatientsState(
+  //         patients: updatedPatients,
+  //         totalPages: totalPages,
+  //       );
+  //     }
+  //   }
+  //   print("state afterrrrrrrrPayments");
+  //   print(state);
+  // }
+
   Future<void> getPatientDiagnosis(
     double itemPerPage,
     double page,
@@ -364,6 +420,7 @@ class PatientsNotifier extends StateNotifier<PatientsState> {
     int problemTypeId,
   ) async {
     print("getDiagnosis enter");
+    print(state);
     if (state is LoadedPatientsState) {
       final state1 = state;
       final totalPages;
@@ -393,7 +450,7 @@ class PatientsNotifier extends StateNotifier<PatientsState> {
             diagnosisList; // Update the patient in the copied list
 
         // Notify the state that the data has changed
-        state = LoadingPatientsState();
+        // state = LoadingPatientsState();
         state = LoadedPatientsState(
           patients: updatedPatients,
           totalPages: totalPages,
