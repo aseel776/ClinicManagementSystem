@@ -28,15 +28,11 @@ class PatientIndexState extends ConsumerState<PatientIndex> {
   @override
   void initState() {
     super.initState();
-    // ref.watch(patientsProvider).getPaginatedBadHabits(10, 1);
-
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await ref.watch(patientsProvider.notifier).getPaginatedPatients(5, 1);
       final state = ref.watch(patientsProvider.notifier).state;
       if (state is LoadedPatientsState) {
         ref.watch(totalPagesPatientsTable.notifier).state = state.totalPages;
-        print("blablabal");
-        print(ref.watch(totalPagesPatientsTable.notifier).state);
       }
     });
   }
@@ -84,22 +80,22 @@ class PatientIndexState extends ConsumerState<PatientIndex> {
               shape: BoxShape.rectangle,
             ),
             margin: const EdgeInsets.only(
-              top: defaultSpace * 2,
-              left: defaultSpace,
-              right: defaultSpace * 2,
-              bottom: defaultSpace * 0,
-            ),
+                // top: defaultSpace * 1,
+                // left: defaultSpace,
+                // right: defaultSpace * 2,
+                // bottom: defaultSpace * 0,
+                ),
             child: SingleChildScrollView(
               child: Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(bottom: defaultSpace * 3),
+                    padding: const EdgeInsets.only(bottom: defaultSpace * 2),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Container(
-                          width: 400,
-                          height: 40,
+                          width: MediaQuery.of(context).size.width * 0.3,
+                          height: MediaQuery.of(context).size.width * 0.038,
                           decoration: BoxDecoration(
                             color: backgroundColor.withOpacity(.5),
                             shape: BoxShape.rectangle,
@@ -127,7 +123,10 @@ class PatientIndexState extends ConsumerState<PatientIndex> {
                                     controller:
                                         ref.watch(patientSearch.notifier).state,
                                     onChanged: (search) {
-                                      print(search);
+                                      ref
+                                          .watch(patientsProvider.notifier)
+                                          .getPaginatedSearchPatients(
+                                              5, 1, search);
                                       ref
                                           .watch(
                                               currentPagePatientsTable.notifier)
@@ -136,7 +135,6 @@ class PatientIndexState extends ConsumerState<PatientIndex> {
                                           .watch(patientsProvider.notifier)
                                           .getPaginatedSearchPatients(
                                               5, 1, search);
-                                      print('end');
                                     },
                                     style: const TextStyle(fontSize: 12),
                                     decoration: const InputDecoration(
@@ -148,9 +146,7 @@ class PatientIndexState extends ConsumerState<PatientIndex> {
                               ButtonWidgetWithIcon(
                                 icon: Icons.keyboard_arrow_down_outlined,
                                 label: 'Filter',
-                                onTap: () {
-                                  print("filter clicked");
-                                },
+                                onTap: () {},
                               ),
                             ],
                           ),
@@ -213,7 +209,8 @@ class PatientIndexState extends ConsumerState<PatientIndex> {
                             )
                           : (state is LoadedPatientsState)
                               ? DataTable(
-                                  columnSpacing: 80,
+                                  columnSpacing:
+                                      MediaQuery.of(context).size.width * 0.08,
 
                                   columns: _buildProductColumns(),
                                   rows: (state is LoadedPatientsState)
@@ -238,7 +235,6 @@ class PatientIndexState extends ConsumerState<PatientIndex> {
               totalPages: totalPages,
               currentPage: currentPage,
               onPageSelected: (i) async {
-                print("iiiii");
                 print(i);
                 await ref
                     .watch(patientsProvider.notifier)

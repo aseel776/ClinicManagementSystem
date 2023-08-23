@@ -27,7 +27,7 @@ class Patient extends Equatable {
   PatientPaymentsTable? patientPayments;
   PatientCostsTable? patientCosts;
   List<PatientMedicalImage>? patientImages;
-  List<PatientDiagnosis>? patientDiagnosis;
+  List<PatientDiagnosis>? patientDiagnosis = [];
 
   Patient(
       {this.id,
@@ -45,7 +45,7 @@ class Patient extends Equatable {
       this.patientPayments,
       this.patientCosts,
       this.patientImages = const [],
-      this.patientDiagnosis = const []});
+      this.patientDiagnosis});
 
   factory Patient.fromJson(Map<String, dynamic> json) {
     final patientMedicinesList = (json['patient_medicines'] as List<dynamic>?)
@@ -77,7 +77,7 @@ class Patient extends Equatable {
     return Patient(
         id: json['id'],
         address: json['address'],
-        birthDate: json['birth_date'],
+        // birthDate: json['birth_date'],
         gender: json['gender'],
         job: json.containsKey('job') ? json['job'] : null,
         mainComplaint: json['main_complaint'],

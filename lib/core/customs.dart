@@ -1,4 +1,4 @@
-import 'app_colors.dart';
+import './app_colors.dart';
 import 'package:flutter/material.dart';
 
 const typeFieldBorder = UnderlineInputBorder(
@@ -60,3 +60,62 @@ final upsertFieldEnabledBorder = OutlineInputBorder(
   borderRadius: BorderRadius.circular(20),
   borderSide: const BorderSide(color: Colors.black38),
 );
+
+//////////////////////////////////////////////////
+
+decorateInsertMaterialField({required double horizontalPadding, required double verticalPadding}) {
+  return InputDecoration(
+    filled: true,
+    fillColor: Colors.white,
+    focusColor: Colors.white,
+    contentPadding: EdgeInsets.symmetric(
+      vertical: verticalPadding,
+      horizontal: horizontalPadding,
+    ),
+    border: insertMaterialBorder,
+    focusedBorder: insertMaterialBorder,
+    errorBorder: insertMaterialBorder,
+    focusedErrorBorder: insertMaterialBorder,
+    enabledBorder: insertMaterialBorder,
+    errorStyle: TextStyle(
+      fontFamily: 'Cairo',
+      color: Colors.red[600]!,
+      fontSize: 14,
+    ),
+  );
+}
+
+final insertMaterialBorder = OutlineInputBorder(
+  borderRadius: BorderRadius.circular(10),
+  borderSide: const BorderSide(
+    color: Colors.white70,
+  ),
+);
+
+const notesDecoration = InputDecoration(
+  contentPadding: EdgeInsets.all(10),
+  border: InputBorder.none,
+  focusedBorder: InputBorder.none,
+  enabledBorder: InputBorder.none,
+  hintText: 'أدخل ملاحظاتك',
+  hintStyle: TextStyle(
+    fontFamily: 'Cairo',
+    color: Colors.grey,
+    fontSize: 16,
+  ),
+);
+
+createNotesDecoration(bool enabled){
+  return InputDecoration(
+    contentPadding: const EdgeInsets.all(10),
+    border: InputBorder.none,
+    focusedBorder: InputBorder.none,
+    enabledBorder: InputBorder.none,
+    hintText: enabled ? 'أدخل ملاحظاتك' : '',
+    hintStyle: const TextStyle(
+      fontFamily: 'Cairo',
+      color: Colors.grey,
+      fontSize: 16,
+    ),
+  );
+}

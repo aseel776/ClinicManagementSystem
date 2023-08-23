@@ -23,14 +23,16 @@ class BadHabitCard extends ConsumerWidget {
           children: [
             Chip(
               backgroundColor: Colors.grey.withOpacity(0.3),
-              label: PrimaryText(text: "notFound", color: Colors.white),
+              label: PrimaryText(
+                  text: patientBadHabits.badHabit!.id.toString() ?? "",
+                  color: Colors.white),
             ),
             const SizedBox(width: 8),
             const SizedBox(width: 8),
             Chip(
               backgroundColor: Colors.blue.withOpacity(0.3),
               label: Text(
-                patientBadHabits.date ?? '',
+                patientBadHabits.badHabit!.name ?? '',
                 style: const TextStyle(color: Colors.white),
               ),
             ),

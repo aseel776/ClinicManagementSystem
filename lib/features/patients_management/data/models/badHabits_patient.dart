@@ -11,7 +11,7 @@ class PatientBadHabits extends Equatable {
   PatientBadHabits({this.id, this.date, this.notes, this.badHabit});
 
   factory PatientBadHabits.fromJson(Map<String, dynamic> json) {
-    final badHabitJson = json['badHabit'];
+    final badHabitJson = json['bad_habet'];
 
     return PatientBadHabits(
       id: json['id'],

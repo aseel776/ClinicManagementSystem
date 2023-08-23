@@ -29,7 +29,7 @@ class _BadHabitsState extends ConsumerState<BadHabits> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await ref.watch(badHabitsProvider.notifier).getPaginatedBadHabits(8, 1);
-      final state = ref.watch(badHabitsProvider.notifier).state;
+      final state = ref.watch(badHabitsProvider);
       if (state is LoadedBadHabitsState) {
         ref.watch(totalPagesBadHabitsTable.notifier).state = state.totalPages;
         print("blablabal");
@@ -40,7 +40,7 @@ class _BadHabitsState extends ConsumerState<BadHabits> {
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(badHabitsProvider.notifier).state;
+    final state = ref.watch(badHabitsProvider);
     final totalPages = ref.watch(totalPagesBadHabitsTable);
     final currentPage = ref.watch(currentPageBadHabitsTable);
     ref.watch(badHabitsProvider);

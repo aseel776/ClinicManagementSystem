@@ -31,8 +31,6 @@ class LabOrderScreen extends ConsumerStatefulWidget {
 }
 
 class _LabOrderScreenState extends ConsumerState<LabOrderScreen> {
-  List<bool> _isExpandedList = [];
-
   @override
   void initState() {
     super.initState();
@@ -43,7 +41,6 @@ class _LabOrderScreenState extends ConsumerState<LabOrderScreen> {
       final state = ref.watch(labOrdersProvider.notifier).state;
       if (state is LoadedLabOrdersState) {
         ref.watch(totalPagesLabOrders.notifier).state = state.totalPages;
-        _isExpandedList = List.generate(state.labOrders.length, (_) => false);
       }
     });
   }
@@ -54,19 +51,19 @@ class _LabOrderScreenState extends ConsumerState<LabOrderScreen> {
   Widget build(BuildContext context) {
     ref.watch(currentPageLabOrders);
     ref.watch(totalPagesLabOrders);
-    final state = ref.watch(labOrdersProvider.notifier).state;
+    final state = ref.watch(labOrdersProvider);
     ref.watch(labOrdersProvider);
+
     return Column(
       children: [
         Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Padding(
+            const Padding(
               padding: EdgeInsets.only(top: 30.0, right: 20),
               child: Align(
                 alignment: Alignment.topRight,
                 child: Column(
-                  // mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     PrimaryText(
@@ -101,14 +98,14 @@ class _LabOrderScreenState extends ConsumerState<LabOrderScreen> {
                       ),
                     ),
                     onPressed: () {
-                      add_edit_order_popup(context, ref, true, null);
+                      addEditOrderPopup(context, ref, true, null);
                     },
                     child: const PrimaryText(text: " إضافة خدمة")),
               ),
             )
           ],
         ),
-        SizedBox(height: 30),
+        const SizedBox(height: 30),
         Column(
           children: [
             if (state is LoadedLabOrdersState)
@@ -121,7 +118,7 @@ class _LabOrderScreenState extends ConsumerState<LabOrderScreen> {
                     // color: Colors.amber,
                     borderRadius: BorderRadius.circular(15)),
                 child: ExpansionPanelList(
-                  expandedHeaderPadding: EdgeInsets.all(0),
+                  expandedHeaderPadding: const EdgeInsets.all(0),
                   elevation: 2,
                   dividerColor: Colors.white,
                   expansionCallback: (int index, bool isExpanded) {
@@ -131,12 +128,48 @@ class _LabOrderScreenState extends ConsumerState<LabOrderScreen> {
                   },
                   children: state.labOrders.asMap().entries.map((entry) {
                     final index = entry.key;
-                    final labOrder = entry.value;
+                    final labOrder1 = entry.value;
                     return ExpansionPanel(
                       headerBuilder: (BuildContext context, bool isExpanded) {
                         return ListTile(
-                          title: Text(labOrder.name),
-                          subtitle: Text("السعر ${labOrder.price}"),
+                          title: Text(labOrder1.name),
+                          subtitle: Text("السعر ${labOrder1.price}"),
+                          trailing: Padding(
+                            padding: EdgeInsets.only(
+                                left: MediaQuery.of(context).size.width * 0.1),
+                            child: TextButton(
+                              style: const ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStatePropertyAll(Colors.white)),
+                              onPressed: () {
+                                ref.watch(nameLabOrder.notifier).state.text =
+                                    labOrder1.name;
+                                ref.watch(priceLabOrder.notifier).state.text =
+                                    labOrder1.price.toString();
+                                for (var entry
+                                    in labOrder1.steps!.asMap().entries) {
+                                  var index = entry.key;
+                                  var step = entry.value;
+
+                                  ref.watch(stepControllers).add(
+                                      TextEditingController(text: step.name));
+
+                                  ref
+                                      .watch(stepControllers.notifier)
+                                      .state[index]
+                                      .text = step.name;
+                                }
+
+                                // ref.watch(stepControllers.notifier).state
+                                addEditOrderPopup(
+                                    context, ref, false, labOrder1.id);
+                              },
+                              child: const Icon(
+                                Icons.edit,
+                                color: AppColors.lightGreen,
+                              ),
+                            ),
+                          ),
                         );
                       },
                       body: Row(
@@ -144,26 +177,7 @@ class _LabOrderScreenState extends ConsumerState<LabOrderScreen> {
                           Expanded(
                             child: LabOrderStepsPanel(
                               steps:
-                                  labOrder.steps!.map((e) => e.name).toList(),
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(
-                                left: MediaQuery.of(context).size.width * 0.1),
-                            child: ElevatedButton(
-                              style: ButtonStyle(
-                                  backgroundColor: MaterialStatePropertyAll(
-                                      AppColors.black)),
-                              onPressed: () {
-                                ref.watch(nameLabOrder.notifier).state.text =
-                                    labOrder.name;
-                                ref.watch(priceLabOrder.notifier).state.text =
-                                    labOrder.price.toString();
-                                // ref.watch(stepControllers.notifier).state
-                                add_edit_order_popup(
-                                    context, ref, false, labOrder.id);
-                              },
-                              child: Icon(Icons.edit),
+                                  labOrder1.steps!.map((e) => e.name).toList(),
                             ),
                           ),
                         ],
@@ -194,10 +208,12 @@ class _LabOrderScreenState extends ConsumerState<LabOrderScreen> {
     );
   }
 
-  Future<dynamic> add_edit_order_popup(
+  Future<dynamic> addEditOrderPopup(
       BuildContext context, WidgetRef ref, bool addOrEdit, int? orderID) async {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
+    final _formKey = GlobalKey<FormState>();
+    ref.watch(stepControllers);
 
     return showDialog(
         context: context,
@@ -212,124 +228,134 @@ class _LabOrderScreenState extends ConsumerState<LabOrderScreen> {
                   return SizedBox(
                     width: screenWidth * 0.4,
                     height: screenHeight * 0.7,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: PrimaryText(
-                            text:
-                                addOrEdit ? "إضافة خدمة جديدة" : "تعديل خدمة ",
-                            size: 18,
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: PrimaryText(
+                              text: addOrEdit
+                                  ? "إضافة خدمة جديدة"
+                                  : "تعديل خدمة ",
+                              size: 18,
+                            ),
                           ),
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        SizedBox(
-                          width: screenWidth * 0.2,
-                          child: textfield("اسم الخدمة",
-                              ref.watch(nameLabOrder.notifier).state, "", 1),
-                        ),
-                        SizedBox(
-                          height: screenHeight * 0.03,
-                        ),
-                        SizedBox(
-                          width: screenWidth * 0.2,
-                          child: textfield("سعر الخدمة",
-                              ref.watch(priceLabOrder.notifier).state, "", 1),
-                        ),
-                        SizedBox(
-                          height: screenHeight * 0.03,
-                        ),
-                        StepInputScreen(),
-                        SizedBox(
-                          width: screenWidth * 0.08,
-                          child: ElevatedButton(
-                              onPressed: () async {
-                                if (addOrEdit) {
-                                  LabOrder labOrder = LabOrder(
-                                    labId: widget.lab.id!,
-                                    name: ref
-                                        .watch(nameLabOrder.notifier)
-                                        .state
-                                        .text,
-                                    price: int.tryParse(ref
-                                        .watch(priceLabOrder.notifier)
-                                        .state
-                                        .text),
-                                    // steps: ref
-                                    //     .watch(stepControllers.notifier)
-                                    //     .state
-                                    //     .map((e) => e.text)
-                                    //     .toList()
-                                  );
-                                  List<String> steps = ref
-                                      .watch(stepControllers.notifier)
-                                      .state
-                                      .map((e) => e.text)
-                                      .toList();
-                                  await ref
-                                      .watch(labOrderCrudProvider.notifier)
-                                      .addLabOrder(labOrder, steps)
-                                      .then((value) {
-                                    ref
-                                        .watch(labOrdersProvider.notifier)
-                                        .getPaginatedLabOrders(
-                                            widget.lab.id!, 5, 1);
-                                    ref
-                                        .read(currentPageLabOrders.notifier)
-                                        .state = 1;
-                                  });
-                                  Navigator.of(context).pop();
-                                } else {
-                                  LabOrder labOrder = LabOrder(
-                                      id: orderID,
-                                      labId: widget.lab.id!,
-                                      name: ref
-                                          .watch(nameLabOrder.notifier)
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          SizedBox(
+                            width: screenWidth * 0.2,
+                            child: textfield(
+                                "اسم الخدمة",
+                                ref.watch(nameLabOrder.notifier).state,
+                                "قم بإضافة اسم",
+                                1),
+                          ),
+                          SizedBox(
+                            height: screenHeight * 0.03,
+                          ),
+                          SizedBox(
+                            width: screenWidth * 0.2,
+                            child: textfield(
+                                "سعر الخدمة",
+                                ref.watch(priceLabOrder.notifier).state,
+                                "ادخل سعر الخدمة",
+                                1),
+                          ),
+                          SizedBox(
+                            height: screenHeight * 0.03,
+                          ),
+                          StepInputScreen(),
+                          SizedBox(
+                            height: screenHeight * 0.1,
+                          ),
+                          SizedBox(
+                            width: screenWidth * 0.08,
+                            child: ElevatedButton(
+                                onPressed: () async {
+                                  if (_formKey.currentState!.validate()) {
+                                    if (addOrEdit) {
+                                      LabOrder labOrder = LabOrder(
+                                        labId: widget.lab.id!,
+                                        name: ref
+                                            .watch(nameLabOrder.notifier)
+                                            .state
+                                            .text,
+                                        price: int.tryParse(ref
+                                            .watch(priceLabOrder.notifier)
+                                            .state
+                                            .text),
+                                      );
+                                      List<String> steps = ref
+                                          .watch(stepControllers.notifier)
                                           .state
-                                          .text,
-                                      price: int.tryParse(ref
-                                          .watch(priceLabOrder.notifier)
+                                          .map((e) => e.text)
+                                          .toList();
+                                      await ref
+                                          .watch(labOrderCrudProvider.notifier)
+                                          .addLabOrder(labOrder, steps)
+                                          .then((value) {
+                                        ref
+                                            .watch(labOrdersProvider.notifier)
+                                            .getPaginatedLabOrders(
+                                                widget.lab.id!, 5, 1);
+                                        ref
+                                            .read(currentPageLabOrders.notifier)
+                                            .state = 1;
+                                      });
+                                      Navigator.of(context).pop();
+                                    } else {
+                                      LabOrder labOrder = LabOrder(
+                                          id: orderID,
+                                          labId: widget.lab.id!,
+                                          name: ref
+                                              .watch(nameLabOrder.notifier)
+                                              .state
+                                              .text,
+                                          price: int.tryParse(ref
+                                              .watch(priceLabOrder.notifier)
+                                              .state
+                                              .text));
+                                      List<String> steps = ref
+                                          .watch(stepControllers.notifier)
                                           .state
-                                          .text));
-                                  List<String> steps = ref
-                                      .watch(stepControllers.notifier)
-                                      .state
-                                      .map((e) => e.text)
-                                      .toList();
+                                          .map((e) => e.text)
+                                          .toList();
 
-                                  await ref
-                                      .watch(labOrderCrudProvider.notifier)
-                                      .editLabOrder(labOrder, steps)
-                                      .then((value) {
-                                    ref
-                                        .watch(labOrdersProvider.notifier)
-                                        .getPaginatedLabOrders(
-                                            widget.lab.id!, 5, 1);
-                                    ref
-                                        .read(currentPageLabOrders.notifier)
-                                        .state = 1;
-                                  });
-                                  Navigator.pop(context);
-                                }
-                              },
-                              style: const ButtonStyle(
-                                backgroundColor: MaterialStatePropertyAll(
-                                    AppColors.lightGreen),
-                                shape: MaterialStatePropertyAll(
-                                    RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.elliptical(50, 70)))),
-                              ),
-                              child: PrimaryText(
-                                text: addOrEdit ? "إضافة" : "تعديل",
-                                height: 1.7,
-                                color: AppColors.black,
-                              )),
-                        )
-                      ],
+                                      await ref
+                                          .watch(labOrderCrudProvider.notifier)
+                                          .editLabOrder(labOrder, steps)
+                                          .then((value) {
+                                        ref
+                                            .watch(labOrdersProvider.notifier)
+                                            .getPaginatedLabOrders(
+                                                widget.lab.id!, 5, 1);
+                                        ref
+                                            .read(currentPageLabOrders.notifier)
+                                            .state = 1;
+                                      });
+                                      Navigator.pop(context);
+                                    }
+                                  }
+                                },
+                                style: const ButtonStyle(
+                                  backgroundColor: MaterialStatePropertyAll(
+                                      AppColors.lightGreen),
+                                  shape: MaterialStatePropertyAll(
+                                      RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.elliptical(50, 70)))),
+                                ),
+                                child: PrimaryText(
+                                  text: addOrEdit ? "إضافة" : "تعديل",
+                                  height: 1.7,
+                                  color: AppColors.black,
+                                )),
+                          )
+                        ],
+                      ),
                     ),
                   );
                 }),

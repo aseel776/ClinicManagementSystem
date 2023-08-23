@@ -1,10 +1,29 @@
+import 'package:clinic_management_system/features/appointments_sessions/presentation/widgets/apps_main_section.dart';
 import 'package:clinic_management_system/features/diseases_badHabits/presentation/pages/general.dart';
-import 'package:clinic_management_system/features/medicine/data/model/medicine_model.dart';
 import 'package:clinic_management_system/features/medicine/presentation/Pages/medicine_page.dart';
-import 'package:clinic_management_system/features/treatments_feature/presentation/sections/main_section.dart';
 import 'package:clinic_management_system/sidebar/presentation/pages/sidebar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:clinic_management_system/features/treatments_feature/presentation/sections/main_section.dart';
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 import 'core/app_colors.dart';
 import 'core/primaryText.dart';
@@ -50,14 +69,16 @@ class MainPage1 extends ConsumerWidget {
         backgroundColor: AppColors.black.withOpacity(0.9),
         elevation: 10,
         toolbarHeight: MediaQuery.of(context).size.height * 0.07,
-        title: const Padding(
+        title: Padding(
           padding: EdgeInsets.only(right: 20.0),
           child: Row(
             children: [
-              Text(
-                "Logo",
-                style: TextStyle(fontSize: 30),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.05,
+                  // width: MediaQuery.of(context).size.width * .04
+                  child: Image.asset("assets/images/logo2.png", fit: BoxFit.fill,)
               ),
+             // AssetImage("assets/images/logo.png"),
               Padding(
                 padding: EdgeInsets.only(right: 20.0),
                 child: PrimaryText(

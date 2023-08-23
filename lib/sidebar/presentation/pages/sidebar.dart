@@ -1,19 +1,15 @@
-import 'package:clinic_management_system/features/diseases_badHabits/presentation/pages/general.dart';
+import 'package:clinic_management_system/features/appointments_sessions/presentation/widgets/apps_main_section.dart';
 import 'package:clinic_management_system/features/lab_feature/presentation/pages/lab_screen.dart';
-import 'package:clinic_management_system/features/medicine/data/model/active_materials.dart';
-import 'package:clinic_management_system/features/medicine/presentation/Pages/medicine_page.dart';
-import 'package:clinic_management_system/features/patients_management/presentation/pages/patients.dart';
 import 'package:clinic_management_system/features/patients_management/presentation/pages/patients_index.dart';
 import 'package:clinic_management_system/features/repository_feature/presentation/pages/repository.dart';
 import 'package:clinic_management_system/features/treatments_feature/presentation/sections/main_section.dart';
 import 'package:flutter/material.dart';
-import '../../../features/active_materials_feature/presentation/widgets/main_section.dart';
 import '../widgets/navbar_item.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final pageProvider = StateProvider<Widget>((ref) => General());
+final pageProvider = StateProvider<Widget>((ref) => AppointmentsMainSection());
 final SelectedPageProvider =
-    StateProvider<List<bool>>((ref) => [false, false, false, false, false]);
+    StateProvider<List<bool>>((ref) => [true, false, false, false, false]);
 
 class Sidebar extends ConsumerStatefulWidget {
   const Sidebar({super.key});
@@ -32,22 +28,20 @@ class NavBarData {
 
 class _SidebarState extends ConsumerState<Sidebar> {
   Map<NavBarData, Widget> nameToRoute = {
-    NavBarData(
-        pageName: "Appointment",
-        svgIconPath: "assets/svgs/dashboard.svg"): MedicinePage(),
-    NavBarData(
-        pageName: "Repository",
-        svgIconPath: "assets/svgs/appointment.svg"): RepositoryScreen(),
-    NavBarData(pageName: "Patients", svgIconPath: "assets/svgs/patients.svg"):
+    NavBarData(pageName: "المواعيد", svgIconPath: "assets/svgs/dashboard.svg"):
+        AppointmentsMainSection(),
+    NavBarData(pageName: "المرضى", svgIconPath: "assets/svgs/appointment.svg"):
         PatientIndex(),
-    NavBarData(pageName: "labs", svgIconPath: "assets/svgs/repository.svg"):
+    NavBarData(pageName: "المخابر", svgIconPath: "assets/svgs/patients.svg"):
         LabsScreen(),
-    // NavBarData(pageName: "Payments", svgIconPath: "assets/svgs/payments.svg"):
-    //     LabsScreen()
+    NavBarData(pageName: "المستودع", svgIconPath: "assets/svgs/patients.svg"):
+        RepositoryScreen(),
+    NavBarData(pageName: "المعالجات", svgIconPath: "assets/svgs/patients.svg"):
+        TreatmentsMainSection(),
   };
 
   void select(int n, WidgetRef ref) {
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 5; i++) {
       if (i == n) {
         ref.read(SelectedPageProvider.notifier).state[i] = true;
 
@@ -65,10 +59,10 @@ class _SidebarState extends ConsumerState<Sidebar> {
       children: [
         Padding(
           padding: EdgeInsets.only(
-              top: MediaQuery.of(context).size.height * 0.2, right: 8, left: 8),
+              top: MediaQuery.of(context).size.height * 0.1, right: 8, left: 8),
           child: Container(
             margin: const EdgeInsets.all(8.0),
-            height: MediaQuery.of(context).size.height * 0.5,
+            height: MediaQuery.of(context).size.height * 0.6,
             width: MediaQuery.of(context).size.width * 0.14,
             decoration: BoxDecoration(
               color: const Color(0xff252525),

@@ -287,7 +287,8 @@ class _Step3FormState extends ConsumerState<Step3Form> {
                     .watch(patientsCrudProvider.notifier)
                     .createNewPatient(newPatient)
                     .then((value) {
-                  // ref.watch(patientsProvider)
+                      ref.watch(patientsProvider.notifier).getPaginatedPatients(5, 1);
+                      ref.read(currentPagePatientsTable.notifier).state = 1;
                   ref.watch(pageProvider.notifier).state = PatientIndex();
                 });
               },

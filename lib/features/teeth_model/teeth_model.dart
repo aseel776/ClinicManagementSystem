@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:path_drawing/path_drawing.dart';
 
 class Tooth {
+
   final List<Shape> shapes;
   final String name;
+
 
   Tooth({required this.shapes, required this.name});
 }

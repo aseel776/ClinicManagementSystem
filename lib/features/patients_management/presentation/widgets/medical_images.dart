@@ -5,9 +5,11 @@ import 'package:clinic_management_system/core/primaryText.dart';
 import 'package:clinic_management_system/features/patients_management/data/models/patient_medical_images.dart';
 import 'package:clinic_management_system/features/patients_management/presentation/riverpod/create_patient_provider.dart';
 import 'package:file_picker/file_picker.dart';
+// import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:http/http.dart';
 // import 'package:image_picker/image_picker.dart';
 
 import '../../../../core/textField.dart';
@@ -17,10 +19,9 @@ import '../riverpod/patients_provider.dart';
 import '../riverpod/patients_state.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:graphql/client.dart';
 import 'package:path/path.dart';
-import 'package:file_picker/file_picker.dart'; // Import the file_picker package
+// import 'package:file_picker/file_picker.dart'; // Import the file_picker package
 
 StateProvider selectedImage = StateProvider<File?>((ref) => null);
 StateProvider imageName = StateProvider((ref) => TextEditingController());
@@ -57,6 +58,37 @@ class _MedicalImagesScreenState extends ConsumerState<MedicalImagesScreen> {
     }
   }
 
+  // Future<void> uploadPatientMedicalImage() async {
+  //   FilePickerResult? result = await FilePicker.platform.pickFiles();
+
+  //   if (result != null && result.files.isNotEmpty) {
+  //     PlatformFile file = result.files.first;
+  //     final imageFile = File(file.path!);
+
+  //     final req = GsingleUploadReq(
+  //       (b) => b
+  //         ..vars.file = http.MultipartFile.fromFileSync(
+  //           imageFile.path,
+  //           filename: file.name,
+  //         )
+  //         ..vars.medical_image_type_id = patientMedicalImage.medicalImageTypeId
+  //         ..vars.patient_id = patientMedicalImage.patientId
+  //         ..vars.title = patientMedicalImage.title
+  //         ..fetchPolicy = FetchPolicy.NoCache,
+  //     );
+
+  //     final response = await client.request(req).first;
+
+  //     if (!response.hasErrors) {
+  //       // Handle success
+  //       print("Patient medical image created successfully");
+  //     } else {
+  //       // Handle error
+  //       print("Error creating patient medical image");
+  //     }
+  //   }
+  // }
+
   // late PageController pagecontroller;
   var currentPage = "صور شعاعية";
   List navBarItems = [
@@ -69,9 +101,9 @@ class _MedicalImagesScreenState extends ConsumerState<MedicalImagesScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (widget.patient.id != null) {
-        await ref
-            .watch(patientsProvider.notifier)
-            .getPatientImages(1, widget.patient.id!);
+        // await ref
+        //     .watch(patientsProvider.notifier)
+        //     .getPatientImages(1, widget.patient.id!);
 
         final state = ref.watch(patientsProvider.notifier).state;
         if (state is LoadedPatientsState) {
@@ -139,7 +171,8 @@ class _MedicalImagesScreenState extends ConsumerState<MedicalImagesScreen> {
                 ),
               const SizedBox(height: 20),
               ElevatedButton(
-                onPressed: pickAndUploadFile,
+                // onPressed: pickAndUploadFile,
+                onPressed: () {},
                 child: const Text('اختر صورة'),
               ),
               ElevatedButton(
@@ -170,45 +203,6 @@ class _MedicalImagesScreenState extends ConsumerState<MedicalImagesScreen> {
                 },
                 child: const Text("إضافة الصورة"),
               ),
-              //         Mutation(
-              //   options: MutationOptions(
-              //     document: gql(uploadImageMutation),
-              //   ),
-              //   builder: (RunMutation runMutation, QueryResult result) {
-              //     return Center(
-              //       child: Column(
-              //         mainAxisAlignment: MainAxisAlignment.center,
-              //         children: [
-              //           ElevatedButton(
-              //             onPressed: () async {
-              //               // Replace with your image file logic
-              //               var file = ...; // Replace with your File object
-
-              //               final Map<String, dynamic> variables = {
-              //                 'file': file,
-              //               };
-
-              //               runMutation(variables);
-              //             },
-              //             child: Text('Upload Image'),
-              //           ),
-              //           if (result.loading)
-              //             CircularProgressIndicator()
-              //           else if (result.hasException)
-              //             Text('Error: ${result.exception.toString()}')
-              //           else if (result.data != null)
-              //             Text('Image Uploaded: ${result.data.toString()}'),
-              //         ],
-              //       ),
-              //     );
-              //   },
-              //   onCompleted: (dynamic data) {
-              //     // Called when the mutation is completed
-              //   },
-              //   update: (GraphQLDataProxy cache, QueryResult result) {
-              //     // Update cache if needed
-              //   },
-              // ),
             ],
           ),
         );
@@ -289,7 +283,7 @@ class CustomNavigationButton extends StatelessWidget {
           color: Colors.black45,
         ),
         height: screenHeight * 0.065,
-        width: screenWidth * 0.18,
+        width: screenWidth * 0.17,
         child: Center(
           child: Row(
             children: [
