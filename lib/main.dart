@@ -6,25 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:clinic_management_system/features/treatments_feature/presentation/sections/main_section.dart';
 
-
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 import 'core/app_colors.dart';
 import 'core/primaryText.dart';
 
