@@ -41,53 +41,27 @@ class MedicalImagesScreen extends ConsumerStatefulWidget {
 class _MedicalImagesScreenState extends ConsumerState<MedicalImagesScreen> {
   File? _pickedFile; // Change PlatformFile to File
 
-  // Future<void> pickAndUploadFile() async {
-  //   ref.watch(resultProvider.notifier).state =
-  //       await FilePicker.platform.pickFiles();
-  //   // FilePickerResult? result = await FilePicker.platform.pickFiles();
-  //   // result!.files.single.path;
-  //
-  //   if (ref.watch(resultProvider.notifier).state != null) {
-  //     PlatformFile file = ref.watch(resultProvider.notifier).state.files.first;
-  //     String filePath = file.path!;
-  //
-  //     // uploadFile(filePath);
-  //   } else {
-  //     // User canceled the file picker
-  //     print('File selection canceled.');
-  //   }
-  // }
+  Future<void> pickAndUploadFile() async {
+    ref.watch(resultProvider.notifier).state =
+        await FilePicker.platform.pickFiles(type: FileType.image);
 
-  // Future<void> uploadPatientMedicalImage() async {
-  //   FilePickerResult? result = await FilePicker.platform.pickFiles();
+    if (ref.watch(resultProvider.notifier).state != null) {
+      PlatformFile file = ref.watch(resultProvider.notifier).state.files.first;
+      List<int> fileBytes = File(file.path!).readAsBytesSync();
 
-  //   if (result != null && result.files.isNotEmpty) {
-  //     PlatformFile file = result.files.first;
-  //     final imageFile = File(file.path!);
+      MultipartFile imageFile = MultipartFile.fromBytes(
+        'image',
+        fileBytes,
+        filename: file.name,
+      );
+      String filePath = file.path!;
 
-  //     final req = GsingleUploadReq(
-  //       (b) => b
-  //         ..vars.file = http.MultipartFile.fromFileSync(
-  //           imageFile.path,
-  //           filename: file.name,
-  //         )
-  //         ..vars.medical_image_type_id = patientMedicalImage.medicalImageTypeId
-  //         ..vars.patient_id = patientMedicalImage.patientId
-  //         ..vars.title = patientMedicalImage.title
-  //         ..fetchPolicy = FetchPolicy.NoCache,
-  //     );
-
-  //     final response = await client.request(req).first;
-
-  //     if (!response.hasErrors) {
-  //       // Handle success
-  //       print("Patient medical image created successfully");
-  //     } else {
-  //       // Handle error
-  //       print("Error creating patient medical image");
-  //     }
-  //   }
-  // }
+      // uploadFile(filePath);
+    } else {
+      // User canceled the file picker
+      print('File selection canceled.');
+    }
+  }
 
   // late PageController pagecontroller;
   var currentPage = "صور شعاعية";
@@ -101,10 +75,15 @@ class _MedicalImagesScreenState extends ConsumerState<MedicalImagesScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (widget.patient.id != null) {
-        // await ref
-        //     .watch(patientsProvider.notifier)
-        //     .getPatientImages(1, widget.patient.id!);
-
+        int id;
+        if (currentPage == "صور شعاعية") {
+          id = 1;
+        } else {
+          id = 2;
+        }
+        ref
+            .watch(patientsProvider.notifier)
+            .getPatientImages(id, widget.patient.id!);
         final state = ref.watch(patientsProvider.notifier).state;
         if (state is LoadedPatientsState) {
           int patientIndex = state.patients
@@ -148,62 +127,84 @@ class _MedicalImagesScreenState extends ConsumerState<MedicalImagesScreen> {
   }
 
   void _showImagePickerDialog(BuildContext context) {
+    ref.watch(resultProvider);
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return Dialog(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              const SizedBox(
-                height: 20,
-              ),
-              SizedBox(
-                width: MediaQuery.of(context).size.width * 0.2,
-                child: textfield(
-                    "عنوان الصورة", ref.watch(imageName.notifier).state, "", 1),
-              ),
-              if (_pickedFile != null)
-                Image.file(
-                  File(_pickedFile!.path),
-                  height: 200,
-                  width: 200,
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.4,
+            height: MediaQuery.of(context).size.height * 0.4,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  style: const ButtonStyle(
+                      shape: MaterialStatePropertyAll(RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(7)))),
+                      backgroundColor:
+                          MaterialStatePropertyAll(AppColors.black)),
+
+                  onPressed: pickAndUploadFile,
+                  // onPressed: () {},
+                  child: const Text('اختر صورة'),
                 ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                // onPressed: pickAndUploadFile,
-                onPressed: () {},
-                child: const Text('اختر صورة'),
-              ),
-              ElevatedButton(
-                onPressed: () async {
-                  int id;
-                  if (currentPage == "صور شعاعية") {
-                    id = 1;
-                  } else {
-                    id = 2;
-                  }
-                  PatientMedicalImage image = PatientMedicalImage(
-                      medicalImageTypeId: id,
-                      patientId: widget.patient.id,
-                      title: ref.watch(imageName.notifier).state.text);
-                  ref
-                      .watch(patientsCrudProvider.notifier)
-                      .addNewImage(
-                          image,
-                          File(ref
-                              .watch(resultProvider.notifier)
-                              .state
-                              .files
-                              .single
-                              .path))
-                      .then((value) {
-                    Navigator.pop(context);
-                  });
-                },
-                child: const Text("إضافة الصورة"),
-              ),
-            ],
+                const SizedBox(
+                  height: 20,
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.2,
+                  child: textfield("عنوان الصورة",
+                      ref.watch(imageName.notifier).state, "", 1),
+                ),
+                if (_pickedFile != null)
+                  Image.file(
+                    File(_pickedFile!.path),
+                    height: 200,
+                    width: 200,
+                  ),
+                const SizedBox(
+                  height: 20,
+                ),
+                ElevatedButton(
+                  style: const ButtonStyle(
+                      shape: MaterialStatePropertyAll(RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(7)))),
+                      backgroundColor:
+                          MaterialStatePropertyAll(AppColors.black)),
+                  onPressed: () async {
+                    if (ref.watch(resultProvider.notifier).state != null) {
+                      int id;
+                      if (currentPage == "صور شعاعية") {
+                        id = 1;
+                      } else {
+                        id = 2;
+                      }
+                      PatientMedicalImage image = PatientMedicalImage(
+                          medicalImageTypeId: id,
+                          patientId: widget.patient.id,
+                          title: ref.watch(imageName.notifier).state.text);
+                      ref
+                          .watch(patientsCrudProvider.notifier)
+                          .addNewImage(
+                              image, ref.watch(resultProvider.notifier).state)
+                          .then((value) {
+                        Navigator.pop(context);
+                      });
+
+                      // uploadFile(filePath);
+                    } else {
+                      // User canceled the file picker
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("choose image first")));
+                      print('File selection canceled.');
+                    }
+                  },
+                  child: const Text("إضافة الصورة"),
+                ),
+              ],
+            ),
           ),
         );
       },
@@ -219,13 +220,61 @@ class _MedicalImagesScreenState extends ConsumerState<MedicalImagesScreen> {
             controller: widget.pageController,
             childrenDelegate: SliverChildBuilderDelegate(
               ((context, index) {
-                return Padding(
-                    padding:
-                        const EdgeInsets.only(left: 25.0, top: 15, right: 10),
-                    child: Container(
-                      color: Colors.green,
-                      child: const Text("sh3a3ehhh"),
-                    ));
+                return (widget.patient.patientImages != null)
+                    ? GridView.builder(
+                        itemCount: widget.patient.patientImages!.length,
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 5,
+                          crossAxisSpacing: 10,
+                          mainAxisSpacing: 10,
+                        ),
+                        itemBuilder: (BuildContext context, int index) {
+                          final imageUrl = widget.patient.patientImages![index];
+
+                          return GestureDetector(
+                            onTap: () {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return Dialog(
+                                    child: Container(
+                                      width: double.infinity,
+                                      child: Image.network(
+                                        "http://" + imageUrl.src!,
+                                        fit: BoxFit.fill,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
+                              // _openFullScreenDialog(imageUrl
+                              //     .src!); // Function to open full-screen dialog
+                            },
+                            child: MouseRegion(
+                              onEnter: (_) {
+                                // Handle hover event (show icon)
+                                // Set a flag or use a state variable to control the visibility of the icon
+                              },
+                              onExit: (_) {
+                                // Handle hover exit event (hide icon)
+                                // Reset the flag or state variable
+                              },
+                              child: Stack(
+                                children: [
+                                  Image.network("http://" + imageUrl.src!),
+                                  const Visibility(
+                                    visible:
+                                        true, // Set this based on hover flag
+                                    child: Icon(Icons.zoom_in),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      )
+                    : Container();
               }),
               childCount: 1,
             ),
@@ -256,6 +305,10 @@ class _MedicalImagesScreenState extends ConsumerState<MedicalImagesScreen> {
         }
     }
   }
+
+  // void _openFullScreenDialog(String imageUrl) {
+
+  // }
 }
 
 class CustomNavigationButton extends StatelessWidget {

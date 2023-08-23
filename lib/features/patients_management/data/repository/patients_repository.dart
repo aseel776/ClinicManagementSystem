@@ -220,6 +220,8 @@ class PatientsRepositoryImpl implements PatientsRepository {
       },
       fetchPolicy: FetchPolicy.noCache,
     ));
+    // print()
+    // print(response);
 
     if (!response.hasException && response.data != null) {
       final Map<String, dynamic> data = response.data!['patientCosts'];
@@ -439,6 +441,7 @@ class PatientsRepositoryImpl implements PatientsRepository {
   ) async {
     final response = await gqlClient.query(QueryOptions(
       document: gql(PatientDiagnosisDocsGql.patientDiagnosesQuery),
+      fetchPolicy: FetchPolicy.noCache,
       variables: {
         'item_per_page': itemPerPage,
         'page': page,

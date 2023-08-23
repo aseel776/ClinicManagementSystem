@@ -43,7 +43,7 @@ class _MedicalDiagnosisScreenState
       if (widget.patient.id != null) {
         print("start");
         await ref.watch(patientsProvider.notifier).getPatientDiagnosis(
-              6,
+              1000,
               1,
               widget.patient.id!,
               ref.watch(currentPageViewDiagnosisProvider.notifier).state + 1,
@@ -75,7 +75,7 @@ class _MedicalDiagnosisScreenState
     return Stack(
       children: [
         Container(
-            // color: Colors.red,
+            // color: Colors.pi,
             height: MediaQuery.of(context).size.height * 0.5,
             width: MediaQuery.of(context).size.width * 0.6,
             child: pageView(
@@ -109,12 +109,10 @@ class _MedicalDiagnosisScreenState
   Widget pageView(int currentPage, WidgetRef ref) {
     final state = ref.watch(patientsProvider.notifier).state;
     ref.watch(patientsProvider);
-    switch (ref.watch(currentPageViewDiagnosisProvider.notifier).state - 1) {
+    switch (ref.watch(currentPageViewDiagnosisProvider.notifier).state) {
       case 0:
         {
-          if (state is LoadedPatientsState) {}
           return PageView.custom(
-            key: GlobalKey(),
             scrollDirection: Axis.horizontal,
             controller: widget.pageController,
             childrenDelegate: SliverChildBuilderDelegate(
@@ -131,7 +129,6 @@ class _MedicalDiagnosisScreenState
                         ? (state.patients[patientIndex].patientDiagnosis!
                                 .isNotEmpty)
                             ? Container(
-                                // color: Colors.black,
                                 width: 600,
                                 height: 400,
                                 child: ListView.builder(
@@ -143,7 +140,7 @@ class _MedicalDiagnosisScreenState
 
                                     return ListTile(
                                       title: Text(
-                                          'الرقم: ${row.id.toString() ?? ""}'),
+                                          'الرقم: ${row.problemId.toString() ?? ""}'),
                                       subtitle: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
@@ -222,7 +219,8 @@ class _MedicalDiagnosisScreenState
                                         .map((row) => DataRow(
                                               cells: [
                                                 DataCell(
-                                                    Text(row.id.toString() ??
+                                                    Text(row.problemId
+                                                            .toString() ??
                                                         ""),
                                                     onTap: () => null),
                                                 DataCell(Text(
@@ -317,18 +315,12 @@ class _MedicalDiagnosisScreenState
                             state is MessageAddEditDeletePatientState)
                         ? (state.patients[patientIndex].patientDiagnosis!
                                 .isNotEmpty)
-                            ? SizedBox(
+                            ? Container(
+                                color: Colors.amber,
                                 width: 200,
                                 height: 400,
                                 child: DataTable(
                                     columnSpacing: 110,
-                                    // header: const Text(""),
-                                    // actions: [
-                                    //   IconButton(
-                                    //       onPressed: () {},
-                                    //       icon: const Icon(Icons.refresh))
-                                    // ],
-                                    // rowsPerPage: 5,
                                     columns: const [
                                       DataColumn(label: Text('الرقم')),
                                       DataColumn(label: Text('المكان')),
@@ -340,7 +332,8 @@ class _MedicalDiagnosisScreenState
                                         .map((row) => DataRow(
                                               cells: [
                                                 DataCell(
-                                                    Text(row.id.toString() ??
+                                                    Text(row.problemId
+                                                            .toString() ??
                                                         ""),
                                                     onTap: () => null),
                                                 DataCell(Text(
@@ -483,7 +476,6 @@ class _MedicalDiagnosisScreenState
                               onPressed: () async {
                                 // ref.watch(productsProvider.notifier)
                                 if (addOrEdit) {
-                                  print("qqqqqqqqqqdiagnosisqqq");
                                   PatientDiagnosis product = PatientDiagnosis(
                                       expectedTreatment: ref
                                           .watch(expectedTreatment.notifier)
@@ -493,18 +485,20 @@ class _MedicalDiagnosisScreenState
                                           ref.watch(place.notifier).state.text,
                                       patientId: widget.patient.id,
                                       problemId: ref
-                                          .watch(
-                                              currentPageViewDiagnosisProvider
-                                                  .notifier)
-                                          .state);
+                                              .watch(
+                                                  currentPageViewDiagnosisProvider
+                                                      .notifier)
+                                              .state +
+                                          1);
                                   await ref
                                       .watch(patientsCrudProvider.notifier)
                                       .createPatientDiagnosis(product)
                                       .then((value) {
+                                    print("problem type id ");
                                     ref
                                         .watch(patientsProvider.notifier)
                                         .getPatientDiagnosis(
-                                            6,
+                                            1000,
                                             1,
                                             widget.patient.id!,
                                             ref
@@ -513,9 +507,9 @@ class _MedicalDiagnosisScreenState
                                                         .notifier)
                                                 .state);
                                   });
-                                  ref
-                                      .watch(currentPageDiagnosis.notifier)
-                                      .state = 1;
+                                  // ref
+                                  //     .watch(currentPageDiagnosis.notifier)
+                                  //     .state = 1;
 
                                   Navigator.pop(context);
                                 } else {

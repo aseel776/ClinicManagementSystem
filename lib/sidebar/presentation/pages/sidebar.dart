@@ -1,5 +1,7 @@
 import 'package:clinic_management_system/features/appointments_sessions/presentation/widgets/apps_main_section.dart';
+import 'package:clinic_management_system/features/diseases_badHabits/presentation/pages/general.dart';
 import 'package:clinic_management_system/features/lab_feature/presentation/pages/lab_screen.dart';
+import 'package:clinic_management_system/features/medicine/presentation/Pages/medicine_page.dart';
 import 'package:clinic_management_system/features/patients_management/presentation/pages/patients_index.dart';
 import 'package:clinic_management_system/features/repository_feature/presentation/pages/repository.dart';
 import 'package:clinic_management_system/features/treatments_feature/presentation/sections/main_section.dart';
@@ -7,7 +9,7 @@ import 'package:flutter/material.dart';
 import '../widgets/navbar_item.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final pageProvider = StateProvider<Widget>((ref) => AppointmentsMainSection());
+final pageProvider = StateProvider<Widget>((ref) => General());
 final SelectedPageProvider =
     StateProvider<List<bool>>((ref) => [true, false, false, false, false]);
 

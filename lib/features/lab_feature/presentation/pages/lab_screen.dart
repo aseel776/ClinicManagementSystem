@@ -561,10 +561,22 @@ class _LabsScreenState extends ConsumerState<LabsScreen> {
               Consumer(
                 builder: (context, ref, child) => Container(
                   alignment: Alignment.center,
-                  child: PrimaryText(
-                    text: lab.name,
-                    size: 22,
-                  ),
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        PrimaryText(
+                          text: lab.name,
+                          size: 22,
+                        ),
+                        PrimaryText(
+                          text: lab.address,
+                          size: 22,
+                        ),
+                        PrimaryText(
+                          text: lab.phone,
+                          size: 22,
+                        ),
+                      ]),
                 ),
               ),
               const Spacer(),

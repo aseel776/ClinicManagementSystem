@@ -74,41 +74,41 @@ class _BadHabitsState extends ConsumerState<BadHabits> {
                   screenWidth: sectionWidth,
                 ),
                 const Spacer(),
-                Padding(
-                  padding: const EdgeInsets.only(left: 30.0),
-                  child: ElevatedButton(
-                      onPressed: () async {
-                        // await ref
-                        //     .watch(badHabitsProvider.notifier)
-                        //     .getPaginatedBadHabits(5, 1);
-                        // print(
-                        //     "blabla" + ref.watch(badHabitsProvider).toString());
-                      },
-                      style: const ButtonStyle(
-                          backgroundColor:
-                              MaterialStatePropertyAll(AppColors.lightGreen),
-                          shape: MaterialStatePropertyAll(
-                              RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.all(
-                                      Radius.elliptical(20, 40)))),
-                          minimumSize: MaterialStatePropertyAll(Size(100, 50))),
-                      child: const Row(
-                        children: [
-                          PrimaryText(
-                            text: "فلترة",
-                            color: AppColors.black,
-                          ),
-                          SizedBox(
-                            width: 8,
-                          ),
-                          Icon(
-                            Icons.arrow_back_ios_new_outlined,
-                            size: 14,
-                            color: AppColors.black,
-                          )
-                        ],
-                      )),
-                )
+                // Padding(
+                //   padding: const EdgeInsets.only(left: 30.0),
+                //   child: ElevatedButton(
+                //       onPressed: () async {
+                //         // await ref
+                //         //     .watch(badHabitsProvider.notifier)
+                //         //     .getPaginatedBadHabits(5, 1);
+                //         // print(
+                //         //     "blabla" + ref.watch(badHabitsProvider).toString());
+                //       },
+                //       style: const ButtonStyle(
+                //           backgroundColor:
+                //               MaterialStatePropertyAll(AppColors.lightGreen),
+                //           shape: MaterialStatePropertyAll(
+                //               RoundedRectangleBorder(
+                //                   borderRadius: BorderRadius.all(
+                //                       Radius.elliptical(20, 40)))),
+                //           minimumSize: MaterialStatePropertyAll(Size(100, 50))),
+                //       child: const Row(
+                //         children: [
+                //           PrimaryText(
+                //             text: "فلترة",
+                //             color: AppColors.black,
+                //           ),
+                //           SizedBox(
+                //             width: 8,
+                //           ),
+                //           Icon(
+                //             Icons.arrow_back_ios_new_outlined,
+                //             size: 14,
+                //             color: AppColors.black,
+                //           )
+                //         ],
+                //       )),
+                // )
               ],
             ),
           ),

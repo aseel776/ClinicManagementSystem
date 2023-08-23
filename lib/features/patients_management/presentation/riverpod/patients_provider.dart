@@ -463,6 +463,56 @@ class PatientsNotifier extends StateNotifier<PatientsState> {
     final response = await repositoryImpl.getProblemTypes();
     return response;
   }
+  // getPatientMedicalImages(
+  //   int medicalImageTypeId,
+  //   int patientId,
+  // ) 
+  // Future<void> getPatientImages(
+  //   double itemPerPage,
+  //   double page,
+  //   int patientId,
+  //   int problemTypeId,
+  // ) async {
+  //   print("getDiagnosis enter");
+  //   print(state);
+  //   if (state is LoadedPatientsState) {
+  //     final state1 = state;
+  //     final totalPages;
+  //     if (state1 is LoadedPatientsState) {
+  //       totalPages = state1.totalPages;
+  //     } else {
+  //       totalPages = 0;
+  //     }
+  //     List<Patient> updatedPatients = [
+  //       ...state.patients
+  //     ]; // Make a copy of the list
+
+  //     int patientIndex =
+  //         updatedPatients.indexWhere((patient) => patient.id == patientId);
+
+  //     if (patientIndex != -1) {
+  //       final response = await repositoryImpl.getPaginatedPatientDiagnoses(
+  //           itemPerPage, page, patientId, problemTypeId);
+  //       List<PatientDiagnosis> diagnosisList = [];
+  //       response.fold(
+  //           (failure) =>
+  //               ErrorPatientsState(message: _mapFailureToMessage(failure)),
+  //           (diagnosis) => diagnosisList = diagnosis);
+
+  //       // Update the patientPayments for the specific patient
+  //       updatedPatients[patientIndex].patientDiagnosis =
+  //           diagnosisList; // Update the patient in the copied list
+
+  //       // Notify the state that the data has changed
+  //       // state = LoadingPatientsState();
+  //       state = LoadedPatientsState(
+  //         patients: updatedPatients,
+  //         totalPages: totalPages,
+  //       );
+  //     }
+  //   }
+  // }
+
 
   PatientsState _mapFailureOrPatientToState(
       {required Either<Failure, PatientsTable> either, int? totalPages}) {

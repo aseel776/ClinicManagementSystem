@@ -2,13 +2,18 @@ import 'package:flutter/material.dart';
 
 import 'package:path_drawing/path_drawing.dart';
 
-class Tooth {
+import '../appointments_sessions/data/models/patient_treatment_model.dart';
 
+class Tooth {
   final List<Shape> shapes;
   final String name;
+  List<PatientTreatmentModel>? treatments;
 
-
-  Tooth({required this.shapes, required this.name});
+  Tooth({
+    required this.shapes,
+    required this.name,
+    this.treatments = const [],
+  });
 }
 
 final tooth11 = Tooth(
@@ -24,7 +29,7 @@ final tooth11 = Tooth(
     ),
     Shape(
       pathData: tooth11OutlinePathData,
-      child: Text(''),
+      child: Container(),
       color: Colors.black, // Set outline color
       onTap: () {
         print('Tooth 11 outline clicked');
@@ -47,7 +52,7 @@ final tooth12 = Tooth(
     ),
     Shape(
       pathData: tooth12OutlinePathData,
-      child: Text(''),
+      // child: Text(''),
       color: Colors.transparent, // Set outline color
       onTap: () {
         print('Tooth 12 outline clicked');
@@ -69,7 +74,7 @@ final tooth13 = Tooth(
     ),
     Shape(
       pathData: tooth13PathData2,
-      child: Text(''),
+      // child: Text(''),
       color: Colors.transparent, // Set outline color
       onTap: () {
         print('Tooth 13 outline clicked');
@@ -1583,51 +1588,127 @@ final teeth = [
   /* , other teeth */
 ];
 
-// In your MotionControl class
-class MotionControl extends StatelessWidget {
+class MotionControl extends StatefulWidget {
   const MotionControl({Key? key, required this.teeth}) : super(key: key);
 
   final List<Tooth> teeth;
 
   @override
+  _MotionControlState createState() => _MotionControlState();
+}
+
+class _MotionControlState extends State<MotionControl> {
+  OverlayEntry? _overlayEntry;
+
+  @override
+  void dispose() {
+    _overlayEntry?.remove();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: LayoutBuilder(builder: (context, constraints) {
-        final shapes = teeth.expand((tooth) => tooth.shapes).toList();
+        final shapes = widget.teeth.expand((tooth) => tooth.shapes).toList();
 
         for (final shape in shapes) {
           shape.computeShapeBorder(
-              const Size(1400, 400), Offset.zero & constraints.biggest);
+              const Size(300, 400), Offset.zero & constraints.biggest);
         }
 
         return Stack(
           children: [
-            for (final shape in shapes)
-              Positioned.fromRect(
-                rect: shape.bounds,
-                child: Material(
-                  shape: shape.shapeBorder,
-                  color: shape.color,
-                  // textStyle: const TextStyle(
-                  //     color: Colors.white70, fontWeight: FontWeight.bold),
-                  elevation: 2,
-                  // clipBehavior: Clip.antiAlias,
-                  child: InkWell(
-                    highlightColor: Colors.orange,
-                    splashColor: Colors.deepPurple,
-                    onTap: shape.onTap ?? () {},
-                    child: GestureDetector(
-                      // behavior: HitTestBehavior.translucent,
-                      onPanUpdate: shape.onPanUpdate,
-                      // child: shape.child,
+            for (final tooth in widget.teeth)
+              for (final shape in tooth.shapes)
+                Positioned.fromRect(
+                  rect: shape.bounds,
+                  child: Material(
+                    shape: shape.shapeBorder,
+                    elevation: 2,
+                    child: MouseRegion(
+                      onEnter: (_) {
+                        if (shape == tooth.shapes.first) {
+                          _showTooltip(context, tooth, shape);
+                        }
+                      },
+                      onExit: (_) {
+                        _removeTooltip();
+                      },
+                      child: GestureDetector(
+                        onPanUpdate: shape.onPanUpdate,
+                        // child: (shape == tooth.shapes.first)
+                        //     ? Text(tooth.name)
+                        //     : Container(),
+                      ),
                     ),
                   ),
                 ),
-              ),
           ],
         );
       }),
     );
+  }
+
+  void _showTooltip(BuildContext context, Tooth tooth, Shape shape) {
+    final List<PatientTreatmentModel> treatments = tooth.treatments!;
+
+    if (treatments.isNotEmpty) {
+      final tooltipContent = Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          for (var treatment1 in treatments)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "اسم المعالجة: ${treatment1.treatment!.name!}",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    "السعر: ${treatment1.price.toString()}",
+                    style: TextStyle(fontSize: 14),
+                  ),
+                ],
+              ),
+            ),
+        ],
+      );
+
+      final RenderBox renderBox = context.findRenderObject() as RenderBox;
+      final offset = renderBox.localToGlobal(shape.bounds.topLeft);
+
+      final overlay = Overlay.of(context)!;
+      _overlayEntry = OverlayEntry(
+        builder: (context) {
+          return Positioned(
+            top: offset.dy - 60, // Adjust the vertical position
+            left: offset.dx + 20,
+            child: Material(
+              elevation: 4,
+              child: Container(
+                padding: const EdgeInsets.all(16), // Increase the padding
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.grey.shade300),
+                ),
+                child: tooltipContent,
+              ),
+            ),
+          );
+        },
+      );
+
+      overlay.insert(_overlayEntry!);
+    }
+  }
+
+  void _removeTooltip() {
+    _overlayEntry?.remove();
+    _overlayEntry = null;
   }
 }
 
@@ -1651,7 +1732,7 @@ class MyApp extends StatelessWidget {
 class Shape {
   final String pathData;
   final Color color;
-  final Widget child;
+  final Widget? child;
   final GestureTapCallback? onTap;
   final GestureDragUpdateCallback? onPanUpdate;
   late PathBorder shapeBorder;
@@ -1660,7 +1741,7 @@ class Shape {
   Shape(
       {required this.pathData,
       required this.color,
-      required this.child,
+      this.child,
       this.onTap,
       this.onPanUpdate});
 
