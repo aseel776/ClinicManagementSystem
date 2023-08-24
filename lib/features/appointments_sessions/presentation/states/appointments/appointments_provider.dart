@@ -1,3 +1,4 @@
+import 'package:clinic_management_system/features/appointments_sessions/data/models/reservation_model.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -10,20 +11,18 @@ import '../../../data/repos/appointments_repo.dart';
 import '../../../data/models/appointment_model.dart';
 import '../../../data/models/page_model.dart';
 
-final appointmentsProvider = StateNotifierProvider<
-    AppointmentsNotifier,
-    AppointmentsState>((ref) {
+final appointmentsProvider =
+    StateNotifierProvider<AppointmentsNotifier, AppointmentsState>((ref) {
   final client = ref.watch(graphQlClientProvider);
   return AppointmentsNotifier(client);
 });
 
 class AppointmentsNotifier extends StateNotifier<AppointmentsState> {
-
   AppointmentsNotifier(this.client) : super(InitAppointmentsState());
 
   GraphQLClient client;
-  late final ValueNotifier<GraphQLClient> clientNotifier = ValueNotifier<
-      GraphQLClient>(client);
+  late final ValueNotifier<GraphQLClient> clientNotifier =
+      ValueNotifier<GraphQLClient>(client);
   late final AppointmentsRepoImp repo = AppointmentsRepoImp(client);
 
   Future<void> getAllAppointments(String date) async {
@@ -31,6 +30,12 @@ class AppointmentsNotifier extends StateNotifier<AppointmentsState> {
     final response = await repo.getAllAppointments(date);
     state = _mapFailureOrAppointmentsToState(response);
   }
+
+  // Future<void> getAllReservations(String date) async {
+  //   state = LoadingAppointmentsState();
+  //   final response = await repo.getAllReservations();
+  //   state = _mapFailureOrAppointmentsToState(response);
+  // }
 
   Future<void> createAppointment(AppointmentModel body) async {
     state = LoadingAppointmentsState();
@@ -47,7 +52,8 @@ class AppointmentsNotifier extends StateNotifier<AppointmentsState> {
   AppointmentsState _mapFailureOrAppointmentsToState(
       Either<Failure, AppointmentsPage> either) {
     return either.fold(
-      (failure) => ErrorAppointmentsState(message: _mapFailureToMessage(failure)),
+      (failure) =>
+          ErrorAppointmentsState(message: _mapFailureToMessage(failure)),
       (page) => LoadedAppointmentsState(page: page),
     );
   }
@@ -55,7 +61,8 @@ class AppointmentsNotifier extends StateNotifier<AppointmentsState> {
   AppointmentsState _mapFailureOrSuccessToState(
       Either<Failure, String> either) {
     return either.fold(
-      (failure) => ErrorAppointmentsState(message: _mapFailureToMessage(failure)),
+      (failure) =>
+          ErrorAppointmentsState(message: _mapFailureToMessage(failure)),
       (success) => SuccessAppointmentsState(message: success),
     );
   }

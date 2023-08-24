@@ -17,7 +17,6 @@ Future<void> showUpsertAppointment(
     required WidgetRef ref,
     required String type,
     AppointmentModel? app}) async {
-
   ref.read(patientsProvider.notifier).getPaginatedPatients(100000, 1);
   final screenWidth = MediaQuery.of(context).size.width;
   final containerWidth = screenWidth * .6;
@@ -25,21 +24,22 @@ Future<void> showUpsertAppointment(
   final containerHeight = screenHeight * .75;
 
   final date = ValueNotifier(ref.read(selectedDate));
-  final time= ValueNotifier(DateTime.now().toString().substring(11, 16));
+  final time = ValueNotifier(DateTime.now().toString().substring(11, 16));
   final patientName = ValueNotifier('');
   int? patientId;
   final notesController = TextEditingController();
   final ongoingTreatments = ref.watch(patientTreatmentsProvider);
 
-  if(app != null){
+  if (app != null) {
     date.value = app.time!;
     time.value = app.time.toString().substring(11, 16);
     patientName.value = app.patient!.name!;
     patientId = app.patient!.id;
-    ref.read(patientTreatmentsProvider.notifier).getOngoingTreatments(patientId!);
-    notesController.text = app.notes?? '';
+    ref
+        .read(patientTreatmentsProvider.notifier)
+        .getOngoingTreatments(patientId!);
+    notesController.text = app.notes ?? '';
   }
-
 
   Future<DateTime?> selectAppDate() async {
     final newDate = await showDatePicker(
@@ -57,23 +57,22 @@ Future<void> showUpsertAppointment(
   }
 
   Future<String> selectAppTime() async {
-    int initHour = int.parse(time.value.substring(0,2));
-    int initMin = int.parse(time.value.substring(3,5));
+    int initHour = int.parse(time.value.substring(0, 2));
+    int initMin = int.parse(time.value.substring(3, 5));
     TimeOfDay oldTime = TimeOfDay(hour: initHour, minute: initMin);
     final TimeOfDay? pickedTime = await showTimePicker(
       context: context,
       initialTime: oldTime,
-
     );
 
     if (pickedTime != null && pickedTime != oldTime) {
       return pickedTime.toString().substring(10, 15);
-    }else{
+    } else {
       return oldTime.toString().substring(10, 15);
     }
   }
 
-  Future<void> selectPatient() async{
+  Future<void> selectPatient() async {
     final state = ref.watch(patientsProvider);
     final oldName = patientName.value;
     final oldId = patientId;
@@ -129,41 +128,42 @@ Future<void> showUpsertAppointment(
                         height: containerHeight2 * .655,
                         child: state is LoadedPatientsState
                             ? ListView.builder(
-                          itemCount: state.patients.length,
-                          itemBuilder: (context, index) {
-                            return RadioListTile(
-                              value: state.patients[index].id,
-                              groupValue: patientId,
-                              onChanged: (value) {
-                                patientName.value = state.patients[index].name!;
-                                setState(() {
-                                  patientId = value;
-                                });
-                              },
-                              title: Text(
-                                state.patients[index].name!,
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                  fontFamily: 'Cairo',
-                                  color: AppColors.black,
+                                itemCount: state.patients.length,
+                                itemBuilder: (context, index) {
+                                  return RadioListTile(
+                                    value: state.patients[index].id,
+                                    groupValue: patientId,
+                                    onChanged: (value) {
+                                      patientName.value =
+                                          state.patients[index].name!;
+                                      setState(() {
+                                        patientId = value;
+                                      });
+                                    },
+                                    title: Text(
+                                      state.patients[index].name!,
+                                      style: const TextStyle(
+                                        fontSize: 18,
+                                        fontFamily: 'Cairo',
+                                        color: AppColors.black,
+                                      ),
+                                    ),
+                                    controlAffinity:
+                                        ListTileControlAffinity.leading,
+                                    activeColor: AppColors.black,
+                                  );
+                                },
+                              )
+                            : const Center(
+                                child: Text(
+                                  'لا يوجد مرضى بعد',
+                                  style: TextStyle(
+                                    fontFamily: 'Cairo',
+                                    fontSize: 18,
+                                    color: Colors.grey,
+                                  ),
                                 ),
                               ),
-                              controlAffinity:
-                              ListTileControlAffinity.leading,
-                              activeColor: AppColors.black,
-                            );
-                          },
-                        )
-                            : const Center(
-                          child: Text(
-                            'لا يوجد مرضى بعد',
-                            style: TextStyle(
-                              fontFamily: 'Cairo',
-                              fontSize: 18,
-                              color: Colors.grey,
-                            ),
-                          ),
-                        ),
                       ),
                       SizedBox(height: containerHeight2 * .04),
                       SizedBox(
@@ -179,9 +179,11 @@ Future<void> showUpsertAppointment(
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(3),
                               ),
-                              onPressed: () async{
+                              onPressed: () async {
                                 Navigator.of(context).pop();
-                                await ref.read(patientTreatmentsProvider.notifier).getOngoingTreatments(patientId!);
+                                await ref
+                                    .read(patientTreatmentsProvider.notifier)
+                                    .getOngoingTreatments(patientId!);
                               },
                               child: const Text(
                                 'تأكيد',
@@ -229,7 +231,7 @@ Future<void> showUpsertAppointment(
     );
   }
 
-  DateTime formDate(){
+  DateTime formDate() {
     return DateTime(
       date.value.year,
       date.value.month,
@@ -263,13 +265,9 @@ Future<void> showUpsertAppointment(
                     SizedBox(
                       height: containerHeight * .15,
                       child: Text(
-                        (app == null)
-                            ? 'إضافة موعد'
-                        : 'تعديل',
-                        style: const TextStyle(
-                          fontFamily: 'Cairo',
-                          fontSize: 22
-                        ),
+                        (app == null) ? 'إضافة موعد' : 'تعديل',
+                        style:
+                            const TextStyle(fontFamily: 'Cairo', fontSize: 22),
                       ),
                     ),
                     Row(
@@ -290,9 +288,9 @@ Future<void> showUpsertAppointment(
                                     child: FloatingActionButton(
                                       backgroundColor: AppColors.lightGreen,
                                       shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(5)
-                                      ),
-                                      onPressed: () async{
+                                          borderRadius:
+                                              BorderRadius.circular(5)),
+                                      onPressed: () async {
                                         date.value = (await selectAppDate())!;
                                       },
                                       child: const Icon(
@@ -308,9 +306,7 @@ Future<void> showUpsertAppointment(
                                     builder: (context, value, child) {
                                       return Expanded(
                                         child: Text(
-                                          'التاريخ: ${value
-                                              .toString()
-                                              .substring(0, 10)}',
+                                          'التاريخ: ${value.toString().substring(0, 10)}',
                                           style: const TextStyle(
                                             fontFamily: 'Cairo',
                                             fontSize: 18,
@@ -335,9 +331,9 @@ Future<void> showUpsertAppointment(
                                     child: FloatingActionButton(
                                       backgroundColor: AppColors.lightGreen,
                                       shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(5)
-                                      ),
-                                      onPressed: () async{
+                                          borderRadius:
+                                              BorderRadius.circular(5)),
+                                      onPressed: () async {
                                         time.value = await selectAppTime();
                                       },
                                       child: const Icon(
@@ -378,9 +374,9 @@ Future<void> showUpsertAppointment(
                                     child: FloatingActionButton(
                                       backgroundColor: AppColors.lightGreen,
                                       shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(5)
-                                      ),
-                                      onPressed: () async{
+                                          borderRadius:
+                                              BorderRadius.circular(5)),
+                                      onPressed: () async {
                                         await selectPatient();
                                       },
                                       child: const Icon(
@@ -432,25 +428,27 @@ Future<void> showUpsertAppointment(
                                   ),
                                   SizedBox(width: containerWidth * .01),
                                   Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Container(
-                                      height: containerHeight * .075,
-                                      alignment: Alignment.center,
-                                      child: const Text(
-                                        'ملاحظات:',
-                                        style: TextStyle(
-                                          fontFamily: 'Cairo',
-                                          fontSize: 18,
+                                        height: containerHeight * .075,
+                                        alignment: Alignment.center,
+                                        child: const Text(
+                                          'ملاحظات:',
+                                          style: TextStyle(
+                                            fontFamily: 'Cairo',
+                                            fontSize: 18,
+                                          ),
                                         ),
                                       ),
-                                    ),
                                       Expanded(
                                         child: Container(
                                           width: containerWidth * .34,
                                           decoration: BoxDecoration(
                                             border: Border.all(),
-                                            borderRadius: BorderRadius.circular(15),
+                                            borderRadius:
+                                                BorderRadius.circular(15),
                                           ),
                                           child: TextField(
                                             controller: notesController,
@@ -514,16 +512,18 @@ Future<void> showUpsertAppointment(
                               width: containerWidth * .4,
                               height: containerHeight * .4,
                               alignment: Alignment.center,
-                              child: (ongoingTreatments is LoadedPatientTreatmentsState && ongoingTreatments.treatments.isNotEmpty)
+                              child: (ongoingTreatments
+                                          is LoadedPatientTreatmentsState &&
+                                      ongoingTreatments.treatments.isNotEmpty)
                                   ? Container(color: Colors.red)
                                   : const Text(
-                                'لا يوجد معالجات جارية حالياً',
-                                style: TextStyle(
-                                  fontFamily: 'Cairo',
-                                  fontSize: 18,
-                                  color: Colors.grey,
-                                ),
-                              ),
+                                      'لا يوجد معالجات جارية حالياً',
+                                      style: TextStyle(
+                                        fontFamily: 'Cairo',
+                                        fontSize: 18,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
                             ),
                           ],
                         ),
@@ -534,24 +534,35 @@ Future<void> showUpsertAppointment(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         MaterialButton(
-                          onPressed: () async{
+                          onPressed: () async {
                             final newApp = AppointmentModel(
                               time: formDate(),
                               type: type,
-                              patient: Patient(id: patientId, name: patientName.value),
+                              patient: Patient(
+                                  id: patientId, name: patientName.value),
                               place: '',
                               nextPhase: '',
                               notes: notesController.text,
                             );
                             ref.read(selectedDate.notifier).state = formDate();
                             Navigator.of(context).pop();
-                            if(app == null){
-                              await ref.read(appointmentsProvider.notifier).createAppointment(newApp);
-                            } else{
+                            if (app == null || type == 'external') {
+                              print('zmmshcsbhc');
+                              if (type == 'external') {
+                                newApp.reserveId = app!.reserveId!;
+                              }
+                              await ref
+                                  .read(appointmentsProvider.notifier)
+                                  .createAppointment(newApp);
+                            } else {
                               newApp.id = app.id;
-                              await ref.read(appointmentProvider.notifier).updateAppointment(newApp);
+                              await ref
+                                  .read(appointmentProvider.notifier)
+                                  .updateAppointment(newApp);
                             }
-                            await ref.read(appointmentsProvider.notifier).getAllAppointments(formDate().toString());
+                            await ref
+                                .read(appointmentsProvider.notifier)
+                                .getAllAppointments(formDate().toString());
                           },
                           height: containerHeight * .075,
                           minWidth: containerWidth * .15,

@@ -659,7 +659,7 @@ class _PatientProfileState extends ConsumerState<PatientProfile>
                                                                 sectionHeight,
                                                             screenWidth:
                                                                 sectionWidth,
-                                                            onTap: () {
+                                                            onTap: () async {
                                                               setState(() {
                                                                 ref
                                                                         .watch(currentPageViewProvider
@@ -682,6 +682,17 @@ class _PatientProfileState extends ConsumerState<PatientProfile>
                                                                             3000),
                                                                     curve: Curves
                                                                         .easeInOut);
+                                                                // ref
+                                                                //     .watch(patientsProvider
+                                                                //         .notifier)
+                                                                //     .getPatientImages(
+                                                                //         ref
+                                                                //             .watch(currentPageViewProvider
+                                                                //                 .notifier)
+                                                                //             .state,
+                                                                //         widget
+                                                                //             .patient
+                                                                //             .id!);
                                                                 ref.watch(height.notifier).state ==
                                                                         0
                                                                     ? ref
@@ -1099,14 +1110,17 @@ class _PatientProfileState extends ConsumerState<PatientProfile>
                           : Container(),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: (widget.patient.patientCosts != null)
-                            ? PrimaryText(
-                                text:
-                                    'إجمالي المدفوعات:       ${widget.patient.patientPayments!.totalAmounts!.toString()} ',
-                                size: 14,
-                                fontWeight: FontWeight.w300,
-                                color: Colors.black54,
-                              )
+                        child: (widget.patient.patientPayments != null)
+                            ? (widget.patient.patientPayments!.totalAmounts !=
+                                    null)
+                                ? PrimaryText(
+                                    text:
+                                        'إجمالي المدفوعات:       ${widget.patient.patientPayments!.totalAmounts!.toString()} ',
+                                    size: 14,
+                                    fontWeight: FontWeight.w300,
+                                    color: Colors.black54,
+                                  )
+                                : Container()
                             : Container(),
                       ),
                     ],

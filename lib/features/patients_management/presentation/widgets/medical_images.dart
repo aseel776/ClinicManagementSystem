@@ -299,13 +299,61 @@ class _MedicalImagesScreenState extends ConsumerState<MedicalImagesScreen> {
             controller: widget.pageController,
             childrenDelegate: SliverChildBuilderDelegate(
               ((context, index) {
-                return Padding(
-                    padding:
-                        const EdgeInsets.only(left: 25.0, top: 15, right: 10),
-                    child: Container(
-                      // color: Colors.red,
-                      child: const Text("there is no images "),
-                    ));
+                return (widget.patient.patientImages != null)
+                    ? GridView.builder(
+                        itemCount: widget.patient.patientImages!.length,
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 5,
+                          crossAxisSpacing: 10,
+                          mainAxisSpacing: 10,
+                        ),
+                        itemBuilder: (BuildContext context, int index) {
+                          final imageUrl = widget.patient.patientImages![index];
+
+                          return GestureDetector(
+                            onTap: () {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return Dialog(
+                                    child: Container(
+                                      width: double.infinity,
+                                      child: Image.network(
+                                        "http://" + imageUrl.src!,
+                                        fit: BoxFit.fill,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
+                              // _openFullScreenDialog(imageUrl
+                              //     .src!); // Function to open full-screen dialog
+                            },
+                            child: MouseRegion(
+                              onEnter: (_) {
+                                // Handle hover event (show icon)
+                                // Set a flag or use a state variable to control the visibility of the icon
+                              },
+                              onExit: (_) {
+                                // Handle hover exit event (hide icon)
+                                // Reset the flag or state variable
+                              },
+                              child: Stack(
+                                children: [
+                                  Image.network("http://" + imageUrl.src!),
+                                  const Visibility(
+                                    visible:
+                                        true, // Set this based on hover flag
+                                    child: Icon(Icons.zoom_in),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      )
+                    : Container();
               }),
               childCount: 1,
             ),
