@@ -45,6 +45,8 @@ StateProvider selectedMedicines =
     StateProvider<List<PatientMedicine>?>((ref) => []);
 StateProvider badHabitDate = StateProvider<DateTime>((ref) => DateTime(2000));
 StateProvider badHabitDateString = StateProvider((ref) => "");
+StateProvider medicineDate = StateProvider<DateTime>((ref) => DateTime(2000));
+StateProvider medicineDateString = StateProvider((ref) => "");
 StateProvider diseaseDate = StateProvider<DateTime>((ref) => DateTime(2000));
 StateProvider diseaseDateString = StateProvider((ref) => "");
 StateProvider controlledSelect = StateProvider((ref) => "");
@@ -287,8 +289,10 @@ class _Step3FormState extends ConsumerState<Step3Form> {
                     .watch(patientsCrudProvider.notifier)
                     .createNewPatient(newPatient)
                     .then((value) {
-                      ref.watch(patientsProvider.notifier).getPaginatedPatients(5, 1);
-                      ref.read(currentPagePatientsTable.notifier).state = 1;
+                  ref
+                      .watch(patientsProvider.notifier)
+                      .getPaginatedPatients(5, 1);
+                  ref.read(currentPagePatientsTable.notifier).state = 1;
                   ref.watch(pageProvider.notifier).state = PatientIndex();
                 });
               },

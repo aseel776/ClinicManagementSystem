@@ -1,16 +1,23 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 import 'dart:ui';
 
 import 'package:clinic_management_system/features/patients_management/data/models/patient_diagnosis.dart';
 import 'package:clinic_management_system/features/patients_management/presentation/riverpod/create_patient_provider.dart';
 import 'package:clinic_management_system/features/patients_management/presentation/riverpod/patient_crud_state.dart';
+import 'package:clinic_management_system/features/treatments_feature/data/models/treatment_model.dart';
+import 'package:clinic_management_system/features/treatments_feature/presentation/states/treatments/treatments_provider.dart';
+import 'package:clinic_management_system/features/treatments_feature/presentation/states/treatments/treatments_state.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:searchfield/searchfield.dart';
 
 import '../../../../core/app_colors.dart';
 import '../../../../core/primaryText.dart';
 import '../../../../core/textField.dart';
+
 import '../../data/models/patient.dart';
 import '../pages/patient_profile.dart';
 import '../riverpod/patients_provider.dart';
@@ -43,7 +50,7 @@ class _MedicalDiagnosisScreenState
       if (widget.patient.id != null) {
         print("start");
         await ref.watch(patientsProvider.notifier).getPatientDiagnosis(
-              6,
+              1000,
               1,
               widget.patient.id!,
               ref.watch(currentPageViewDiagnosisProvider.notifier).state + 1,
@@ -75,7 +82,7 @@ class _MedicalDiagnosisScreenState
     return Stack(
       children: [
         Container(
-            // color: Colors.red,
+            // color: Colors.pi,
             height: MediaQuery.of(context).size.height * 0.5,
             width: MediaQuery.of(context).size.width * 0.6,
             child: pageView(
@@ -109,12 +116,10 @@ class _MedicalDiagnosisScreenState
   Widget pageView(int currentPage, WidgetRef ref) {
     final state = ref.watch(patientsProvider.notifier).state;
     ref.watch(patientsProvider);
-    switch (ref.watch(currentPageViewDiagnosisProvider.notifier).state - 1) {
+    switch (ref.watch(currentPageViewDiagnosisProvider.notifier).state) {
       case 0:
         {
-          if (state is LoadedPatientsState) {}
           return PageView.custom(
-            key: GlobalKey(),
             scrollDirection: Axis.horizontal,
             controller: widget.pageController,
             childrenDelegate: SliverChildBuilderDelegate(
@@ -131,7 +136,6 @@ class _MedicalDiagnosisScreenState
                         ? (state.patients[patientIndex].patientDiagnosis!
                                 .isNotEmpty)
                             ? Container(
-                                // color: Colors.black,
                                 width: 600,
                                 height: 400,
                                 child: ListView.builder(
@@ -143,7 +147,7 @@ class _MedicalDiagnosisScreenState
 
                                     return ListTile(
                                       title: Text(
-                                          'الرقم: ${row.id.toString() ?? ""}'),
+                                          'الرقم: ${row.problemId.toString() ?? ""}'),
                                       subtitle: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
@@ -222,7 +226,8 @@ class _MedicalDiagnosisScreenState
                                         .map((row) => DataRow(
                                               cells: [
                                                 DataCell(
-                                                    Text(row.id.toString() ??
+                                                    Text(row.problemId
+                                                            .toString() ??
                                                         ""),
                                                     onTap: () => null),
                                                 DataCell(Text(
@@ -317,18 +322,12 @@ class _MedicalDiagnosisScreenState
                             state is MessageAddEditDeletePatientState)
                         ? (state.patients[patientIndex].patientDiagnosis!
                                 .isNotEmpty)
-                            ? SizedBox(
+                            ? Container(
+                                color: Colors.amber,
                                 width: 200,
                                 height: 400,
                                 child: DataTable(
                                     columnSpacing: 110,
-                                    // header: const Text(""),
-                                    // actions: [
-                                    //   IconButton(
-                                    //       onPressed: () {},
-                                    //       icon: const Icon(Icons.refresh))
-                                    // ],
-                                    // rowsPerPage: 5,
                                     columns: const [
                                       DataColumn(label: Text('الرقم')),
                                       DataColumn(label: Text('المكان')),
@@ -340,7 +339,8 @@ class _MedicalDiagnosisScreenState
                                         .map((row) => DataRow(
                                               cells: [
                                                 DataCell(
-                                                    Text(row.id.toString() ??
+                                                    Text(row.problemId
+                                                            .toString() ??
                                                         ""),
                                                     onTap: () => null),
                                                 DataCell(Text(
@@ -431,6 +431,10 @@ class _MedicalDiagnosisScreenState
       bool addOrEdit, int? productIndex) async {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
+    final treatments =
+        await ref.watch(treatmentsProvider.notifier).getAllTreatments();
+    final state = ref.watch(treatmentsProvider.notifier).state;
+    TreatmentModel currentTreatment = TreatmentModel();
 
     return showDialog(
         context: context,
@@ -459,6 +463,40 @@ class _MedicalDiagnosisScreenState
                           height: 20,
                         ),
                         SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.2,
+                          child: SearchField(
+                              hint: 'Search',
+                              searchInputDecoration: InputDecoration(
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: const BorderSide(
+                                      width: 2, color: Colors.grey),
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: const BorderSide(
+                                      width: 1, color: Colors.grey),
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                              ),
+                              maxSuggestionsInViewPort: 6,
+                              itemHeight: 50,
+                              onSuggestionTap: (p0) {
+                                currentTreatment = p0.item as TreatmentModel;
+                              },
+                              suggestionsDecoration: SuggestionDecoration(
+                                  color: AppColors.lightGreen,
+                                  borderRadius: BorderRadius.circular(10),
+                                  padding: EdgeInsets.all(10)),
+                              suggestions: (state is LoadedTreatmentsState)
+                                  ? List.generate(
+                                      state.page.treatments!.length,
+                                      (index) => SearchFieldListItem(
+                                          state.page.treatments![index].name!,
+                                          item: state.page.treatments![index]))
+                                  : []),
+                        ),
+                        const SizedBox(height: 20),
+                        SizedBox(
                           width: screenWidth * 0.2,
                           child: textfield(
                               "العلاج المتوقع",
@@ -483,7 +521,6 @@ class _MedicalDiagnosisScreenState
                               onPressed: () async {
                                 // ref.watch(productsProvider.notifier)
                                 if (addOrEdit) {
-                                  print("qqqqqqqqqqdiagnosisqqq");
                                   PatientDiagnosis product = PatientDiagnosis(
                                       expectedTreatment: ref
                                           .watch(expectedTreatment.notifier)
@@ -492,19 +529,16 @@ class _MedicalDiagnosisScreenState
                                       place:
                                           ref.watch(place.notifier).state.text,
                                       patientId: widget.patient.id,
-                                      problemId: ref
-                                          .watch(
-                                              currentPageViewDiagnosisProvider
-                                                  .notifier)
-                                          .state);
+                                      problemId: currentTreatment.id);
                                   await ref
                                       .watch(patientsCrudProvider.notifier)
                                       .createPatientDiagnosis(product)
                                       .then((value) {
+                                    print("problem type id ");
                                     ref
                                         .watch(patientsProvider.notifier)
                                         .getPatientDiagnosis(
-                                            6,
+                                            1000,
                                             1,
                                             widget.patient.id!,
                                             ref
@@ -513,9 +547,9 @@ class _MedicalDiagnosisScreenState
                                                         .notifier)
                                                 .state);
                                   });
-                                  ref
-                                      .watch(currentPageDiagnosis.notifier)
-                                      .state = 1;
+                                  // ref
+                                  //     .watch(currentPageDiagnosis.notifier)
+                                  //     .state = 1;
 
                                   Navigator.pop(context);
                                 } else {

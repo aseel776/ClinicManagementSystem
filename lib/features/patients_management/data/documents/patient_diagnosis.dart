@@ -5,7 +5,7 @@ class PatientDiagnosisDocsGql {
       item_per_page
       page
       totalPages
-      items {
+      items {  
         expected_treatment
         id
         patient_id
@@ -15,6 +15,7 @@ class PatientDiagnosisDocsGql {
     }
   }
 ''';
+
   // final String patientDiagnosesQuery = '''
   //   query PatientDiagnoses(\$problem_type_id: Int!, \$item_per_page: Int!, \$page: Int!, \$patient_id: Int!) {
   //     patientDiagnoses(problem_type_id: \$problem_type_id, item_per_page: \$item_per_page, page: \$page, patient_id: \$patient_id) {

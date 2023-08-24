@@ -19,6 +19,10 @@ class LoadedAppointmentsState extends AppointmentsState {
   List<Object> get props => [page];
 }
 
+
+
+
+
 class ErrorAppointmentsState extends AppointmentsState {
   late final String message;
 

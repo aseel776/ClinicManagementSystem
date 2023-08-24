@@ -1,16 +1,21 @@
 import 'dart:ui';
 
 import 'package:clinic_management_system/core/app_colors.dart';
+import 'package:clinic_management_system/features/appointments_sessions/data/models/patient_treatment_model.dart';
+import 'package:clinic_management_system/features/appointments_sessions/presentation/states/patient_treatments/patient_treatments_state.dart';
 import 'package:clinic_management_system/features/medicine/presentation/widgets/primaryText.dart';
 import 'package:clinic_management_system/features/patients_management/data/models/patient_cost.dart';
 import 'package:clinic_management_system/features/patients_management/data/models/patient_payments.dart';
 import 'package:clinic_management_system/features/patients_management/data/models/problem_types.dart';
+import 'package:clinic_management_system/features/patients_management/presentation/pages/patients_index.dart';
 import 'package:clinic_management_system/features/patients_management/presentation/widgets/medical_images.dart';
+import 'package:clinic_management_system/features/teeth_model/teeth_model.dart';
 import 'package:clinic_management_system/features/treatments_feature/data/models/treatment_model.dart';
 import 'package:clinic_management_system/features/treatments_feature/presentation/states/treatment/treatment_provider.dart';
 import 'package:clinic_management_system/features/treatments_feature/presentation/states/treatment/treatment_state.dart';
 import 'package:clinic_management_system/features/treatments_feature/presentation/states/treatments/treatments_provider.dart';
 import 'package:clinic_management_system/features/treatments_feature/presentation/states/treatments/treatments_state.dart';
+import 'package:clinic_management_system/sidebar/presentation/pages/sidebar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -18,6 +23,7 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:searchfield/searchfield.dart';
 
 import '../../../../core/textField.dart';
+import '../../../appointments_sessions/presentation/states/patient_treatments/patient_treatments_provider.dart';
 import '../../data/models/patient.dart';
 import '../riverpod/create_patient_provider.dart';
 import '../riverpod/patients_provider.dart';
@@ -97,6 +103,7 @@ class _PatientProfileState extends ConsumerState<PatientProfile>
     final sectionWidth = MediaQuery.of(context).size.width;
     final sectionHeight = MediaQuery.of(context).size.height;
     ref.watch(patientsProvider);
+    ref.watch(patientTreatmentsProvider);
     // double totalAmount = payments
     //     .map((payment) => (payment['amount']) ?? 0)
     //     .fold(0, (sum, amount) => sum + amount);
@@ -129,16 +136,29 @@ class _PatientProfileState extends ConsumerState<PatientProfile>
                   SizedBox(
                     width: sectionWidth * 0.004,
                   ),
-                  PrimaryText(
-                    text: widget.patient.name,
-                    size: 18,
-                    height: 2.3,
-                    color: AppColors.black.withOpacity(0.7),
+                  TextButton(
+                    onPressed: () {
+                      ref.watch(pageProvider.notifier).state = PatientIndex();
+                    },
+                    child: PrimaryText(
+                      text: widget.patient.name,
+                      size: 18,
+                      height: 2.3,
+                      color: AppColors.black.withOpacity(0.7),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 16,
                   ),
                   ElevatedButton(
-                      onPressed: () {},
-                      child: PrimaryText(
-                        text: "نموذج ا",
+                      style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStatePropertyAll(AppColors.black)),
+                      onPressed: () {
+                        showTeethModel(context, ref);
+                      },
+                      child: const PrimaryText(
+                        text: "نموذج الاسنان ",
                       ))
                 ],
               ),
@@ -323,6 +343,9 @@ class _PatientProfileState extends ConsumerState<PatientProfile>
                             width: 70,
                           ),
                           ElevatedButton(
+                              style: ButtonStyle(
+                                  backgroundColor: MaterialStatePropertyAll(
+                                      AppColors.black)),
                               onPressed: () async {
                                 await ref
                                     .watch(treatmentsProvider.notifier)
@@ -397,13 +420,16 @@ class _PatientProfileState extends ConsumerState<PatientProfile>
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: (widget.patient.patientCosts != null)
-                            ? PrimaryText(
-                                text:
-                                    "إجمالي التكلفة:    ${widget.patient.patientCosts!.totalAmounts!} ",
-                                size: 14,
-                                fontWeight: FontWeight.w300,
-                                color: Colors.black54,
-                              )
+                            ? (widget.patient.patientCosts!.totalAmounts !=
+                                    null)
+                                ? PrimaryText(
+                                    text:
+                                        "إجمالي التكلفة:    ${widget.patient.patientCosts!.totalAmounts! ?? ""} ",
+                                    size: 14,
+                                    fontWeight: FontWeight.w300,
+                                    color: Colors.black54,
+                                  )
+                                : Container()
                             : Container(),
                       ),
                     ],
@@ -633,7 +659,7 @@ class _PatientProfileState extends ConsumerState<PatientProfile>
                                                                 sectionHeight,
                                                             screenWidth:
                                                                 sectionWidth,
-                                                            onTap: () {
+                                                            onTap: () async {
                                                               setState(() {
                                                                 ref
                                                                         .watch(currentPageViewProvider
@@ -656,6 +682,17 @@ class _PatientProfileState extends ConsumerState<PatientProfile>
                                                                             3000),
                                                                     curve: Curves
                                                                         .easeInOut);
+                                                                // ref
+                                                                //     .watch(patientsProvider
+                                                                //         .notifier)
+                                                                //     .getPatientImages(
+                                                                //         ref
+                                                                //             .watch(currentPageViewProvider
+                                                                //                 .notifier)
+                                                                //             .state,
+                                                                //         widget
+                                                                //             .patient
+                                                                //             .id!);
                                                                 ref.watch(height.notifier).state ==
                                                                         0
                                                                     ? ref
@@ -980,11 +1017,17 @@ class _PatientProfileState extends ConsumerState<PatientProfile>
                           const SizedBox(
                             width: 70,
                           ),
-                          ElevatedButton(
+                          TextButton(
+                              style: ButtonStyle(
+                                  backgroundColor: MaterialStatePropertyAll(
+                                      AppColors.black)),
                               onPressed: () {
                                 add_payments_popup(context, ref);
                               },
-                              child: const Icon(Icons.add)),
+                              child: const Icon(
+                                Icons.add,
+                                color: Colors.white,
+                              )),
                         ],
                       ),
                       const Row(
@@ -1067,14 +1110,17 @@ class _PatientProfileState extends ConsumerState<PatientProfile>
                           : Container(),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: (widget.patient.patientCosts != null)
-                            ? PrimaryText(
-                                text:
-                                    'إجمالي المدفوعات:       ${widget.patient.patientPayments!.totalAmounts!.toString()} ',
-                                size: 14,
-                                fontWeight: FontWeight.w300,
-                                color: Colors.black54,
-                              )
+                        child: (widget.patient.patientPayments != null)
+                            ? (widget.patient.patientPayments!.totalAmounts !=
+                                    null)
+                                ? PrimaryText(
+                                    text:
+                                        'إجمالي المدفوعات:       ${widget.patient.patientPayments!.totalAmounts!.toString()} ',
+                                    size: 14,
+                                    fontWeight: FontWeight.w300,
+                                    color: Colors.black54,
+                                  )
+                                : Container()
                             : Container(),
                       ),
                     ],
@@ -1091,6 +1137,49 @@ class _PatientProfileState extends ConsumerState<PatientProfile>
         ],
       ),
     );
+  }
+
+  Future<dynamic> showTeethModel(
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+    await ref
+        .watch(patientTreatmentsProvider.notifier)
+        .getOngoingTreatments(widget.patient.id!);
+    ref.watch(patientTreatmentsProvider);
+    final state = ref.watch(patientTreatmentsProvider);
+    if (state is LoadedPatientTreatmentsState) {
+      for (var i in state.treatments) {
+        for (var j in teeth) {
+          if (i.place == j.name) {
+            print("hereee");
+            var updatedTreatments = List.from(j.treatments ?? [])
+              ..add(i); // Create a new list with added element
+            j.treatments = updatedTreatments.cast<PatientTreatmentModel>();
+          }
+        }
+      }
+    }
+
+    return showDialog(
+        context: context,
+        builder: (context) => BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
+              child: Dialog(
+                backgroundColor: AppColors.lightGrey,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: LayoutBuilder(builder: (context, constraints) {
+                  return SizedBox(
+                      width: screenWidth * 0.4,
+                      height: screenHeight * 0.6,
+                      child: MotionControl(teeth: teeth));
+                }),
+              ),
+            ));
   }
 
   Future<dynamic> add_payments_popup(
@@ -1116,8 +1205,8 @@ class _PatientProfileState extends ConsumerState<PatientProfile>
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
+                        const Padding(
+                          padding: EdgeInsets.all(8.0),
                           child: PrimaryText(
                             text: "إضافة دفعة جديدة ",
                             size: 18,
@@ -1235,7 +1324,7 @@ class _PatientProfileState extends ConsumerState<PatientProfile>
                                         borderRadius: BorderRadius.all(
                                             Radius.elliptical(50, 70)))),
                               ),
-                              child: PrimaryText(
+                              child: const PrimaryText(
                                 text: "إضافة",
                                 height: 1.7,
                                 color: AppColors.black,
@@ -1275,8 +1364,8 @@ class _PatientProfileState extends ConsumerState<PatientProfile>
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
+                        const Padding(
+                          padding: EdgeInsets.all(8.0),
                           child: PrimaryText(
                             text: "إضافة دفعة جديدة ",
                             size: 18,
@@ -1311,7 +1400,7 @@ class _PatientProfileState extends ConsumerState<PatientProfile>
                               suggestionsDecoration: SuggestionDecoration(
                                   color: AppColors.lightGreen,
                                   borderRadius: BorderRadius.circular(10),
-                                  padding: EdgeInsets.all(10)),
+                                  padding: const EdgeInsets.all(10)),
                               marginColor: Colors.transparent,
                               suggestions: (state is LoadedTreatmentsState)
                                   ? List.generate(
@@ -1405,6 +1494,7 @@ class _PatientProfileState extends ConsumerState<PatientProfile>
                                         .state
                                         .text)!,
                                     treatmentId: currentTreatment.id,
+                                    treatment: currentTreatment.name,
                                     date: ref
                                         .watch(paymentsDateString.notifier)
                                         .state);
@@ -1433,7 +1523,7 @@ class _PatientProfileState extends ConsumerState<PatientProfile>
                                         borderRadius: BorderRadius.all(
                                             Radius.elliptical(50, 70)))),
                               ),
-                              child: PrimaryText(
+                              child: const PrimaryText(
                                 text: "إضافة",
                                 height: 1.7,
                                 color: AppColors.black,

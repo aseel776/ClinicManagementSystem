@@ -106,8 +106,8 @@ class _DiseaseListPageState extends ConsumerState<DiseaseListPage>
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              const Text(
-                'Anti-Materials',
+              const PrimaryText(
+                text: 'المواد الضارة',
               ),
               const Divider(),
               Expanded(

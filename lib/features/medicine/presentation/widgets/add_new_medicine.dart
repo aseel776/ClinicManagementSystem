@@ -129,18 +129,16 @@ class AddMedicineDialog {
                                       ),
                                       SizedBox(
                                         width: maxWidth * 0.2,
-                                        child: Container(
-                                          child: Directionality(
-                                              textDirection: TextDirection.rtl,
-                                              child: textfield(
-                                                  "اسم الدواء",
-                                                  ref
-                                                      .watch(
-                                                          medicineName.notifier)
-                                                      .state,
-                                                  "",
-                                                  1)),
-                                        ),
+                                        child: Directionality(
+                                            textDirection: TextDirection.rtl,
+                                            child: textfield(
+                                                "اسم الدواء",
+                                                ref
+                                                    .watch(
+                                                        medicineName.notifier)
+                                                    .state,
+                                                "",
+                                                1)),
                                       ),
                                     ],
                                   ),
@@ -331,7 +329,7 @@ class AddMedicineDialog {
                                         await ref
                                             .watch(
                                                 medicinesCrudProvider.notifier)
-                                            .editMedicine(medicine, catId)
+                                            .addMedicine(medicine, catId)
                                             .then((value) {
                                           ref
                                               .watch(

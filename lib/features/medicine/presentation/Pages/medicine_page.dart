@@ -236,15 +236,15 @@ class _MedicinePageState extends ConsumerState<MedicinePage> {
                         SizedBox(
                           width: MediaQuery.of(context).size.width * 0.01,
                         ),
-                        Container(
-                            width: sectionWidth * .04,
-                            height: sectionHeight * .07,
-                            decoration: BoxDecoration(
-                                color: AppColors.lightGreen,
-                                borderRadius: BorderRadius.circular(14)),
-                            child: IconButton(
-                                onPressed: () {},
-                                icon: const Icon(Icons.filter_list_alt))),
+                        // Container(
+                        //     width: sectionWidth * .04,
+                        //     height: sectionHeight * .07,
+                        //     decoration: BoxDecoration(
+                        //         color: AppColors.lightGreen,
+                        //         borderRadius: BorderRadius.circular(14)),
+                        //     child: IconButton(
+                        //         onPressed: () {},
+                        //         icon: const Icon(Icons.filter_list_alt))),
                         Padding(
                           padding: const EdgeInsets.only(right: 8.0, bottom: 3),
                           child: SizedBox(
@@ -409,18 +409,7 @@ class _MedicinePageState extends ConsumerState<MedicinePage> {
                                                                         .notifier)
                                                                     .state
                                                                     .text = row.name;
-                                                                print(
-                                                                    "kkkkkkkkkkkkkkkkkkkk");
-                                                                print(row.anti!
-                                                                    .map((e) =>
-                                                                        e.id)
-                                                                    .toList());
-                                                                // print(row.anti!
-                                                                //     .map(
-                                                                //       (e) =>
-                                                                //           ,
-                                                                //     )
-                                                                //     .toList);
+
                                                                 ref
                                                                     .watch(multiSelect
                                                                         .notifier)

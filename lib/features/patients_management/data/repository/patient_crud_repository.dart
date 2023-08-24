@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'dart:io' as io;
 import 'dart:io';
 
 import 'package:clinic_management_system/features/patients_management/data/documents/create_patients.dart';
@@ -14,13 +16,45 @@ import 'package:clinic_management_system/features/patients_management/data/model
 import 'package:clinic_management_system/features/patients_management/data/models/patient_diagnosis.dart';
 import 'package:clinic_management_system/features/patients_management/data/models/patient_payments.dart';
 import 'package:dartz/dartz.dart';
+import 'package:dio/dio.dart' as dio;
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:http/http.dart';
 
 import '../../../../core/error/failures.dart';
 import '../documents/patient_images.dart';
 import '../models/medicines_intake.dart';
 import '../models/patient_medical_images.dart';
 import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
+
+// class CustomHttpLink extends HttpLink {
+//   CustomHttpLink(String uri) : super(uri);
+//   @override
+//   Stream<http.StreamedResponse> request(
+//     Request request, [
+//     http.Stream<http.StreamedResponse> Function(Request)? forward,
+//   ]) {
+//     final customHeaders = {
+//       'Content-Type': 'multipart/form-data', // Set the specific content type
+//     };
+
+//     request = request.copyWith(
+//       headers: request.headers.addAll(customHeaders),
+//     );
+
+//     return super.request(request, forward);
+//   }
+// }
+
+class UploadFile {
+  final List<int> bytes;
+  final String fileName;
+  final String mimeType;
+
+  UploadFile(this.bytes, this.fileName, this.mimeType);
+}
 
 abstract class PatientsCrudRespository {
   Future<Either<Failure, Patient>> createNewPatient(Patient patient);
@@ -36,7 +70,7 @@ abstract class PatientsCrudRespository {
   Future<Either<Failure, String>> createNewPatientCosts(
       PatientCost patientCost, int patientId);
   Future<Either<Failure, String>> createPatientMedicalImage(
-      PatientMedicalImage patientMedicalImage, File image);
+      PatientMedicalImage patientMedicalImage, FilePickerResult image);
   Future<Either<Failure, String>> deletePatientDiagnosis(int? id);
   Future<Either<Failure, String>> editPatientDiagnosis(
       PatientDiagnosis patientDiagnosis);
@@ -95,30 +129,57 @@ class PatientsCrudRepositoryImpl implements PatientsCrudRespository {
   // }
   @override
   Future<Either<Failure, String>> createPatientMedicalImage(
-      PatientMedicalImage patientMedicalImage, File image) async {
-    var byteData = image.readAsBytesSync();
+      PatientMedicalImage patientMedicalImage, FilePickerResult image) async {
+    try {
+      PlatformFile file = image.files.first;
+      List<int> fileBytes = File(file.path!).readAsBytesSync();
 
-    final http.MultipartFile multipartFile = http.MultipartFile(
-      'image',
-      http.ByteStream(Stream.castFrom(image.openRead())),
-      await image.length(),
-      filename: 'image.jpg',
-    );
+      final formData = dio.FormData.fromMap({
+        'operations': jsonEncode({
+          'query': PatientImagesDocsGql.createPatientMedicalImageMutation,
+          'variables': {
+            'image': '0', // Refers to the file index
+            'medical_image_type_id': patientMedicalImage.medicalImageTypeId,
+            'patient_id': patientMedicalImage.patientId,
+            'title': patientMedicalImage.title,
+          },
+        }),
+        'map': jsonEncode({
+          '0': ['variables.image'],
+        }),
+        '0': await dio.MultipartFile.fromBytes(
+          fileBytes,
+          // 'aa',
+          filename: file.name,
+          headers: {
+            'Accept': ["*/*"],
+            'apollo-require-preflight': ["true"]
+          },
+          contentType: MediaType('image', 'jpeg'), // Adjust mimetype as needed
+        ),
+      });
 
-    final response = await gqlClient.mutate(MutationOptions(
-      document: gql(PatientImagesDocsGql.createPatientMedicalImageMutation),
-      variables: {
-        'image': image,
-        'medical_image_type_id': patientMedicalImage.medicalImageTypeId,
-        'patient_id': patientMedicalImage.patientId,
-        'title': patientMedicalImage.title,
-      },
-    ));
-    print(response);
+      final dioClient = dio.Dio();
 
-    if (!response.hasException && response.data != null) {
-      return right("Patient medical image created successfully");
-    } else {
+      dioClient.options.headers['Accept'] = '*/*';
+      dioClient.options.headers['Content-Type'] =
+          'multipart/form-data'; // Add Content-Type header
+      dioClient.options.headers['apollo-require-preflight'] = 'true';
+
+      final response = await dioClient.post(
+        'http://localhost:3000/graphql',
+        data: formData,
+      );
+
+      print(response.data);
+
+      if (response.statusCode == 200) {
+        // Process the response data here if needed
+        return right("Patient medical image created successfully");
+      } else {
+        return left(ServerFailure());
+      }
+    } catch (error) {
       return left(ServerFailure());
     }
   }
@@ -188,7 +249,7 @@ class PatientsCrudRepositoryImpl implements PatientsCrudRespository {
         'medicine_id': patientMedicine.medicine!.id,
         'notes': patientMedicine.notes,
         'patient_id': patientId,
-        'start_date': patientMedicine.date,
+        'start_date': DateTime.parse(patientMedicine.date!),
       },
     ));
     print(response);
@@ -235,16 +296,17 @@ class PatientsCrudRepositoryImpl implements PatientsCrudRespository {
     print("tojson:" + patientCost.toJson().toString());
     final response = await gqlClient.mutate(MutationOptions(
       document: gql(PatientCostsDocsGql.createCosts),
+      fetchPolicy: FetchPolicy.noCache,
       variables: <String, dynamic>{
         'input': {
           'amount': patientCost.amount,
           'date': patientCost.date,
           'patient_id': patientId,
-          'treatment_id': patientCost.treatment,
+          'treatment_id': patientCost.treatmentId,
         },
       },
     ));
-
+    print("responssse");
     print(response);
 
     if (!response.hasException && response.data != null) {
@@ -263,6 +325,7 @@ class PatientsCrudRepositoryImpl implements PatientsCrudRespository {
       PatientDiagnosis patientDiagnosis) async {
     print("tojson:" + patientDiagnosis.toJson().toString());
     final response = await gqlClient.mutate(MutationOptions(
+      fetchPolicy: FetchPolicy.noCache,
       document: gql(PatientDiagnosisDocsGql.createPatientDiagnosisMutation),
       variables: <String, dynamic>{
         'expected_treatment': patientDiagnosis.expectedTreatment,
@@ -271,7 +334,7 @@ class PatientsCrudRepositoryImpl implements PatientsCrudRespository {
         'problem_id': patientDiagnosis.problemId,
       },
     ));
-
+    print("tttttttttt");
     print(response);
 
     if (!response.hasException && response.data != null) {

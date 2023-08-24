@@ -4,7 +4,7 @@ class PatientMedicineDocsGql {
     \$medicine_id: Int!,
     \$notes: String!,
     \$patient_id: Int!,
-    \$start_date: !
+    \$start_date: DateTime!
   ) {
     createPatientMedicine(
       createPatientMedicineInput: {

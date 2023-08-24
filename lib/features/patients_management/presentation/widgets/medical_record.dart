@@ -207,15 +207,37 @@ class _MedicalRecordState extends ConsumerState<MedicalRecord> {
           size: 16,
           fontWeight: FontWeight.w500,
         ),
-        (widget.patient.patientMedicines.isNotEmpty)
-            ? Row(
-                children: [
-                  MultiSelectChip(
+        Row(
+          children: [
+            DottedBorder(
+              radius: const Radius.circular(15),
+              padding: const EdgeInsets.all(0.4),
+              borderType: BorderType.RRect,
+              child: ElevatedButton(
+                onPressed: () async {
+                  return await medicines_popup(context);
+                },
+                style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStatePropertyAll(Colors.grey.shade300),
+                    shape: MaterialStatePropertyAll(RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ))),
+                child: const PrimaryText(
+                  text: "إضافة +",
+                  color: AppColors.black,
+                ),
+              ),
+            ),
+            const SizedBox(width: 10),
+            (widget.patient.patientMedicines.isNotEmpty)
+                ? MultiSelectChip(
                     medicines: widget.patient.patientMedicines,
                   )
-                ],
-              )
-            : Container()
+                : Container()
+          ],
+        )
+        // : Container()
       ]),
     );
   }
@@ -300,7 +322,7 @@ class _MedicalRecordState extends ConsumerState<MedicalRecord> {
                         const SizedBox(height: 20),
                         SizedBox(
                           width: screenWidth * 0.2,
-                          child: textfield("اسم الدواء",
+                          child: textfield("ملاحظات",
                               ref.watch(diseaseNotes.notifier).state, "", 1),
                         ),
                         const SizedBox(height: 20),
@@ -658,6 +680,7 @@ class _MedicalRecordState extends ConsumerState<MedicalRecord> {
   }
 
   Future<void> medicines_popup(BuildContext context) async {
+    await ref.watch(medicinesProvider.notifier).getPaginatedMedicines(1000, 1);
     final state = ref.watch(medicinesProvider.notifier).state;
     print(state);
     TextEditingController medicineName = TextEditingController();
@@ -674,7 +697,7 @@ class _MedicalRecordState extends ConsumerState<MedicalRecord> {
                   ),
                   child: SizedBox(
                     width: MediaQuery.of(context).size.width * 0.4,
-                    height: MediaQuery.of(context).size.height * 0.4,
+                    height: MediaQuery.of(context).size.height * 0.5,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
@@ -725,15 +748,65 @@ class _MedicalRecordState extends ConsumerState<MedicalRecord> {
                                   : []),
                         ),
                         const SizedBox(height: 20),
+                        Container(
+                          height: MediaQuery.of(context).size.height! * 0.075,
+                          width: MediaQuery.of(context).size.width * 0.2,
+                          decoration: BoxDecoration(
+                              border: Border.all(width: 1, color: Colors.grey),
+                              borderRadius: BorderRadius.circular(15)),
+                          child: Row(
+                            children: [
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              GestureDetector(
+                                  child: const Row(children: [
+                                    Icon(
+                                      Icons.calendar_today,
+                                      color: Colors.black26,
+                                    ),
+                                    PrimaryText(
+                                      text: "تاريخ العادة السيئة",
+                                      color: Colors.black54,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ]),
+                                  onTap: () async {
+                                    final datePick = await showDatePicker(
+                                        context: context,
+                                        initialDate: DateTime(2000),
+                                        firstDate: DateTime(1900),
+                                        lastDate: DateTime(2100));
+                                    if (datePick != null &&
+                                        datePick != ref.watch(medicineDate)) {
+                                      ref.read(medicineDate.notifier).state =
+                                          datePick;
+
+                                      ref
+                                              .read(medicineDateString.notifier)
+                                              .state =
+                                          DateFormat("yyyy-MM-dd").format(ref
+                                              .watch(medicineDate.notifier)
+                                              .state!);
+
+                                      print(ref.watch(medicineDateString));
+                                    }
+                                  }),
+                              const SizedBox(
+                                width: 20,
+                              ),
+                            ],
+                          ),
+                        ),
                         const SizedBox(
-                          width: 30,
+                          width: 40,
                         ),
                         SizedBox(
                           width: MediaQuery.of(context).size.width * 0.2,
                           child: textfield("ملاحظات", notes, "", 1),
                         ),
                         const SizedBox(
-                          height: 10,
+                          height: 30,
                         ),
                         SizedBox(
                           width: MediaQuery.of(context).size.width * 0.08,
@@ -742,10 +815,12 @@ class _MedicalRecordState extends ConsumerState<MedicalRecord> {
                                 print(currentMedicine);
 
                                 PatientMedicine selected1 = PatientMedicine();
+
                                 selected1.medicine = currentMedicine;
                                 selected1.notes = notes.text;
-                                // selected1.date =
-                                //     ref.watch(medicined.notifier).state;
+                                selected1.date = ref
+                                    .watch(medicineDateString.notifier)
+                                    .state;
                                 // selected1
                                 ref
                                     .watch(patientsCrudProvider.notifier)

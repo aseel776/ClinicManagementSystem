@@ -8,6 +8,7 @@ import 'package:clinic_management_system/features/patients_management/data/model
 import 'package:clinic_management_system/features/patients_management/data/repository/patient_crud_repository.dart';
 import 'package:clinic_management_system/features/patients_management/presentation/riverpod/patient_crud_state.dart';
 import 'package:dartz/dartz.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -41,6 +42,7 @@ class PatientsCrudNotifier extends StateNotifier<AddEditDeletePatientState> {
       GraphQLClient(
     link: HttpLink('http://localhost:3000/graphql'),
     cache: GraphQLCache(),
+    
   ));
 
   Future<AddEditDeletePatientState> createNewPatient(Patient patient) async {
@@ -143,7 +145,8 @@ class PatientsCrudNotifier extends StateNotifier<AddEditDeletePatientState> {
     print(state);
   }
 
-  Future<void> addNewImage(PatientMedicalImage image, File imageFile) async {
+  Future<void> addNewImage(
+      PatientMedicalImage image, FilePickerResult imageFile) async {
     state = LoadingAddEditDeletePatientState();
     final response =
         await respositoryImpl.createPatientMedicalImage(image, imageFile);
