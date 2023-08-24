@@ -22,7 +22,7 @@ Future<void> selectTreatment(BuildContext context, WidgetRef ref, int patientId)
   final containerHeight = height * .6;
 
   TreatmentModel? selectedTreatment;
-  final placeController = TextEditingController(text: 'TH.11');
+  String placeController = 'Tooth 11';
   final priceConroller = TextEditingController();
 
   await showDialog(
@@ -112,7 +112,7 @@ Future<void> selectTreatment(BuildContext context, WidgetRef ref, int patientId)
                             style: const TextStyle(
                               fontFamily: 'Cairo',
                             ),
-                            controller: placeController,
+                            // controller: placeController,
                           ),
                             DropdownButton<String>(
                               isExpanded: true,
@@ -121,10 +121,10 @@ Future<void> selectTreatment(BuildContext context, WidgetRef ref, int patientId)
                               ),
                               onChanged: (place) {
                                 setState(() {
-                                  placeController.text = place!;
+                                  placeController = place!;
                                 });
                               },
-                              value: placeController.text,
+                              value: placeController,
                               items: teethNotation.map((t) {
                                 return DropdownMenuItem<String>(
                                   alignment: Alignment.centerRight,
@@ -160,7 +160,7 @@ Future<void> selectTreatment(BuildContext context, WidgetRef ref, int patientId)
                         Navigator.of(context).pop();
                         final temp = PatientTreatmentModel(
                           patientId: patientId,
-                          place: placeController.text,
+                          place: placeController,
                           price: int.parse(priceConroller.text),
                           treatment: selectedTreatment
                         );

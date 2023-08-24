@@ -2,8 +2,10 @@ import 'package:clinic_management_system/features/appointments_sessions/data/mod
 import 'package:clinic_management_system/features/appointments_sessions/data/models/patient_lab_order.dart';
 import 'package:clinic_management_system/features/appointments_sessions/data/models/pres_input_model.dart';
 import 'package:clinic_management_system/features/appointments_sessions/data/models/sessionInputModel.dart';
+import 'package:clinic_management_system/features/appointments_sessions/data/models/session_model.dart';
 import 'package:clinic_management_system/features/appointments_sessions/presentation/states/patient_treatments/patient_treatments_provider.dart';
 import 'package:clinic_management_system/features/appointments_sessions/presentation/states/patient_treatments/patient_treatments_state.dart';
+import 'package:clinic_management_system/features/appointments_sessions/presentation/states/sessions/sessions_provider.dart';
 import 'package:clinic_management_system/features/appointments_sessions/presentation/widgets/lab_order.dart';
 import 'package:clinic_management_system/features/appointments_sessions/presentation/widgets/ongoing_treatment.dart';
 import 'package:clinic_management_system/features/appointments_sessions/presentation/widgets/select_treatment.dart';
@@ -289,8 +291,14 @@ class _NewSessionState extends ConsumerState<NewSession> {
                         ),
                         const Expanded(child: SizedBox()),
                         MaterialButton(
-                          onPressed: () {
-                            //call create session
+                          onPressed: () async{
+                            final session = SessionModel(
+                              app: widget.app,
+                              inputs: allWork,
+                              order: order,
+                              pres: pres,
+                            );
+                            await ref.read(sessionsProvider.notifier).createSession(session);
                           },
                           color: AppColors.black,
                           shape: RoundedRectangleBorder(

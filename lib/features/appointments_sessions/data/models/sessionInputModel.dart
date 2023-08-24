@@ -8,6 +8,10 @@ class SessionInputModel extends Equatable{
 
   SessionInputModel({this.stepId, this.treatmentId});
 
+  SessionInputModel.fromJson(Map<String, dynamic> src){
+
+  }
+
   Map<String, dynamic> toJson(){
     return {
       'step_id': stepId,

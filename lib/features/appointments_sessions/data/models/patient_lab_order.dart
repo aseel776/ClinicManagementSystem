@@ -14,6 +14,7 @@ class PatientLabOrderModel extends Equatable{
   String? serviceName;
   int? labId;
   String? labName;
+  int? sessionId;
 
   PatientLabOrderModel({
     this.id,
@@ -28,6 +29,7 @@ class PatientLabOrderModel extends Equatable{
     this.labId,
     this.labName,
     this.serviceName,
+    this.sessionId,
   });
 
   PatientLabOrderModel.fromJson(Map<String, dynamic> src){
@@ -39,9 +41,23 @@ class PatientLabOrderModel extends Equatable{
     serviceId = src['lab_order_id'];
     patientId = src['patient_id'];
     notations = src['notation'];
+    sessionId = src['patient_session_id'];
     if(src.containsKey('directions')){
       directions = src['directions'];
     }
+  }
+
+  Map<String, dynamic> toJson(){
+    Map<String, dynamic> map = {};
+    map.putIfAbsent('created_at', () => createdAt);
+    map.putIfAbsent('deliver_at', () => deliverAt);
+    map.putIfAbsent('degree', () => degree);
+    map.putIfAbsent('type', () => type);
+    map.putIfAbsent('directions', () => directions);
+    map.putIfAbsent('lab_order_id', () => serviceId);
+    map.putIfAbsent('notation', () => notations);
+    map.putIfAbsent('patient_id', () => patientId);
+    return map;
   }
 
   @override

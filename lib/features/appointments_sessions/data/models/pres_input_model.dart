@@ -8,11 +8,26 @@ class PrescriptionInput extends Equatable{
   String? desc;
   String? quantity;
   String? repeat;
+  int? id;
+  int? presId;
 
-  PrescriptionInput({this.medicineId, this.medicineName, this.desc, this.quantity, this.repeat});
+  PrescriptionInput({
+    this.medicineId,
+    this.medicineName,
+    this.desc,
+    this.quantity,
+    this.repeat,
+    this.id,
+    this.presId,
+  });
 
   PrescriptionInput.fromJson(Map<String, dynamic> src){
-    medicineId = src['medicince_id'];
+    id = src['id'];
+    presId = src['patient_perscrption_id'];
+    medicineId = src['medicince']['id'];
+    medicineName = src['medicince']['name'];
+    concentration = src['medicince']['concentration'];
+    form = src['medicince']['category']['name'];
     desc = src['description'];
     quantity = src['qantity'];
     repeat = src['repetition'];
