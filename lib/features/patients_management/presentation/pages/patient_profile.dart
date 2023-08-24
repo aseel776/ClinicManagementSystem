@@ -420,13 +420,16 @@ class _PatientProfileState extends ConsumerState<PatientProfile>
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: (widget.patient.patientCosts != null)
-                            ? PrimaryText(
-                                text:
-                                    "إجمالي التكلفة:    ${widget.patient.patientCosts!.totalAmounts!} ",
-                                size: 14,
-                                fontWeight: FontWeight.w300,
-                                color: Colors.black54,
-                              )
+                            ? (widget.patient.patientCosts!.totalAmounts !=
+                                    null)
+                                ? PrimaryText(
+                                    text:
+                                        "إجمالي التكلفة:    ${widget.patient.patientCosts!.totalAmounts! ?? ""} ",
+                                    size: 14,
+                                    fontWeight: FontWeight.w300,
+                                    color: Colors.black54,
+                                  )
+                                : Container()
                             : Container(),
                       ),
                     ],

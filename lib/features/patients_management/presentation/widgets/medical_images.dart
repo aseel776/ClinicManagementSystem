@@ -190,6 +190,18 @@ class _MedicalImagesScreenState extends ConsumerState<MedicalImagesScreen> {
                           .addNewImage(
                               image, ref.watch(resultProvider.notifier).state)
                           .then((value) {
+                        if (widget.patient.id != null) {
+                          int id;
+                          if (currentPage == "صور شعاعية") {
+                            id = 1;
+                          } else {
+                            id = 2;
+                          }
+                          ref
+                              .watch(patientsProvider.notifier)
+                              .getPatientImages(id, widget.patient.id!);
+                        }
+
                         Navigator.pop(context);
                       });
 
@@ -291,8 +303,8 @@ class _MedicalImagesScreenState extends ConsumerState<MedicalImagesScreen> {
                     padding:
                         const EdgeInsets.only(left: 25.0, top: 15, right: 10),
                     child: Container(
-                      color: Colors.red,
-                      child: const Text("shamsieeeh"),
+                      // color: Colors.red,
+                      child: const Text("there is no images "),
                     ));
               }),
               childCount: 1,

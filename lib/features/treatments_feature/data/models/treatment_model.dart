@@ -3,8 +3,7 @@ import 'package:equatable/equatable.dart';
 import './step_model.dart';
 import 'treatment_type_model.dart';
 
-class TreatmentModel extends Equatable{
-
+class TreatmentModel extends Equatable {
   int? id;
   String? name;
   int? price;
@@ -13,21 +12,28 @@ class TreatmentModel extends Equatable{
   List<StepModel>? steps;
   List<String>? channels;
 
-  TreatmentModel({this.id, this.name, this.price, this.color, this.type, this.steps, this.channels});
+  TreatmentModel(
+      {this.id,
+      this.name,
+      this.price,
+      this.color,
+      this.type,
+      this.steps,
+      this.channels});
 
-  TreatmentModel.fromJson(Map<String, dynamic> source){
+  TreatmentModel.fromJson(Map<String, dynamic> source) {
     id = source['id'];
     name = source['name'];
-    if(source.containsKey('color')){
+    if (source.containsKey('color')) {
       color = generateColorFromString(source['color']);
     }
-    if(source.containsKey('treatment_type')){
+    if (source.containsKey('treatment_type')) {
       type = TreatmentTypeModel.fromJson(source['treatment_type']);
     }
-    if(source['price'] != null){
+    if (source['price'] != null) {
       price = source['price'];
     }
-    if(source.containsKey('steps')){
+    if (source.containsKey('steps')) {
       final tempSteps = source['steps'] as List<dynamic>;
       steps = tempSteps.map((e) => StepModel.fromJson(e)).toList();
       channels = steps![0].subSteps ?? [];
@@ -45,17 +51,17 @@ class TreatmentModel extends Equatable{
     return map;
   }
 
-  Color generateColorFromString(String inputColor){
+  Color generateColorFromString(String inputColor) {
     int colorHash = inputColor.hashCode;
     int colorValue = colorHash & 0x00FFFFFF;
     return Color(colorValue).withOpacity(1);
   }
 
-  String generateStringFromColor(){
+  String generateStringFromColor() {
     return color!.value.toRadixString(16);
   }
 
-  TreatmentModel copy(){
+  TreatmentModel copy() {
     return TreatmentModel(
       id: id,
       name: name,

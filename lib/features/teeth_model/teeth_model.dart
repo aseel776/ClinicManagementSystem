@@ -1663,9 +1663,18 @@ class _MotionControlState extends State<MotionControl> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    "اسم المعالجة: ${treatment1.treatment!.name!}",
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  Row(
+                    children: [
+                      CircleAvatar(
+                        backgroundColor: treatment1.treatment!.color,
+                        radius: 5,
+                      ),
+                      Text(
+                        "اسم المعالجة: ${treatment1.treatment!.name!}",
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                    ],
                   ),
                   Text(
                     "السعر: ${treatment1.price.toString()}",
