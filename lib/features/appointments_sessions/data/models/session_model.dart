@@ -15,8 +15,14 @@ class SessionModel extends Equatable{
   SessionModel({this.order, this.inputs, this.app, this.pres, this.id});
 
   SessionModel.fromJson(Map<String, dynamic> src){
-
+    id = src['PatientLabOrder']['patient_session_id'];
+    order = PatientLabOrderModel.fromJson(src['PatientLabOrder']);
+    List<dynamic> temp = src['PatientTreatmentDoneStep'];
+    inputs = temp.map((e) => SessionInputModel.fromJson(e)).toList();
+    List<dynamic> temp2 = src['PatientPerscrptions'];
+    pres = temp2.map((e) => PrescriptionInput.fromJson(e)).toList();
   }
+
 
   Map<String, dynamic> toJson(){
     Map<String, dynamic> map = {};
@@ -26,7 +32,7 @@ class SessionModel extends Equatable{
     map.putIfAbsent('CreatePatientTreatmentDoneStepFromSessionInput', () => inputs!.map((e) => e.toJson()).toList());
     if(pres != null){
       Map<String, dynamic> temp = {
-        'createPatientPerscrptionsMedicienInput': pres!.map((e) => e.toJson()).toList()
+        'PatientPerscrptionsMedicince': pres!.map((e) => e.toJson()).toList()
       };
       map.putIfAbsent('createPatientPerscrptionFromSessionInput', () => temp);
     }

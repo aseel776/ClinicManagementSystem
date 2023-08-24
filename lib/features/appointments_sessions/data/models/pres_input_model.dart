@@ -24,13 +24,14 @@ class PrescriptionInput extends Equatable{
   PrescriptionInput.fromJson(Map<String, dynamic> src){
     id = src['id'];
     presId = src['patient_perscrption_id'];
-    medicineId = src['medicince']['id'];
-    medicineName = src['medicince']['name'];
-    concentration = src['medicince']['concentration'];
-    form = src['medicince']['category']['name'];
-    desc = src['description'];
-    quantity = src['qantity'];
-    repeat = src['repetition'];
+    Map<String, dynamic> temp = src['PatientPerscrptionsMedicince'];
+    desc = temp['description'];
+    repeat = temp['repetition'];
+    quantity = temp['qantity'];
+    medicineId = temp['medicince']['id'];
+    medicineName = temp['medicince']['name'];
+    concentration = temp['medicince']['concentration'];
+    form = temp['medicince']['category']['name'];
   }
 
   Map<String, dynamic> toJson(){

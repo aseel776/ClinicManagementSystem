@@ -23,11 +23,11 @@ class SessionsNotifier extends StateNotifier<SessionsState> {
       GraphQLClient>(client);
   late final SessionsRepoImp repo = SessionsRepoImp(client);
 
-  // Future<void> getSession(int id) async {
-  //   state = LoadingSessionsState();
-  //   final response = await repo.getAllSessions(id);
-  //   state = _mapFailureOrSessionsToState(response);
-  // }
+  Future<void> getSession(int id) async {
+    state = LoadingSessionsState();
+    final response = await repo.getAllSessions(id);
+    state = _mapFailureOrSessionsToState(response);
+  }
 
   Future<void> createSession(SessionModel session) async {
     state = LoadingSessionsState();

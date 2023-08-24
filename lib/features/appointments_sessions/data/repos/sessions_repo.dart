@@ -1,12 +1,12 @@
 import 'package:clinic_management_system/features/appointments_sessions/data/documents/cud/sessions_mutation.dart';
+import 'package:clinic_management_system/features/appointments_sessions/data/documents/get/sessions_query.dart';
 import 'package:dartz/dartz.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import './/core/error/failures.dart';
-import '../models/page_model.dart';
 import '../models/session_model.dart';
 
 abstract class SessionsRepo {
-  // Future<Either<Failure, List<SessionModel>>> getAllSessions(int id);
+  Future<Either<Failure, List<SessionModel>>> getAllSessions(int id);
   //
   // Future<Either<Failure, SessionModel>> getSession(int id);
   //
@@ -22,32 +22,29 @@ class SessionsRepoImp extends SessionsRepo {
 
   SessionsRepoImp(this.gqlClient);
 
-  // @override
-  // Future<Either<Failure, SessionsPage>> getAllSessions(String date) async {
-  //   final response = await gqlClient.query(
-  //     QueryOptions(
-  //       document: gql(SessionsQuery.getSessions),
-  //       variables: {
-  //         'date': date,
-  //       },
-  //       fetchPolicy: FetchPolicy.noCache,
-  //     ),
-  //   );
-  //   if (!response.hasException && response.data != null) {
-  //     print('success from get all');
-  //     List<dynamic> temp = response.data!['patientSessions'];
-  //     List<SessionModel> sessions =
-  //     temp.map((s) => SessionModel.fromJson(s)).toList();
-  //     SessionsPage page = SessionsPage(
-  //       date: DateTime.tryParse(date),
-  //       sessions: sessions,
-  //     );
-  //     return right(page);
-  //   } else {
-  //     return left(ServerFailure());
-  //   }
-  // }
-  //
+  @override
+  Future<Either<Failure, List<SessionModel>>> getAllSessions(int? id) async {
+    final response = await gqlClient.query(
+      QueryOptions(
+        document: gql(SessionsQuery.getAllSession),
+        variables: {
+          'patient_id': id,
+        },
+        fetchPolicy: FetchPolicy.noCache,
+      ),
+    );
+
+    if (!response.hasException && response.data != null) {
+      print('success from get all');
+      List<SessionModel> sessions = [];
+      List<dynamic> temp = response.data!['patientSessions'];
+      sessions.addAll(temp.map((e) => SessionModel.fromJson(e)).toList());
+      return right(sessions);
+    } else {
+      return left(ServerFailure());
+    }
+  }
+
   @override
   Future<Either<Failure, String>> createSession(SessionModel session) async {
     final response = await gqlClient.query(
@@ -59,7 +56,6 @@ class SessionsRepoImp extends SessionsRepo {
         fetchPolicy: FetchPolicy.noCache,
       ),
     );
-    print(response);
 
     if (!response.hasException && response.data != null) {
       print('success from session creation');
